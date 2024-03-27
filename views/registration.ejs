@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        .reg{
+            max-width: 1800px;
+            height: 501px;
+            background-color: aliceblue;
+        }    
+        .content{
+            padding: 53px 615px;
+            font-size: 15px;
+            font-family: sans-serif;
+            color:  rgb(3, 1, 11);
+            
+        }
+        .heading{
+            font-family: sans-serif;
+            text-align: center;
+            color: rgb(104, 85, 224);
+            padding: 21px 0px;
+        }
+        .submitBtn{
+            margin-left: 200px;
+        }
+        /* #subbtn,#actBtn{
+            height: 31px;
+            width: 146px;
+            font-size: 15px;
+            background-color: rgba(66, 187, 66, 0.712);
+            border: 1px solid black;
+            border-radius: 5px;
+            cursor: pointer;
+        } */
+
+        #subbtn{
+            color: rgb(104, 85, 224);
+            background-color: rgba(255, 255, 255, 1);
+            border: 1px solid rgba(104, 85, 224, 1);
+            cursor: pointer;
+            border: 0;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0 10px;
+            width: 180px;
+            padding: 10px 0;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
+            transition: 0.4s;
+        }
+        #subbtn:hover,#loginbtn:hover{
+          color: white;
+          box-shadow: 0 0 20px rgba(104, 85, 224, 0.6);
+          background-color: rgba(104, 85, 224, 1);
+        }
+
+        #loginbtn{
+            background-color: rgba(104, 85, 224, 1);
+            border: 1px solid rgba(104, 85, 224, 1);
+            cursor: pointer;
+            border: 0;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0 10px;
+            width: 180px;
+            padding: 10px 0;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
+            transition: 0.4s;
+        }
+        p{
+            font-size: 11px;
+            margin-top: -5px;
+            color: red;
+        }
+        .activationBtn{
+            margin-left: 160px;
+        }
+        #activationcodelink{
+            padding: 40px;
+            text-decoration: none;
+            color: black;
+        }
+        #login{
+            text-decoration: none;
+            color: white;
+        }
+        #firstname,#lastname,#email,#mono{
+            width: 540px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="heading">
+    <h1>Registration Form</h1>
+    </div>
+    <div class="reg">
+    <form method="post" id="myForm">
+
+        <div class="content">
+        <label for="firstname">First name:</label><br>
+        <input type="text" name="firstname" id="firstname" onclick="removeError('errorfirstname')" onkeypress="removeError('errorfirstname')"><br><br>
+        <p id="errorfirstname"></p>
+        
+        <label for="lastname">Last name:</label><br>
+        <input type="text" name="lastname" id="lastname" onclick="removeError('errorlastname')" onkeypress="removeError('errorlastname')"><br><br>
+        <p id="errorlastname"></p>
+
+        <label for="email">Email:</label><br>
+        <input type="text" name="email" id="email" onclick="removeError('erroremail')" onkeypress="removeError('erroremail')"><br><br>
+        <p id="erroremail"></p>
+
+        <label for="mono">Mobile Number:</label><br>
+        <input type="text" name="mono" id="mono" onclick="removeError('errormono')" onkeypress="removeError('errormono')"><br><br>
+        <p id="errormono"></p>
+         
+        <div class="submitBtn">
+            <input type="hidden" name="activationcode" id="activationcode" value="">
+        <input type="button" value="Register" id="subbtn" onclick="register('myForm')"><br><br>
+        <button id="loginbtn"><a href="/directlogin" id="login">Login</a></button>
+        </div>
+
+        </div>
+        
+    </form>
+    <div class="activationBtn" id="activationBtn">     
+    </div>
+
+    </div>
+
+    <script>
+
+        function removeError(id){
+            document.getElementById(id).innerHTML="";
+        }
+
+        function makeid(length) {
+            var result = "";
+            var characters = '0123456789';
+            for (var i = 0; i < length; i++) {
+              result += characters[Math.floor(Math.random() * characters.length)];
+            }
+        result = result.match(/\d{1,4}/g).join("-");
+        return result;
+        }           
+
+        async function register(id) {
+
+            if(!await validateForm()) {
+                
+            }
+            else {
+                let form = document.getElementById(id);
+                let flag = await fetch(`/check-email/${document.getElementById('email').value}`);
+                flag = await flag.json();
+                if(flag.emailExists == true) {
+                    document.getElementById('erroremail').innerHTML = "email is already in use ";
+                    document.getElementById('email').focus();
+
+                }
+                else {
+
+                    var randcode=makeid(12);
+                    console.log(randcode);
+                    document.getElementById("activationcode").value=randcode;
+
+                    const form = document.getElementById(id);
+                    const obj = new URLSearchParams(new FormData(form));
+                    console.log(obj);
+
+                    console.log("in your area");
+                    var url=window.location.origin+`/thanks/${randcode}`;
+                    console.log(url);
+                    window.location.href=url;
+                        let res1 =await fetch("http://localhost:8082/storedetails",
+                        {
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            method: "POST",
+                            body: obj
+                        })
+                   
+ 
+                }                
+
+            }
+        }
+
+        function redirect(){
+            window.location.href="http://localhost:8082/directlogin";
+        }
+
+        
+        
+
+            
+        
+        // function register(id) {
+        
+        //     // if(!validateForm()){
+        //     //     return false;
+        //     // }
+        //     if(emailExists()){
+        //         alert('invalid')
+        //         return false;
+        //     }
+
+        //     else{
+        //         alert('valid')
+        //         var randcode=makeid(12);
+        //         console.log(randcode);
+        //         document.getElementById("activationcode").value=randcode;    
+
+        //         // document.getElementById("activationBtn").innerHTML=`<br><button id="actBtn"><a href="/login/${randcode}" id="activationcodelink">Activate</a></button><br>`
+        //         // document.getElementById("activationBtn").innerHTML=`<a href="http://localhost:8082/${randcode}">http://localhost:8082/${randcode}</a>`;    
+
+        //         // const formData = new FormData(myForm);  
+        //         // console.log(formData);
+        //         // var json = JSON.stringify(Object.fromEntries(formData));
+        //         // console.log(json);
+
+        //         // const form = document.getElementById(id);
+        //         // const obj = new URLSearchParams(new FormData(form));
+        //         // console.log(obj);
+
+        //         //     let res1 =await fetch("http://localhost:8082/storedetails",
+        //         //     {
+        //         //         headers: {
+        //         //             'Content-Type': 'application/x-www-form-urlencoded'
+        //         //         },
+        //         //         method: "POST",
+        //         //         body: obj
+        //         //     })
+
+                    
+   
+                        
+
+        //         return true;
+        //     }    
+
+        // }
+
+        // function emailExists(){
+
+
+        //     alert('In emailexists')
+        //     console.log("in function")
+
+        //     const email=document.getElementById("email").value;
+        //     console.log(email);
+
+        // if(email!=''){
+        //     alert('in email exist if')
+
+        //     const xhr = new XMLHttpRequest();
+
+        //     xhr.open('POST', 'http://localhost:8082/check-email', true);
+            
+        //     xhr.setRequestHeader('Content-Type', 'application/json');
+            
+        //     xhr.onload =() => {
+
+        //         if(xhr.status === 200)
+        //         {
+        //             const response = JSON.parse(xhr.responseText);
+        //             console.log("exixts"+response.emailExists);
+
+        //             if(response.emailExists)
+        //             {
+        //                 document.getElementById('erroremail').innerHTML="Email is already in use";
+        //                 alert('email : 66')
+        //                 return true;
+        //                 console.log('na bhagyu ...');
+        //             }
+                    
+
+        //         }
+        //     };
+
+        //     xhr.onerror = () => {
+        //         document.getElementById('erroremail').innerHTML="Error checking email availability";
+        //     };
+
+        //     xhr.send(JSON.stringify({ email }));
+        //     alert('false thse ..');
+        //     return false;
+
+        // }
+        // return true;
+
+        // }
+
+
+
+
+        function validateForm(){
+            
+            let arr=['firstname','lastname','email','mono'];
+
+            for(let i=0;i<arr.length;i++){
+
+                if(document.getElementById(arr[i]).value.trim() === ""){
+
+                    document.getElementById("error"+arr[i]).innerHTML = "this field must be filled out";
+                    document.getElementById(arr[i]).focus();
+                    return false;
+                    
+                }
+            }
+
+            //email validation
+            let email=document.getElementById('email').value;
+            let emailpattern=/\S+@\S+\.\S+/;
+            if(!email.match(emailpattern)){
+                document.getElementById('erroremail').innerHTML="enter valid email";
+                document.getElementById('email').focus();
+                return false;
+            }
+
+
+            //phonenumber validation
+            let phonenumber=document.getElementById('mono').value;
+            var phonepattern =/^([1-9]{1})([0-9]{9})$/;
+            if(!phonepattern.test(phonenumber)){
+                document.getElementById('errormono').innerHTML="enter valid phone number";
+                return false;
+            }
+
+
+
+            return true;
+        }
+
+    </script>
+</body>
+</html>

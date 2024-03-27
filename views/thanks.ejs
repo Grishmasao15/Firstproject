@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanks Page</title>
+    <style>
+        .thankyou{
+            text-align: center;
+            padding: 113px 1px;
+            color: rgb(104, 85, 224);
+        }
+    </style>
+</head>
+<body>
+    <div class="thankyou">
+    <h2>Thank you For your response!</h2>
+    <p><b>Click Here to activate : </b></p><a href="http://localhost:8082/code/<%= acticode %>">http://localhost:8082/code/<%= acticode %></a>
+    </div>
+</body>
+<SCRIpt>
+    console.log(`<%= acticode %>`);
+</SCRIpt>
+</html>

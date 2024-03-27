@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 1</title>
+    <style>
+        table,tr,td{
+            border: 1px solid black;
+        }
+        body{
+            color: black;
+        }
+    </style>
+    <script>
+        function clickevent(){
+            alert("onclick event occured")
+        }
+        function mouseoverevent(){
+            alert("onmouseover event occured")
+        }
+        function mouseoutevent(){
+            alert("onmouseout event occured")
+        }
+        function mousedownevent(){
+            alert("onmousedown event occured")
+        }
+        function mouseupevent(){
+            alert("onmouseup event occured")
+        }
+        function mousemoveevent(){
+            alert("onmousemove event occured")
+        }
+        function focusevent(){
+		document.getElementById("input1").style.background="aqua";
+	    }
+        function submitevent(){
+            alert("onsubmit event occured")
+        }
+        function blurevent(){
+            document.getElementById("input1").style.background="white";
+            alert("onblur triggered")
+        }
+        function changeevent(){
+            alert("onchange triggered")
+        }
+        function keyupevent(){
+            alert("onkeyup triggered")
+        }
+        function keydownevent(){
+            alert("onkeydown triggered")
+        }
+        function loadevent(){
+            alert("onload triggered")
+        }
+        function unloadevent(){
+            prompt("are you sure?")
+        };
+        function resizeevent(){
+            alert("onresize triggered")
+        }
+        function contextmenuevent(){
+            alert("oncontextmenu triggered")
+        }
+
+    </script>
+</head>
+<body onload="loadevent()" onunload="unloadevent" onresize="resizeevent()">
+    <table cellspacing="0" cellpadding="30" width="50" height="50">
+        <h4 align="center">Grishma Sao 1-2-24 24DEV008</h4>
+        <tr>
+            <td>
+                MOUSE EVENTS
+            </td>
+            <td>
+                <b>onclick:</b><br>
+                <input type="button" value="click here" onclick="clickevent()" size="10">
+            </td>
+            <td style="background-color: rgb(185, 146, 170);">
+                <b>onmouseover:</b><br>
+                <input type="text" placeholder="move cursor here" onmouseover="mouseoverevent()">
+            </td>
+            <td>
+                <b>onmouseout:</b><br>
+                <input type="text" placeholder="move cursor here & out" onmouseout="mouseoutevent()" size="20">
+            </td>
+            <td style="background-color: rgb(185, 146, 170);">
+                <b>onmousedown:</b><br>
+                <input type="text" placeholder="onmousedown" onmousedown="mousedownevent()">
+            </td>
+            <td>
+                <b>onmouseup:</b><br>
+                <input type="text" placeholder="onmouseup" onmouseup="mouseupevent()">
+            </td>
+            <td style="background-color: rgb(185, 146, 170);">
+                <b>onmousemove:</b><br>
+                <input type="text" value="onmousemove" onmousemove="mousemoveevent()">
+            </td>
+            <td>
+                <b>oncontextmenu:</b><br>
+                <input type="text" placeholder="right click here" oncontextmenu="contextmenuevent()">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                FORM EVENTS
+            </td>
+            <td style="background-color: rgb(185, 146, 170);">
+                <b>onfocus & onblur:</b><br>
+               <input type="text" id="input1" placeholder="click here for onfocus event" onfocus="focusevent()" onblur="blurevent()" >
+               now if you click somewhere else onblur event will occur
+            </td>
+            <td>
+                <b>onsubmit:</b><br>
+                <form onsubmit="submitevent()">
+                    enter your name:
+                    <input type="text" id="name" name="name">
+                <input type="submit" value="submit" size="10">
+            </form>
+            </td>
+            <td style="background-color: rgb(185, 146, 170);">
+                <b>onblur:</b><br>
+                click here and after that click somewhere else on the page for onblur event
+                <input type="text"onblur="blurevent()" placeholder="click here" size="10">
+            </td>
+            <td>
+                <b>onchange:</b><br>
+                write something and after that change that value for onchange event
+                <input type="text"onchange="changeevent()" placeholder="write here"size="10">
+            </td>
+            <td style="background-color: rgb(185, 146, 170);"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                KEYBOARD EVENTS
+            </td>
+            <td>
+                <b>onkeyup:</b><br>
+                Write something for keyup event
+                <input type="text" onkeyup="keyupevent()"size="10">
+            </td>
+            <td style="background-color: rgb(185, 146, 170);">
+                <b>onkeydown:</b><br>
+                Write something for keydown event
+                <input type="text" onkeydown="keydownevent()"size="10">
+            </td>
+            <td></td>
+            <td style="background-color: rgb(185, 146, 170);"></td>
+            <td></td>
+            <td style="background-color: rgb(185, 146, 170);"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                WINDOW/DOCUMENT EVENTS
+            </td>
+            <td style="background-color: rgb(185, 146, 170);">
+                <b>onload:</b><br>
+                This event occured when you loaded the page if you want to see it one more time please refresh the page
+            </td>
+            <td>
+                <b>onunload:</b><br>
+                The onunload event occurs once a page has unloaded (or the browser window has been closed).
+            </td>
+            <td style="background-color: rgb(185, 146, 170);">
+                <b>onresize:</b><br>
+                whenever you will change the window size this event will occur
+            </td>
+            <td></td>
+            <td style="background-color: rgb(185, 146, 170);"></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .login{
+            max-width: 1800px;
+            height: 300px;
+            background-color: aliceblue;  
+        }
+        .content{
+            padding: 50px 766px;
+            font-size: 15px;
+            font-family: sans-serif;
+            color:  rgb(3, 1, 11);
+            
+        }
+        .heading{
+            font-family: sans-serif;
+            text-align: center;
+            color: rgb(104, 85, 224);
+            padding: 21px 0px;
+        
+        }
+        #loginBtn{
+            background-color: rgba(104, 85, 224, 1);
+            border: 1px solid rgba(104, 85, 224, 1);
+            cursor: pointer;
+            border: 0;
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0 47px;
+            width: 180px;
+            padding: 10px 0;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
+            transition: 0.4s;
+        }
+        #loginBtn:hover,#forgotBtn:hover{
+            color: white;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.6);
+            background-color: rgba(104, 85, 224, 1);
+        }
+        #forgotBtn{
+            color: rgb(104, 85, 224);
+            background-color: rgba(255, 255, 255, 1);
+            border: 1px solid rgba(104, 85, 224, 1);
+            cursor: pointer;
+            border: 0;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0 47px;
+            width: 180px;
+            padding: 10px 0;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
+            transition: 0.4s;
+        }
+        #errorpass,#erroremail{
+            font-size: 12px;
+            color: red;
+            margin-top: 2px;   
+        }
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div class="heading">
+    <h1>Login Page</h1>
+    </div>
+
+    <div class="login">
+    <form method="post" id="loginForm">
+        <div class="content">
+        <label for="username">username:</label>
+        <input type="text" name="mail" id="mail" placeholder="write your email" onclick="removeError('erroremail')" onkeydown="removeError('erroremail')"><br><br>
+        <p id="erroremail"></p>
+
+        <label for="password">password:</label>
+        <input type="password" name="pw" id="passw" onclick="removeError('errorpass')" onkeydown="removeError('errorpass')"><br><br>
+        <p id="errorpass"></p>
+
+        <div class="buttons">
+        <input type="button" value="login" id="loginBtn" onclick="login()"><br><br>
+        <!-- <button id="forgot"><a href="/forpass">forgot password</a></button> -->
+        <input type="button" value="Forgot Password" id="forgotBtn" onclick="forgotpassword()">
+        </div>
+
+        </div>
+    </form>
+    </div>
+
+    <script>
+
+        function removeError(id){
+            document.getElementById(id).innerHTML="";
+        }
+
+        async function login(){
+
+        var username=document.getElementById("mail").value;
+        var pass=document.getElementById("passw").value;
+
+            if(!validate()){
+                console.log("in validate if");
+                return false;
+            }
+
+            
+            console.log(username);
+            console.log(pass);
+            console.log("Hiiiii");
+
+            let result=await fetch(`/loginpage/${username}/${pass}`);
+            flag = await result.json();
+            console.log("passresult"+flag.passres);
+            if(flag.passres){
+                window.location.href="/welcome";
+            }
+            else{
+                document.getElementById("errorpass").innerHTML="username or password invalid";
+            }
+                
+
+
+        }
+        function makeid(length) {
+            var result = "";
+            var characters = '0123456789';
+            for (var i = 0; i < length; i++) {
+              result += characters[Math.floor(Math.random() * characters.length)];
+            }
+            result = result.match(/\d{1,4}/g).join("-");
+            return result;
+        }
+
+        async function forgotpassword(){
+
+            
+            
+            var username=document.getElementById("mail").value;
+
+            if(username.trim()==""){
+                document.getElementById("erroremail").innerHTML="please enter username";
+                return false;
+            }
+
+
+            let value=await fetch(`/check-email/${username}`);
+            val = await value.json();
+            if(val.emailExists==false){
+                document.getElementById("errorpass").innerHTML="username doesn't exist";
+                return false;
+            }
+            else{
+                var newcode=makeid(12);
+                console.log(newcode);
+                window.location.href=`/thanks/${newcode}/${username}`;
+                return true;
+
+            }
+            
+
+
+        }
+
+        function validate(){
+
+            console.log("in validate func");
+            var mail=document.getElementById("mail").value;
+            console.log(mail);
+
+            let emailpattern=/\S+@\S+\.\S+/;
+            if(mail){
+            if(!mail.match(emailpattern)){
+                document.getElementById('erroremail').innerHTML="enter valid email";
+                document.getElementById('mail').focus();
+                return false;
+            }
+            }
+
+
+            if(document.getElementById("mail").value.trim()=="" || document.getElementById("passw").value.trim()==""){
+                document.getElementById("errorpass").innerHTML="all fields must be filled out";
+                return false;
+            }
+
+            else{
+                return true;
+            }
+
+        }
+    </script>
+</body>
+</html>

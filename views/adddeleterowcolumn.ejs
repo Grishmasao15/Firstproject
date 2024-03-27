@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>assignment 4</title>
+    <style>
+        table,tr,td{
+            border: 1px solid black;
+        }
+        tr:nth-child(odd)>td:nth-child(even){
+            background-color: rgba(114, 2, 21, 0.548);
+        }
+        tr:nth-child(even)>td:nth-child(odd){
+            background-color: rgba(114, 2, 21, 0.548);
+        }
+        input{
+            font-size: 100px; 
+        }
+        .c2{
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+        }
+        .c1{
+            position: absolute; 
+            bottom: 20px; 
+            left: 20px; 
+        }
+        .t1{
+           background-color: white; 
+        }
+        #i1,#i2{
+            color: white;
+        }
+        
+            
+     
+    </style>
+</head>
+<body>
+   <table cellspacing=0 cellpadding=70 id="t1" height="150px" width="150px">
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+   </table><br>
+    <div class="c1">
+    <input type="button" value="+" onclick="add_row()">
+    <input type="button" value="-" onclick="delete_row()"><br>
+    </div>
+
+    <!-- <div class="c2">
+    <table cellspacing=0>
+        <tr>
+            <td>
+                <input type="button" value="+" id="i1" onclick="add_column()">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="button" value="-" id="i2" onclick="delete_column()"> 
+            </td>
+        </tr>
+    </table>
+    </div> -->
+
+    <div class="c2">
+    <input type="button" value="+" onclick="add_column()"><br> 
+    <input type="button" value="-" onclick="delete_column()">
+    </div>
+   
+   <script>
+    function add_row(){
+            var tbl=document.getElementById("t1");
+            var rowLen=tbl.rows.length;
+            var colsLen=tbl.rows[0].cells.length;
+            var emptyRow=tbl.insertRow(rowLen);
+            for(var i=0; i<colsLen; i++){
+                emptyRow.insertCell(i);
+            }
+        
+        }
+        function delete_row(){
+            var tbl=document.getElementById("t1");
+            var rowlen=tbl.rows.length;
+            if(rowlen>2){
+                tbl.deleteRow(rowlen-1);
+            }
+        }
+        function add_column(){
+            var tbl=document.getElementById("t1");
+            var rowLen=tbl.rows.length;
+            var colsLen=tbl.rows[0].cells.length;
+            var row=tbl.rows;
+            for(var i=0;i< rowLen;i++){
+                row[i].insertCell(colsLen);
+            }
+        }
+        function delete_column(){
+            var tbl=document.getElementById("t1");
+            var colsLen=tbl.rows[0].cells.length;
+            var rowLen=tbl.rows.length;
+            var row=tbl.rows;
+            if (colsLen>2){
+                for(var i=0;i<rowLen;i++){
+                    row[i].deleteCell(1);
+                }
+            }
+        }
+   </script>  
+</body>
+</html>

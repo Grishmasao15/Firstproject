@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        .createpass{
+            max-width: 1800px;
+            height: 300px;
+            background-color: aliceblue;
+            
+        }
+        .content{
+            padding: 60px 738px;
+            font-size: 14px;
+            font-family: sans-serif;
+            
+        }
+        .heading{
+            font-family: sans-serif;
+            padding: 21px 0px;
+            text-align: center;
+            color: rgb(104, 85, 224);
+        }
+        #errorpass,#errorrepass{
+            font-size: 12px;
+            margin-top: -5px;
+            color: red;
+        }
+        #note{
+            color: black;
+            font-size: 11px;
+            padding-top: 15px;
+        }
+        /* #subbtn{
+            height: 30px;
+            width: 100px;
+            border-radius: 5px;
+            background-color: rgba(66, 187, 66, 0.712);
+            cursor: pointer;
+            margin: 9px 100px;
+        } */
+
+        #subbtn {
+            color: rgb(104, 85, 224);
+            background-color: rgba(255, 255, 255, 1);
+            border: 1px solid rgba(104, 85, 224, 1);
+            cursor: pointer;
+            border: 0;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0 10px;
+            width: 180px;
+            padding: 10px 0;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
+            transition: 0.4s;
+        }
+        #subbtn:hover {
+          color: white;
+          box-shadow: 0 0 20px rgba(104, 85, 224, 0.6);
+          background-color: rgba(104, 85, 224, 1);
+        }
+        .submitBtn{
+            padding: 15px 55px;
+        }   
+    </style>
+</head>
+<body>
+    <div class="heading">
+    <h2>Create Password</h2>
+    </div>
+
+    <div class="createpass">
+    <form action="/storepass" id="myForm2" onsubmit="return storepass('myForm2')" method="post">
+        <div class="content">
+        <input type="hidden" value="" id="salt" name="salt">
+        <input type="hidden" value="" id="passsalt" name="passsalt">
+        <input type="hidden" value="<%= actcode %>" id="code" name="code"><br>    
+        <label for="pass">Password:</label>
+        <input type="password" name="pass" id="pass" onclick="removeError('errorpass')" onkeypress="removeError('errorpass')" autofocus><br><br>
+        <p id="errorpass"></p>
+
+        <label for="repass">Confirm Password:</label>
+        <input type="password" name="repass" id="repass" onclick="removeError('errorrepass')" onkeypress="removeError('errorrepass')"><br><br>
+        <p id="errorrepass"></p>
+
+        <div class="submitBtn">
+        <input type="submit" value="Submit" id="subbtn">
+        </div>
+
+        
+        </div>
+    </form>
+    </div>
+    <script>
+
+        function removeError(id){
+                document.getElementById(id).innerHTML="";
+        }
+      
+        function makeid(length) {
+            var result = "";
+            var characters = '0123456789';
+            for (var i = 0; i < length; i++) {
+              result += characters[Math.floor(Math.random() * characters.length)];
+            }
+            result = result.match(/\d{1,4}/g).join("-");
+            return result;
+        }
+
+        function storepass(id){
+
+            if(!validatePass()){
+                return false;
+            }
+            else{
+                
+                var p=makeid(4);
+                console.log(p);
+                document.getElementById("salt").value=p;
+                
+                var pass=document.getElementById("pass").value;
+                var q=pass+p;
+                console.log(q);
+                
+                document.getElementById("passsalt").value=pass+p;
+                alert("password created succesfully!");
+                // const form = document.getElementById(id);
+                //     const obj = new URLSearchParams(new FormData(form));
+                //     console.log(obj);
+                
+                //         let res1 = await fetch("http://localhost:8082/storepass",
+                //         {
+                //             headers: {
+                //                 'Content-Type': 'application/x-www-form-urlencoded'
+                //             },
+                //             method: "POST",
+                //             body: obj
+                //         })
+                
+            }
+            return true;
+        }
+
+        function validatePass(){
+        
+            var passinp=document.getElementById("pass").value;
+            var passinptwo=document.getElementById("repass").value
+
+            let arr=['pass','repass'];
+
+            for(let i=0;i<arr.length;i++){
+
+                if(document.getElementById(arr[i]).value.trim() === ""){
+
+                    document.getElementById("error"+arr[i]).innerHTML = "this field must be filled out";
+                    document.getElementById(arr[i]).focus();
+                    return false;
+                    
+                }
+            }
+
+            if(passinp!=passinptwo){
+                document.getElementById("errorrepass").innerHTML="password is not matching please re-enter password";
+                return false;
+            }
+
+                // checking uppercase letters 
+                let uppercaseRegex = /[A-Z]/g;
+
+                if (!passinp.match(uppercaseRegex)) { 
+                    document.getElementById("errorpass").innerHTML="password must contain at least one number,one uppercase and lowercase letter, and at least 8 characters";
+                    return false;
+                }
+
+                // checking lowercase letters
+                let lowercaseRegex = /[a-z]/g;
+
+                if (!passinp.match(lowercaseRegex)) { 
+                    document.getElementById("errorpass").innerHTML="password must contain at least one number,one uppercase and lowercase letter, and at least 8 characters";
+                    return false;
+                }
+
+                // checking the number
+                let numbersRegex = /[0-9]/g; 
+
+                if (!passinp.match(numbersRegex)) { 
+                    document.getElementById("errorpass").innerHTML="password must contain at least one number,one uppercase and lowercase letter, and at least 8 characters";
+                    return false;
+                }
+
+                // Checking length of the password 
+
+                if (passinp.length<8) { 
+                    document.getElementById("errorpass").innerHTML="password must contain at least one number,one uppercase and lowercase letter, and at least 8 characters";
+                    return false;
+                }
+        
+
+        return true;   
+
+    }
+        
+    </script>
+</body>
+</html>
