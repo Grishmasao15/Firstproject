@@ -7,6 +7,7 @@ const { parse } = require("path");
 const { count } = require("console");
 const { connect } = require("http2");
 var md5 = require("md5");
+const fs = require("fs");
 
 const f = require("./practical1");
 const p = require("./practical2");
@@ -25,7 +26,8 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "root",
-  database: "Registration_DB"
+  database: "Registration_DB",
+  dateStrings:"date"
 });
 
 con.connect((err) => {
@@ -43,6 +45,15 @@ function executeQuery(str, arr) {
 }
 
 var localdate= new Date();
+var temp = 0;
+var srt = "stu_id";
+var counter = 0;
+var number = 1;
+var pagenumber = 1;
+var rescounter = 0;
+var qr = "";
+var lmt = 10;
+
 
 app.get('/',(req,res)=>{
     res.render('registration');
@@ -224,16 +235,13 @@ app.get("/function/:functionname",(req,res)=>{
 
   var functionname = req.params.functionname;
   console.log(functionname);
-
-  // if(!functionname){
-  //   res.render("functions");
-  // }
+  
 
   if (functionname === "vowel") {
     // let str="grishma sao";
     console.log(req.query.str);
     ans = f.vowelsConsonants(req.query.str);
-    res.send("Vowels are:" +  " " +  ans.vowelStr.toString() +  " And " +  "Consonants are:" +  " " +  ans.consonantStr.toString());
+    res.write("Vowels are:" +  " " +  ans.vowelStr.toString() +  "\n" +  "Consonants are:" +  " " +  ans.consonantStr.toString()+"\n"+"\n"+"Note: You can pass your input in url");
     res.end();
   } 
   
@@ -247,7 +255,8 @@ app.get("/function/:functionname",(req,res)=>{
       res.send("Wrong Data Entered")
     }
     else{
-      res.send("even numbers are:" + " " + ans.even.toString() +"  AND  "+"odd numbers are:" + " " + ans.odd.toString());      
+      res.write("even numbers are:" + " " + ans.even.toString() + "\n" +"odd numbers are:" + " " + ans.odd.toString()+"\n"+"\n"+"Note: You can pass your input in url"); 
+      res.end();     
     }
 
   }
@@ -262,14 +271,14 @@ app.get("/function/:functionname",(req,res)=>{
     ];
 
     ans = q.group(cars);
-    res.send("The result is:" + JSON.stringify(ans));
+    res.write("The result is:" + "\n" + JSON.stringify(ans));
     res.end();
   }
 
   else if (functionname === "factorial") {
 
     ans = g.fact(req.query.num);
-    res.send("The factorial of" +" "+req.query.num +" "+ "is:" + " " + ans);
+    res.write("The factorial of" +" "+req.query.num +" "+ "is:" + " " + ans);
     res.end();
   }
   
@@ -277,10 +286,35 @@ app.get("/function/:functionname",(req,res)=>{
     // let arr = ["grishma", "sao"];
     let arrtwo = req.query.arr.split(" ");
     ans = h.vowelCount(arrtwo);
-    res.send(ans);
+    res.write(ans);
     res.end();
   } 
+
+  else if (functionname === "vowelcount2") {
+    // let arr = ["grishma", "sao"];
+    let arrtwo = req.query.arr.split(" ");
+    ans = r.vowelCountMax(arrtwo);
+    res.write(ans);
+    res.end();
+  }
   
+  else if (functionname === "palindrome") {
+    // let str = "grishma";
+    ans = s.palindrome(req.query.str);
+    res.write(ans);
+    res.end();
+  }
+  
+  else if (functionname === "calc") {
+      let num1 = '';
+      let num2 = '';
+      let op = '';
+      ans = t.calc(req.query.num1, req.query.num2, req.query.op);
+      res.write(ans);
+      res.end();
+
+      
+    }
   
   else {
     res.render("functions");
@@ -289,9 +323,492 @@ app.get("/function/:functionname",(req,res)=>{
 });
 
 
+app.get('/form',(req,res) => {
+    res.render('form');
+
+});
+
+app.post('/showall',(req,res) => {
+
+    let obj=JSON.parse(fs.readFileSync('alldata.json'))
+    res.render("table", { obj: obj });
+});
+
+app.post("/submit", (req, res) => {
+  let obj = {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    age: req.body.age,
+    gender: req.body.gender,
+    address: req.body.address,
+    mono: req.body.mono,
+    email: req.body.email,
+    hobbies: req.body.hobbies,
+  };
+
+  if (!fs.existsSync("alldata.json")) {
+    var create = fs.createWriteStream("alldata.json");
+    let content = "[" + JSON.stringify(obj) + "]";
+    create.write(content);
+  } 
+  else {
+    let fileContents = fs.readFileSync("alldata.json").toString();
+    fileContents = fileContents.slice(0, fileContents.length - 1);
+    fileContents += "," + JSON.stringify(obj) + "]";
+    fs.writeFile("alldata.json", fileContents, function (err) {
+      if (err) throw err;
+    });
+  }
+
+  res.render("tabletwo", {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    age: req.body.age,
+    gender: req.body.gender,
+    address: req.body.address,
+    mono: req.body.mono,
+    email: req.body.email,
+    hobbies: req.body.hobbies,
+  });
+  
+});
+
+app.post("/alldetails", (req, res) => {
+  let obj = JSON.parse(fs.readFileSync("alldata.json"));
+  res.render("alldetails", { mail: req.body.mail, obj: obj });
+});
+
+
+app.get("/fetchdbtask/studentdetails",function(req,res){
+    counter = 0;
+    if(temp!=0){
+        srt=req.query.id;
+        console.log("sort by:"+srt);
+    } 
+    con.query(`select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,[counter],function(err,result){
+        if (err) throw err;
+    console.log("Request:"+req.query.id);     
+    let number=(counter/200)+1;
+    res.render('FetchDBtable',{data:result,number:number,id:req.query.id}) ;   
+    })
+    console.log("counter:"+counter);
+    temp++;
+})
+
+app.post("/home", function (req, res) {
+  counter = 0;
+  con.query(
+    `select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,
+    [counter],
+    function (err, result) {
+      if (err) throw err;
+      let number = counter / 200 + 1;
+      res.render("FetchDBtable", { data: result, number: number });
+    }
+  );
+});
+
+app.post("/next",function(req,res){
+    counter +=200;
+    con.query(
+      `select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,
+      [counter],
+      function (err, result) {
+        if (err) throw err;
+        let number = counter / 200 + 1;
+        res.render("FetchDBtable", { data: result, number: number });
+      }
+    );
+})
+
+app.post("/previous",function(req,res){
+    counter -= 200;
+    con.query(
+      `select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,
+      [counter],
+      function (err, result) {
+        if (err) throw err;
+        let number = counter / 200 + 1;
+        res.render("FetchDBtable", { data: result, number: number });
+      }
+    );   
+
+})
+
+app.post("/end",function(req,res){
+    counter=49800;
+    con.query(
+      `select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,
+      [counter],
+      function (err, result) {
+        if (err) throw err;
+        let number = counter / 200 + 1;
+        res.render("FetchDBtable", { data: result, number: number });
+      }
+    );
+})
 
 
 
-app.listen(8082,()=>{
-    console.log("server is up on 8082");
+app.get("/attendancedetailstask/attendancedetails", function (req, res) {
+
+    number=1;
+    counter=0;
+
+    if (req.query.month || req.query.year) {
+      month = req.query.month;
+      year = req.query.year;
+    } 
+    else{
+      month=12;
+      year=2023;
+    }
+    let q = `SELECT student_master.stu_id,student_master.firstname,student_master.lastname,
+             YEAR(attendance_master.date_) AS year,
+             MONTH(attendance_master.date_) AS month,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) as Total_present,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) * 100/30 as Percentage From student_master
+             inner join attendance_master on student_master.stu_id=attendance_master.stu_id where year(attendance_master.date_)=${year} and 
+             MONTH(attendance_master.date_)=${month} group by year,month,student_master.stu_id limit 50 offset ?;`;
+    con.query(q,[counter],function (err, result) {
+      if (err) throw err;
+      res.render("attendance", { data: result,number:number });
+    });
+  });
+
+
+app.post("/attendancesheethome", function (req, res) {
+
+  if (req.query.month || req.query.year) {
+    month = req.query.month;
+    year = req.query.year;
+  } 
+  counter = 0;
+  let p = `SELECT student_master.stu_id,student_master.firstname,student_master.lastname,
+             YEAR(attendance_master.date_) AS year,
+             MONTH(attendance_master.date_) AS month,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) as Total_present,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) * 100/30 as Percentage From student_master
+             inner join attendance_master on student_master.stu_id=attendance_master.stu_id where year(attendance_master.date_)=${year} and 
+             MONTH(attendance_master.date_)=${month} group by year,month,student_master.stu_id limit 50 offset ?;`;
+  con.query(p,[counter],function (err, result) {
+    if (err) throw err;
+    number = counter / 50 + 1;
+    res.render("attendance", { data: result,number:number });
+  });
+});
+
+
+
+app.post("/attendancesheetprevious", function (req, res) {
+
+  if (req.query.month || req.query.year) {
+    month = req.query.month;
+    year = req.query.year;
+  } 
+  counter -= 50;
+  let p = `SELECT student_master.stu_id,student_master.firstname,student_master.lastname,
+             YEAR(attendance_master.date_) AS year,
+             MONTH(attendance_master.date_) AS month,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) as Total_present,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) * 100/30 as Percentage From student_master
+             inner join attendance_master on student_master.stu_id=attendance_master.stu_id where year(attendance_master.date_)=${year} and 
+             MONTH(attendance_master.date_)=${month} group by year,month,student_master.stu_id limit 50 offset ?;`;
+  con.query(p, [counter], function (err, result) {
+    if (err) throw err;
+    number = counter / 50 + 1;
+    res.render("attendance", { data: result, number: number });
+  });
+});
+
+
+
+
+
+
+app.post("/attendancesheetnext", function (req, res) {
+
+  if (req.query.month || req.query.year) {
+    month = req.query.month;
+    year = req.query.year;
+  }
+  counter += 50;
+  let p = `SELECT student_master.stu_id,student_master.firstname,student_master.lastname,
+             YEAR(attendance_master.date_) AS year,
+             MONTH(attendance_master.date_) AS month,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) as Total_present,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) * 100/30 as Percentage From student_master
+             inner join attendance_master on student_master.stu_id=attendance_master.stu_id where year(attendance_master.date_)=${year} and 
+             MONTH(attendance_master.date_)=${month} group by year,month,student_master.stu_id limit 50 offset ?;`;
+  con.query(p,[counter], function (err, result) {
+    if (err) throw err;
+    number = counter / 50 + 1;
+    res.render("attendance", { data: result, number: number });
+  });
+});
+
+
+
+
+
+app.post("/attendancesheetend", function (req, res) {
+
+  if (req.query.month || req.query.year) {
+      month = req.query.month;
+      year = req.query.year;
+  }
+
+      counter = 150;
+      let p = `SELECT student_master.stu_id,student_master.firstname,student_master.lastname,
+             YEAR(attendance_master.date_) AS year,
+             MONTH(attendance_master.date_) AS month,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) as Total_present,
+             count(distinct if(attendance_master.attendance = 'P',attendance_master.date_,NULL)) * 100/30 as Percentage From student_master
+             inner join attendance_master on student_master.stu_id=attendance_master.stu_id where year(attendance_master.date_)=${year} and 
+             MONTH(attendance_master.date_)=${month} group by year,month,student_master.stu_id limit 50 offset ?;`;
+      con.query(p,[counter],function (err, result) {
+        if (err) throw err;
+        number = counter / 50 + 1;
+        res.render("attendance", { data: result,number:number});
+      });
+    });
+
+
+
+    
+    app.get("/resultdetailstask/resultdetails/", function (req, res) {
+
+    var sort=req.query.sort;
+    
+    if(req.query.sort==undefined){
+      sort='stu_id';
+    }
+    else{
+      sort=req.query.sort;
+    }
+
+    let sql = `select student_master.stu_id,student_master.firstname,student_master.lastname, 
+                sum(distinct if(result_master.exam_id='1',result_master.practical_obtained,null) ) as terminal_practical,
+                sum(distinct if(result_master.exam_id='1',result_master.theory_obtained,null) ) as theory_practical, 
+                sum(distinct if(result_master.exam_id='2',result_master.practical_obtained,null) ) as prelim_practical, 
+                sum(distinct if(result_master.exam_id='2',result_master.theory_obtained,null) ) as prelim_theory, 
+                sum(distinct if(result_master.exam_id='3',result_master.practical_obtained,null) ) as final_practical, 
+                sum(distinct if(result_master.exam_id='3',result_master.theory_obtained,null) ) as final_theory 
+                from student_master
+                INNER JOIN result_master 
+                ON student_master.stu_id=result_master.stu_id
+                group by student_master.stu_id
+                order by ${sort}
+                limit 50 offset ? `;
+
+    if (req.query.id == undefined) {
+      rescounter = 0;
+
+      con.query(sql, [rescounter], function (err, result) {
+        if (err) throw err;
+        pagenumber = 1;
+        res.render("result2", { data: result, pagenumber: pagenumber,rescounter:rescounter});
+      });
+    } 
+    
+    else if (req.query.id == "next") {
+      rescounter = parseInt(req.query.rescounter) + 50;
+      pagenumber = parseInt(req.query.pagenumber) + 1;
+      con.query(sql, [rescounter], function (err, result) {
+        if (err) throw err;
+        pagenumber = rescounter / 50 + 1;
+        res.render("result2", {
+          data: result,
+          pagenumber: pagenumber,
+          rescounter: rescounter,
+        });
+      });
+    } 
+    
+    else if (req.query.id == "prev") {
+      rescounter = parseInt(req.query.rescounter) - 50;
+      pagenumber = parseInt(req.query.pagenumber) - 1;
+      con.query(sql, [rescounter], function (err, result) {
+        if (err) throw err;
+        pagenumber = rescounter / 50 + 1;
+        res.render("result2", {
+          data: result,
+          pagenumber: pagenumber,
+          rescounter: rescounter,
+        });
+      });
+    } 
+    
+    else if (req.query.id == "end") {
+      rescounter = 150;
+      pagenumber = 4;
+      con.query(sql, [rescounter], function (err, result) {
+        if (err) throw err;
+        res.render("result2", {
+          data: result,
+          pagenumber: pagenumber,
+          rescounter: rescounter,
+        });
+      });
+    } else if (req.query.id == "home") {
+      rescounter = 0;
+      pagenumber = 1;
+      con.query(sql, [rescounter], function (err, result) {
+        if (err) throw err;
+        res.render("result2", {
+          data: result,
+          pagenumber: pagenumber,
+          rescounter: rescounter,
+        });
+      });
+    }
+  });
+
+  app.get("/resultview/viewdetails", function (req, res) {
+    sid = req.query.id;
+    var q = `select student_master.stu_id,student_master.firstname,student_master.lastname,subject_master.subject_id,subject_master.subject_name,
+             max(case when result_master.exam_id='1' then result_master.practical_obtained end)as terminal_practical,
+             max(case when result_master.exam_id='2' then result_master.practical_obtained end)as prelims_practical,
+             max(case when result_master.exam_id='3' then result_master.practical_obtained end)as final_practical,
+             max(case when result_master.exam_id='1' then result_master.theory_obtained end)as terminal_theory,
+             max(case when result_master.exam_id='2' then result_master.theory_obtained end)as prelims_theory,
+             max(case when result_master.exam_id='3' then result_master.theory_obtained end)as final_theory 
+             from student_master
+             join result_master on student_master.stu_id=result_master.stu_id
+             join subject_master on result_master.subject_id=subject_master.subject_id
+             where student_master.stu_id=${sid}
+             group by student_master.stu_id,student_master.firstname,student_master.lastname,subject_master.subject_id,subject_master.subject_name;`;
+
+    con.query(q, function (err, result) {
+      if (err) throw err;
+      res.render("viewdetail2", { data: result });
+    });
+  });
+
+//Querybox  
+app.get('/querydeatils/queryhome',(req,res)=>{
+    res.render('inputbox');
+});
+
+app.post('/querdetailstask/querydetails',(req,res)=>{
+
+  counter=0;
+  lmt=10;
+  pagenumber=1;
+  qr=req.body.qr;
+
+    con.query(qr,function(err,result,fields){ 
+          
+        if (err) {
+            res.send("You Entered Wrong Query please check your query");
+        }else{
+          res.render("querytable", { result: result, fields: fields, qr:qr,counter:counter,lmt:lmt,pagenumber:pagenumber});
+        }
+    });
+})
+
+
+app.get('/querdetailstask/pagination',function(req,res){
+
+  if (req.query.id == "home") {
+   pagenumber=1;
+   counter=0;
+   lmt=10;
+   con.query(qr,function(err,result,fields){
+        if (err) {
+          res.send("You Entered Wrong Query please check your query");
+        } else {
+          res.render("querytable", {
+            result: result,
+            fields: fields,
+            qr: qr,
+            counter: counter,
+            lmt: lmt,
+            pagenumber:pagenumber,
+          });
+        }
+   })
+  } 
+
+
+  else if (req.query.id == "end") {
+
+    con.query(qr, function (err, result, fields) {
+      counter=result.length-10;
+      lmt=counter+10;
+      pagenumber = Math.ceil(counter / 10) + 1;
+      if(result.length%10 != 0) {
+        counter=result.length-(result.length%10)
+      } 
+      if (err) {
+        res.send("You Entered Wrong Query please check your query");
+      } else {
+        res.render("querytable", {
+          result: result,
+          fields: fields,
+          qr: qr,
+          counter: counter,
+          lmt: lmt,
+          pagenumber: pagenumber,
+        });
+      }
+    });
+  }
+  
+  
+  else if (req.query.id == "next") {
+      
+      counter = parseInt(req.query.ct)+10;
+      lmt = counter+10;
+      pagenumber = counter / 10 + 1;
+      con.query(qr, function (err, result, fields) {
+        if (err) {
+          res.send("You Entered Wrong Query please check your query");
+        } else {
+          res.render("querytable", {
+            result: result,
+            fields: fields,
+            qr: qr,
+            counter: counter,
+            lmt: lmt,
+            pagenumber: pagenumber,
+          });
+        }
+      });
+    
+  }
+  
+  
+  else if (req.query.id == "previous") {
+     
+      counter = parseInt(req.query.ct) - 10;
+      lmt = counter + 10;
+      pagenumber = counter / 10 + 1;
+      con.query(qr, function (err, result, fields) {
+        if (err) {
+          res.send("You Entered Wrong Query please check your query");
+        } else {
+          res.render("querytable", {
+            result: result,
+            fields: fields,
+            qr: qr,
+            counter: counter,
+            lmt: lmt,
+            pagenumber: pagenumber,
+          });
+        }
+      });
+    
+  }
+
+})  
+    
+
+
+
+
+
+app.listen(3035,()=>{
+    console.log("server is up on 3030");
+    
 })

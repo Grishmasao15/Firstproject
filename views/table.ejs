@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User data</title>
+    <style>
+        table{
+            border: 1px solid black;
+            text-align: center;
+        }
+        th,tr,td{
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>All User data</h1>
+    <table cell spacing="0">
+        <thead>
+            <tr>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>Mobile No</th>
+                <th>Show All Fields</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(var i=0; i<obj.length; i++) {  %>
+                <tr>
+                    <td><%= obj[i].firstname %></td>
+                    <td><%= obj[i].lastname %></td>
+                    <td><%= obj[i].mono %></td>
+                    <td><%= obj[i].email %></td>
+                    <td>
+                        <form action="/alldetails" method="post">
+                            <input type="hidden" id="input" name="mail" value=<%= obj[i].email %>>
+                            <input type="submit" value="Show All Details">
+                        </form>
+                    </td>
+                </tr>
+            <% } %>    
+        </tbody>
+    </table>
+   
+</body>
+</html>

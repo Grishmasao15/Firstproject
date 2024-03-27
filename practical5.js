@@ -16,7 +16,7 @@ function vowelCount(element){
         }
 
     }
-      str+= element[i]+" "+"contains"+ " "+counter+" "+"vowels,"+"\n";
+      str+= element[i]+" "+"contains"+ " "+counter+" "+"vowels"+"\n";
     }
     return str;
 

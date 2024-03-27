@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <%= mail %> -->
+    <table>
+        <% for(let i=0;i<obj.length;i++){ %>
+            <% if(obj[i].email== mail){ %>
+                First Name: <%= obj[i].firstname %> <br>
+                Last Name: <%= obj[i].lastname %> <br>
+                Age: <%= obj[i].age %> <br>
+                Gender: <%= obj[i].gender %> <br>
+                Address: <%= obj[i].address %> <br>
+                Mobile No: <%= obj[i].mono %> <br>
+                Email: <%= obj[i].email %> <br>
+                Hobbies: <%= obj[i].hobbies %> <br>
+            <% } %>
+        <% } %>
+    </table>
+</body>
+</html>

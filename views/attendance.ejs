@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Sheet</title>
+    <style>
+        table{
+        border: 1px solid black;
+        font-family: sans-serif;
+      }
+      tr,td,th{
+        border: 1px solid black;
+      }
+      .pagination{
+        display: flex;
+      }
+    </style>
+</head>
+<body>
+    <form action="/attendancedetailstask/attendancedetails" method="get">
+        <label for="date">Select Month & Year</label>
+
+        <select name="month" id="month">
+        <option value="12" <% if(month==12) { %> selected <% } %>>December</option>
+        <option value="01" <% if(month==01) { %> selected <% } %>>January</option>
+        <option value="02" <% if(month==02) { %> selected <% } %>>February</option>
+        </select> 
+
+        <select name="year" id="year">
+        <option value="2023" <% if(year==2023) { %> selected <% } %>> 2023</option>
+        <option value="2024" <% if(year==2024) { %> selected <% } %>>2024</option>
+        </select>
+        <input type="submit" value="submit">
+
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>No.of days Present</th>
+                <th>Attendance Percentage </th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(let i=0;i<data.length;i++){ %>
+             <tr>
+               <td><%= data[i].stu_id %></td>
+               <td><%= data[i].firstname %></td>
+               <td><%= data[i].lastname %></td>
+               <td><%= data[i].Total_present %></td>
+               <td><%= data[i].Percentage%> %</td>
+                </tr>
+            <% } %>
+
+            <tr>
+                <div class="pagination">
+                    <% if(number==1){ %>
+                    <div class="home">
+                    <form action="/attendancesheethome" method="post">
+                    <input type="submit" id="first" value="<<" disabled>
+                    </form>
+                    </div>
+
+
+                    <div class="previous">
+                    <form action="/attendancesheetprevious" method="post">
+                    <input type="submit" id="second" value="<" disabled>
+                    </form>
+                    </div>
+
+                    <% }else{ %>
+                        <div class="home">
+                    <form action="/attendancesheethome" method="post">
+                    <input type="submit" id="first" value="<<">
+                    </form>
+                    </div>
+
+
+                    <div class="previous">
+                    <form action="/attendancesheetprevious" method="post">
+                    <input type="submit" id="second" value="<">
+                    </form>
+                    </div>
+
+                    <% } %>
+
+                    <div class="number">
+                       <button id="third"><%= number %></button>
+                    </div>
+
+                    <% if(number==4){ %>
+                    <div class="next">
+                    <form action="/attendancesheetnext" method="post">
+                    <input type="submit" id="fourth" value=">" disabled>
+                    </form>
+                    </div>
+
+                    <div class="end">
+                    <form action="/attendancesheetend" method="post">
+                    <input type="submit" id="fifth" value=">>" disabled>
+                    </form>
+                    </div>
+
+                    <% }else{ %>
+
+
+                         <div class="next">
+                    <form action="/attendancesheetnext" method="post">
+                    <input type="submit" id="fourth" value=">" >
+                    </form>
+                    </div>
+
+                    <div class="end">
+                    <form action="/attendancesheetend" method="post">
+                    <input type="submit" id="fifth" value=">>" >
+                    </form>
+                    </div>
+
+                    <% } %>
+
+                </div>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

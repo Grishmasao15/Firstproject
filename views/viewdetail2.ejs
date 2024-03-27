@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Details</title>
+    <style>
+       table{
+            background-color: aliceblue;
+            border: 1px solid black;
+            
+        }
+        th,tr,td{
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h3>Student id : <%= data[0].stu_id %></h3>
+    <h3>Student Name : <%= data[0].firstname %> <%= data[0].lastname %> </h3>
+    <table>
+        <thead>
+            <tr>
+                              
+                <th rowspan="3">Subject Name</th>
+                <th colspan="4">Terminal Marks</th>
+                <th colspan="4">Prelims Marks</th>
+                <th colspan="4">Final Marks</th>
+                <th rowspan="3">Total</th>
+
+            </tr>
+            <tr>
+                <th colspan="2">Practical</th>
+                <th colspan="2">Theory</th>
+                <th colspan="2">Practical</th>
+                <th colspan="2">Theory</th>
+                <th colspan="2">Practical</th>
+                <th colspan="2">Theory</th>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>Obtained</th>
+                <th>Total</th>
+                <th>Obtained</th>
+                <th>Total</th>
+                <th>Obtained</th>
+                <th>Total</th>
+                <th>Obtained</th>
+                <th>Total</th>
+                <th>Obtained</th>
+                <th>Total</th>
+                <th>Obtained</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+           
+            <% for(let i=0;i<data.length;i++){ %>
+
+                <tr>
+                    
+                    <td><%= data[i].subject_name %></td>
+                    <td>20</td>
+                    <td><%=data[i].terminal_practical %></td>
+                    <td>30</td>
+                    <td><%=data[i].terminal_theory %></td>
+                    <td>20</td>
+                    <td><%=data[i].prelims_practical %></td>
+                    <td>30</td>
+                    <td><%=data[i].prelims_theory %></td>
+                    <td>30</td>
+                    <td><%=data[i].final_practical %></td>
+                    <td>70</td>
+                    <td><%=data[i].final_theory %></td>
+                    <td><%= data[i].terminal_practical + data[i].terminal_theory + data[i].prelims_practical + data[i].prelims_theory + data[i].final_practical+data[i].final_theory %></td>
+
+                </tr>
+
+            <% } %>
+
+        </tbody>
+    </table>
+</body>
+</html>

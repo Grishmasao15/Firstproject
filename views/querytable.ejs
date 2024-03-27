@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Table</title>
+    <style>
+        table{
+            border: 1px solid black;
+            background-color: azure;
+        }
+        th,tr,td{
+            border:1px solid black
+        }
+        .pagination{
+            display: flex;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="queryclass">
+        <form action="/querdetailstask/querydetails" method="post">
+            <input type="text" name="qr" id="" cols="40" rows="5" placeholder="Enter Your Query">
+            <input type="submit">
+        </form>
+    </div>
+
+    <table>
+        <h3>Your Query: <%= qr %></h3>
+        <h2> Here is Your Details :</h2>
+
+        <tr>
+            <% for(let i=0;i<fields.length;i++){ %>
+
+                <th><a href=""><%= fields[i].name %></a></th>
+
+            <% } %>
+        </tr>
+
+        <% for(let i=counter;i<lmt && i<result.length ;i++){ %>
+            <tr>
+                <% for(let j=0;j<fields.length;j++){ %>
+
+                    <td><%= result[i][fields[j].name] %></td>
+
+                <% } %>
+            </tr>
+        <% } %>
+
+        <tr>
+            <div class="pagination">
+
+                
+                <% if(pagenumber==1){ %>
+
+                <div class="first">
+                    <a href="/querdetailstask/pagination?id=home"><button disabled><<</button></a>
+                </div>
+
+                <div class="second">
+                    <a href="/querdetailstask/pagination?id=previous&ct=<%= counter %>"><button disabled><</button></a>
+                </div>
+
+                <% }else{ %>
+
+                <div class="first">
+                    <a href="/querdetailstask/pagination?id=home"><button><<</button></a>
+                </div>
+
+                <div class="second">
+                    <a href="/querdetailstask/pagination?id=previous&ct=<%= counter %>"><button><</button></a>
+                </div>
+
+                <% } %>
+
+                <div class="number">
+                    <a href="#"><button><%= pagenumber %></button></a>
+                </div>
+
+                <% if(pagenumber == Math.ceil(result.length/10)){ %>
+
+                <div class="third">
+                    <a href="/querdetailstask/pagination?id=next&ct=<%= counter %>"><button disabled>></button></a>
+                </div>
+                <div class="fourth">
+                    <a href="/querdetailstask/pagination?id=end"><button disabled>>></button></a>
+                </div>
+
+                <% }else{ %>
+
+                 <div class="third">
+                    <a href="/querdetailstask/pagination?id=next&ct=<%= counter %>"><button>></button></a>
+                </div>
+                <div class="fourth">
+                    <a href="/querdetailstask/pagination?id=end"><button>>></button></a>
+                </div>   
+
+                <% } %>
+            </div>
+        </tr>
+
+
+    </table>
+</body>
+</html>

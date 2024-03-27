@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+
+    <script>
+
+      function validateForm(){
+        let fname=document.forms["myform"]["firstname"].value;
+          
+        if(fname==""){
+          alert("Firstname must be filled out");
+          return false;
+        }
+        
+      }
+
+    </script>
+
+
+</head>
+<body style="background-color: antiquewhite;">
+   <form name="myform" onsubmit=" return validateForm()"  action="/submit" method="post">
+  <label for="firstname">First name:</label><br>
+  <input type="text" id="firstname" name="firstname" ><br>
+
+  <label for="lastname">Last name:</label><br>
+  <input type="text" id="lastname" name="lastname"><br>
+
+  <label for="age">Age:</label><br>
+  <input type="text" id="age" name="age" ><br>
+
+  <label for="gender">Gender:</label><br>
+  <input type="text" id="gender" name="gender" ><br>
+
+  <label for="address">Address:</label><br>
+  <input type="text" id="address" name="address" ><br>
+
+  <label for="mono">Mobile No:</label><br>
+  <input type="text" id="mono" name="mono" ><br>
+
+  <label for="email">Email:</label><br>
+  <input type="text" id="email" name="email" ><br>
+   
+  <label for="hobbies">Hobbies:</label><br>
+  <input type="checkbox" id="hobbie1" name="hobbies" value="Reading">
+  <label for="hobbie1">Reading</label><br>
+  <input type="checkbox" id="hobbie2" name="hobbies" value="Singing">
+  <label for="hobbie2">Singing</label><br>
+  <input type="checkbox" id="hobbie3" name="hobbies" value="Drawing">
+  <label for="hobbie3"> Drawing</label><br>
+  <input type="checkbox" id="hobbie4" name="hobbies" value="Travel">
+  <label for="hobbie4"> Travel</label><br><br><br>
+
+  <input type="submit" value="Submit">
+</form> 
+
+<p>If you want to see your details click submit button.</p>
+</body>
+</html>
