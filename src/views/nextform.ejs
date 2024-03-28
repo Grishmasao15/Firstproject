@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <style>
+        body{
+            background-color: aliceblue;
+            font-family: sans-serif;
+           }
+        .list{
+            display: flex;
+        }
+        #basicdetail,#educationdetail,#workexp,#langknown,#techknown,#refcontact,#preferences{
+            background-color: rgb(247, 227, 202);
+            width: 150px;
+            height: 30px;
+        }
+        p{
+          color: red;
+          font-size: 12px;
+          /* margin-bottom: 1px;
+          margin-top: 1px;
+          padding-left: 90px; */
+
+        }
+        .star{
+            color: rgb(207, 1, 1);
+        }
+        .nextprev{
+            padding: 45px 830px;
+            display: flex;
+            gap: 4px;
+        }
+        /* #nextBtn,#prevBtn,#submitBtn{
+            height: 35px;
+            width: 100px;
+            background-color: rgb(146, 112, 138);
+            font-size: 15px;
+            color: white;
+        } */
+
+    </style>
+</head>
+<body>
+    <!-- <div class="list">
+        <input type="button" value="Basic Detail" id="basicdetail">
+        <input type="button" value="Education Detail" id="educationdetail">
+        <input type="button" value="Work Experience" id="workexp">
+        <input type="button" value="Language Known" id="langknown">
+        <input type="button" value="Technology Known" id="techknown">
+        <input type="button" value="Reference Contact" id="refcontact">
+        <input type="button" value="Preferences" id="preferences">
+    </div> -->
+    <h6>For Update write http://localhost:3035/nextform/?id=<i>your id</i></h6>
+    <form autocomplete="on" onsubmit="return validateForm()" method="post" id="myForm">
+    <div class="tab">
+        <fieldset>
+            <legend><h3>Basic detail</h3></legend>
+                <table> 
+                    <tr>
+                        <td>
+                            <input type="hidden" name="empid" id="id" value="">
+                            <label for="fname">First name<span class="star">*</span></label>
+                            <input type="text" id="fname" name="fname" placeholder="firstname" tabindex="1" onfocus="focusevent('fname')" onblur="blurevent('fname')" maxlength="15" autofocus onkeypress="removeError('errorfname')" onclick="removeError('errorfname')" >
+                            <p id="errorfname"></p>
+
+                        </td>
+                        <td>
+                            <label for="lname">Last name<span class="star">*</span></label>
+                            <input type="text" id="lname" name="lname" placeholder="last name" onfocus="focusevent('lname')" onblur="blurevent('lname')" tabindex="2" onkeypress="removeError('errorlname')" onclick="removeError('errorlname')"><br><br>
+                            <p id="errorlname"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="designation">Designation<span class="star">*</span></label>
+                            <input type="text" id="designation" name="designation" placeholder="designation" onfocus="focusevent('designation')" onblur="blurevent('designation')" tabindex="3" onkeypress="removeError('errordesignation')" onclick="removeError('errordesignation')">
+                            <p id="errordesignation"></p>
+                        </td>
+                        <td>
+                            <label for="email">email<span class="star">*</span></label>
+                            <input type="text" id="email" name="email" placeholder="email" onfocus="focusevent('email')" onblur="blurevent('email')" onkeypress="removeError('erroremail')" onclick="removeError('erroremail')"><br><br>
+                            <p id="erroremail"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="phonenumber">Phone Number<span class="star">*</span></label>
+                            <input type="text" id="phonenumber" name="phonenumber" placeholder="enter phonenumber" onfocus="focusevent('phonenumber')" onblur="blurevent('phonenumber')" onkeypress="removeError('errorphonenumber')" onclick="removeError('errorphonenumber')">
+                            <p id="errorphonenumber"></p>
+                        </td>
+
+                        <td>
+                            <label for="address1">Address 1<span class="star">*</span></label>
+                            <input type="text" id="address1" name="address1" placeholder="address1" onfocus="focusevent('address1')" onblur="blurevent ('address1')" onkeypress="removeError('erroraddress1')" onclick="removeError('erroraddress1')"><br><br>
+                            <p id="erroraddress1"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="city">City<span class="star">*</span></label>
+                            <input type="text" id="city" name="city" placeholder="city" onfocus="focusevent('city')" onblur="blurevent('city')" onkeypress="removeError('errorcity')" onclick="removeError('errorcity')"><br><br>
+                            <p id="errorcity"></p>
+                        </td>
+                        <td>
+                            <label for="address2">Address 2</label>
+                            <input type="text" id="address2" name="address2" placeholder="address2" onfocus="focusevent('address2')" onblur="blurevent('address2')">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="state">State</label>
+
+                            <select id="states" name="states">
+                                <option value="-select-">-select-</option>
+                                <option value="Gujarat" onclick="removeError('selectcheckstates')">Gujarat</option>
+                                <option value="Maharashtra" onclick="removeError('selectcheckstates')">Maharashtra</option>
+                                <option value="Delhi" onclick="removeError('selectcheckstates')">Delhi</option>
+                                <option value="Punjab" onclick="removeError('selectcheckstates')">Punjab</option>
+                            </select>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <p id="selectcheckstates"></p>
+                        
+                        </td>
+                        <td>
+                            <label for="gender" id="gender">Gender</label>
+        
+                            <input type="radio" id="male" name="gender" value="male" onclick="removeError('radiocheck')">
+                            <label for="male">Male</label>
+                            <input type="radio" id="female" name="gender" value="female" onclick="removeError('radiocheck')">
+                            <label for="female">Female</label>
+                            <input type="radio" id="other" name="gender" value="other" onclick="removeError('radiocheck')">
+                            <label for="other">Other</label><br><br>
+                            <p id="radiocheck"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="zipcode">Zipcode<span class="star">*</span></label>
+                            <input type="text" id="zipcode" name="zipcode" placeholder="******" onfocus="focusevent('zipcode')" onblur="blurevent('zipcode')" onkeypress="removeError('errorzipcode')" onclick="removeError('errorzipcode')">
+                            <p id="errorzipcode"></p>
+                        </td>
+                        <td>
+                            <label for="relationshipstatus">Relationship Status</label>
+                            <select name="relationshipstatus" id="relationshipstatus">
+                                <option value="-select-">-select-</option>
+                                <option value="married" onclick="removeError('selectcheckrelationshipstatus')">Married</option>
+                                <option value="unmarried" onclick="removeError('selectcheckrelationshipstatus')">Unmarried</option>
+                            </select><br><br>
+                            <p id="selectcheckrelationshipstatus"></p>
+                        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="DOB">DOB<span class="star">*</span></label>
+                            <input type="text" id="DOB" name="DOB" placeholder="yyyy-mm-dd" onfocus="focusevent('DOB')" onblur="blurevent('DOB')" onkeypress="removeError('errorDOB')" onclick="removeError('errorDOB')">
+                            <p id="errorDOB"></p>
+                        </td>
+                    </tr>
+                </table>
+        </fieldset> 
+    </div>
+
+    <div class="tab">
+        <fieldset>
+            <legend><h3>Education details</h3></legend>
+                <table>
+                    <h4>Ssc Result</h4>
+                    <tr>
+                        <td>
+                            <label for="snameofboard">Name of Board</label>
+                            <input type="text" id="snameofboard" name="nameofboard" onfocus="focusevent('snameofboard')" onblur="blurevent('snameofboard')" onkeypress="removeError('errorsnameofboard')" onclick="removeError('errorsnameofboard')">
+
+                            <label for="spassingyear">Passing Year</label>
+                            <input type="text" id="spassingyear" name="passingyear" placeholder="yyyy" onfocus="focusevent('spassingyear')" onblur="blurevent('spassingyear')" onkeypress="removeError('errorsnameofboard')" onclick="removeError('errorsnameofboard')">
+
+                            <label for="spercentage">Percentage</label>
+                            <input type="text" id="spercentage" name="percentage" onfocus="focusevent('spercentage')" onblur="blurevent('spercentage')" onkeypress="removeError('errorsnameofboard')" onclick="removeError('errorsnameofboard')">
+
+                            <p id="errorsnameofboard"></p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <table>
+                    <hr>
+                    <h4>Hsc/Diploma Result</h4>
+                    <tr>
+                        <td>
+                            <label for="hdnameofboard">Name of Board</label>
+                            <input type="text" id="hdnameofboard" name="nameofboard" onfocus="focusevent('hdnameofboard')" onblur="blurevent('hdnameofboard')" onkeypress="removeError('errorhdnameofboard')" onclick="removeError('errorhdnameofboard')">
+                            <label for="hdpassingyear">Passing Year</label>
+                            <input type="text" id="hdpassingyear" name="passingyear" placeholder="yyyy" onfocus="focusevent('hdpassingyear')" onblur="blurevent('hdpassingyear')" onkeypress="removeError('errorhdnameofboard')" onclick="removeError('errorhdnameofboard')"> 
+                            <label for="hdpercentage">Percentage</label>
+                            <input type="text" id="hdpercentage" name="percentage" onfocus="focusevent('hdpercentage')" onblur="blurevent('hdpercentage')" onkeypress="removeError('errorhdnameofboard')" onclick="removeError('errorhdnameofboard')">
+                            <p id="errorhdnameofboard"></p>
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+                    <hr>
+                    <h4>Bachelor Degree</h4>
+                    <tr>
+                        <td>
+                            <label for="bcoursename">Course Name</label>
+                            <input type="text" id="bcoursename" name="nameofboard" onfocus="focusevent('bcoursename')" onblur="blurevent('bcoursename')" onkeypress="removeError('errorbcoursename')" onclick="removeError('errorbcoursename')">
+
+                            <label for="bpassingyear">Passing Year</label>
+                            <input type="text" id="bpassingyear" name="passingyear" placeholder="yyyy" onfocus="focusevent('bpassingyear')" onblur="blurevent('bpassingyear')" onkeypress="removeError('errorbcoursename')" onclick="removeError('errorbcoursename')">
+
+                            <label for="bpercentage">Percentage</label>
+                            <input type="text" id="bpercentage" name="percentage" onfocus="focusevent('bpercentage')" onblur="blurevent('bpercentage')"
+                            onkeypress="removeError('errorbcoursename')" onclick="removeError('errorbcoursename')">
+
+                            <p id="errorbcoursename"></p>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <hr>
+                    <h4>Master Degree</h4>
+                    <tr>
+                        <td>
+                            <label for="mcoursename">Course Name</label>
+                            <input type="text" id="mcoursename" name="nameofboard" onfocus="focusevent('mcoursename')" onblur="blurevent('mcoursename')" onkeypress="removeError('errormcoursename')" onclick="removeError('errormcoursename')">
+
+                            <label for="mpassingyear">Passing Year</label>
+                            <input type="text" id="mpassingyear" name="passingyear" placeholder="yyyy" onfocus="focusevent('mpassingyear')" onblur="blurevent('mpassingyear')" onkeypress="removeError('errormcoursename')" onclick="removeError('errormcoursename')">
+
+                            <label for="mpercentage">Percentage</label>
+                            <input type="text" id="mpercentage" name="percentage" onfocus="focusevent('mpercentage')" onblur="blurevent('mpercentage')" onkeypress="removeError('errormcoursename')" onclick="removeError('errormcoursename')">
+
+                            <p id="errormcoursename"></p>
+                        </td>
+                    </tr>
+                </table> 
+        </fieldset>
+    </div>
+
+    <div class="tab">
+        <fieldset>
+                <legend><h3>Work Experience</h3></legend>
+                <table>
+                    <tr>
+                        <td>
+                            <label for="companyname">Company Name</label>
+                            <input type="text" id="companyname1" name="companyname" onfocus="focusevent('companyname1')" onblur="blurevent('companyname1')"
+                            onkeypress="removeError('errorcompanyname1')" onclick="removeError('errorcompanyname1')">
+                            <label for="designation">Designation</label>
+                            <input type="text" id="pastdesignation1" name="pastdesignation" onfocus="focusevent('designation1')" onblur="blurevent('designation1')" onkeypress="removeError('errorcompanyname1')" onclick="removeError('errorcompanyname1')">
+                            <label for="from">From</label>
+                            <input type="text" id="from1" name="from" placeholder="yyyy-mm-dd" onfocus="focusevent('from1')" onblur="blurevent('from1')" onkeypress="removeError('errorcompanyname1')" onclick="removeError('errorcompanyname1')">
+                            <label for="to">To</label>
+                            <input type="text" id="to1" name="to" placeholder="yyyy-mm-dd" onfocus="focusevent('to1')" onblur="blurevent('to1')" onkeypress="removeError('errorcompanyname1')" onclick="removeError('errorcompanyname1')">
+                            <p id="errorcompanyname1"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="companyname">Company Name</label>
+                            <input type="text" id="companyname2" name="companyname" onfocus="focusevent('companyname2')" onblur="blurevent('companyname2')" onkeypress="removeError('errorcompanyname2')" onclick="removeError('errorcompanyname2')">
+                            <label for="designation">Designation</label>
+                            <input type="text" id="pastdesignation2" name="pastdesignation" onfocus="focusevent('designation2')" onblur="blurevent('designation2')" onkeypress="removeError('errorcompanyname2')" onclick="removeError('errorcompanyname2')">
+                            <label for="from">From</label>
+                            <input type="text" id="from2" name="from" placeholder="yyyy-mm-dd" onfocus="focusevent('from2')" onblur="blurevent('from2')" onkeypress="removeError('errorcompanyname2')" onclick="removeError('errorcompanyname2')">
+                            <label for="to">To</label>
+                            <input type="text" id="to2" name="to" placeholder="yyyy-mm-dd" onfocus="focusevent('to2')" onblur="blurevent('to2')" onkeypress="removeError('errorcompanyname2')" onclick="removeError('errorcompanyname2')">
+                            <p id="errorcompanyname2"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="companyname">Company Name</label>
+                            <input type="text" id="companyname3" name="companyname" onfocus="focusevent('companyname3')" onblur="blurevent('companyname3')"
+                            onkeypress="removeError('errorcompanyname3')" onclick="removeError('errorcompanyname3')">
+                            <label for="designation">Designation</label>
+                            <input type="text" id="pastdesignation3" name="pastdesignation" onfocus="focusevent('designation3')" onblur="blurevent('designation3')" onkeypress="removeError('errorcompanyname3')" onclick="removeError('errorcompanyname3')">
+                            <label for="from">From</label>
+                            <input type="text" id="from3" name="from" placeholder="yyyy-mm-dd" onfocus="focusevent('from3')" onblur="blurevent('from3')" onkeypress="removeError('errorcompanyname3')" onclick="removeError('errorcompanyname3')">
+                            <label for="to">To</label>
+                            <input type="text" id="to3" name="to" placeholder="yyyy-mm-dd" onfocus="focusevent('to3')" onblur="blurevent('to3')" onkeypress="removeError('errorcompanyname3')" onclick="removeError('errorcompanyname3')">
+                            <p id="errorcompanyname3"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p id="newrow"></p>
+                        </td>
+                    </tr>
+                </table>
+        </fieldset>
+    </div>
+
+    <div class="tab">
+        <fieldset>
+                <legend><h3>Language Known</h3></legend>
+                <table>
+                   <tr>
+                    <td>
+                        <input type="checkbox" id="hindi" name="lang" value="hindi">
+                        <label for="hindi">Hindi</label>
+                        <input type="checkbox" id="hindiread" name="hindi" value="read">
+                        <label for="read">Read</label>
+                        <input type="checkbox" id="hindiwrite" name="hindi" value="write">
+                        <label for="write">Write</label>
+                        <input type="checkbox" id="hindispeak" name="hindi" value="speak">
+                        <label for="speak">Speak</label>
+                        <p id="errorhindi"></p>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                        <input type="checkbox" id="english" name="lang" value="english">
+                        <label for="english">English</label>
+                        <input type="checkbox" id="englishread" name="english" value="read">
+                        <label for="read">Read</label>
+                        <input type="checkbox" id="englishwrite" name="english" value="write">
+                        <label for="write">Write</label>
+                        <input type="checkbox" id="englishspeak" name="english" value="speak">
+                        <label for="speak">Speak</label>
+                        <p id="errorenglish"></p>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                        <input type="checkbox" id="gujarati" name="lang" value="gujarati">
+                        <label for="gujarati">Gujarati</label>
+                        <input type="checkbox" id="gujaratiread" name="gujarati" value="read">
+                        <label for="read">Read</label>
+                        <input type="checkbox" id="gujaratiwrite" name="gujarati" value="write">
+                        <label for="write">Write</label>
+                        <input type="checkbox" id="gujaratispeak" name="gujarati" value="speak">
+                        <label for="speak">Speak</label>
+                        <p id="errorgujarati"></p>
+                    </td>
+                   </tr>
+                </table>
+            </fieldset>
+    </div>
+
+    <div class="tab">
+        <fieldset>
+            <legend><h3>Technology Known</h3></legend>
+                <table>
+                   <tr>
+                    <td>
+                        <input type="checkbox" id="phplabel" name="tech" value="php" onclick="removeError('errorphp')">
+                        <label for="php">PHP</label>
+                        <input type="radio" id="phpbeginner" name="php" value="beginner">
+                        <label for="beginner">Beginner</label>
+                        <input type="radio" id="phpmideator" name="php" value="mideator">
+                        <label for="mideator">Mideator</label>
+                        <input type="radio" id="phpexpert" name="php" value="expert">
+                        <label for="expert">Expert</label>
+                        <p id="errorphp"></p>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                        <input type="checkbox" id="mysqllabel" name="tech" value="mysql" onclick="removeError('errormysql')">
+                        <label for="mysql">MySQL</label>
+                        <input type="radio" id="mysqlbeginner" name="mysql" value="beginner">
+                        <label for="beginner">Beginner</label>
+                        <input type="radio" id="mysqlmideator" name="mysql" value="mideator">
+                        <label for="mideator">Mideator</label>
+                        <input type="radio" id="mysqlexpert" name="mysql" value="expert">
+                        <label for="expert">Expert</label>
+                        <p id="errormysql"></p>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                        <input type="checkbox" id="laravellabel" name="tech" value="laravel" onclick="removeError('errorlaravel')">
+                        <label for="laravel">Laravel</label>
+                        <input type="radio" id="laravelbeginner" name="laravel" value="beginner">
+                        <label for="beginner">Beginner</label>
+                        <input type="radio" id="laravelmideator" name="laravel" value="mideator">
+                        <label for="mideator">Mideator</label>
+                        <input type="radio" id="laravelexpert" name="laravel" value="expert">
+                        <label for="expert">Expert</label>
+                        <p id="errorlaravel"></p>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                        <input type="checkbox" id="oraclelabel" name="tech" value="oracle" onclick="removeError('errororacle')">
+                        <label for="oracle">Oracle</label>
+                        <input type="radio" id="oraclebeginner "name="oracle" value="beginner">
+                        <label for="beginner">Beginner</label>
+                        <input type="radio" id="oraclemideator" name="oracle" value="mideator">
+                        <label for="mideator">Mideator</label>
+                        <input type="radio" id="oracleexpert" name="oracle" value="expert">
+                        <label for="expert">Expert</label>
+                        <p id="errororacle"></p>
+                    </td>
+                   </tr>
+            </table>
+        </fieldset>
+    </div>
+
+    <div class="tab">
+        <fieldset>
+            <legend><h3>Reference Contact</h3></legend>
+                <table>
+                    <tr>
+                        <td>
+                            <label for="name">Name</label>
+                            <input type="text" id="name1" name="name" onfocus="focusevent('name1')" onblur="blurevent('name1')" onkeypress="removeError('errorname1')" onclick="removeError('errorname1')">
+                            <label for="contactnumber">Contact Number</label>
+                            <input type="text" id="contactnumber1" name="contactnumber" onfocus="focusevent('contactnumber1')" onblur="blurevent('contactnumber1')" onkeypress="removeError('errorname1')" onclick="removeError('errorname1')">
+                            <label for="relation">Relation</label>
+                            <input type="text" id="relation1" name="relation" placeholder="neighbour/*" onfocus="focusevent('relation1')" onblur="blurevent('relation1')" onkeypress="removeError('errorname1')" onclick="removeError('errorname1')">
+                            <p id="errorname1"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="name">Name</label>
+                            <input type="text" id="name2" name="name" onfocus="focusevent('name2')" onblur="blurevent('name2')" onkeypress="removeError('errorname2')" onclick="removeError('errorname2')">
+                            <label for="contactnumber">Contact Number</label>
+                            <input type="text" id="contactnumber2" name="contactnumber" onfocus="focusevent('contactnumber2')" onblur="blurevent('contactnumber2')" onkeypress="removeError('errorname2')" onclick="removeError('errorname2')">
+                            <label for="relation">Relation</label>
+                            <input type="text" id="relation2" name="relation" placeholder="neighbour/*" onfocus="focusevent('relation2')" onblur="blurevent('relation2')" onkeypress="removeError('errorname2')" onclick="removeError('errorname2')">
+                            <p id="errorname2"></p>
+                        </td>
+                    </tr>
+                </table>
+        </fieldset>
+    </div>
+
+    <div class="tab">
+        <fieldset>
+                <legend><h3>Preferences</h3></legend>
+                <table>
+                    <tr>
+                        <td>
+                            <label for="preferredlocation">Preferred Location</label>
+                            <select name="preferredlocation" id="preferredlocation" multiple>
+
+                                <option value="ahmedabad" onclick="removeError('selectcheckpreferredlocation')">Ahmedabad</option>
+                                <option value="surat" onclick="removeError('selectcheckpreferredlocation')">Surat</option>
+                                <option value="patan" onclick="removeError('selectcheckpreferredlocation')">Patan</option>
+                            </select>
+                            <p id="selectcheckpreferredlocation"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="noticeperiod">Notice Period</label>
+                            <input type="text" id="noticeperiod" name="noticeperiod" onfocus="focusevent('noticeperiod')" onblur="blurevent('noticeperiod')">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="expectedctc">Expected CTC</label>
+                            <input type="text" id="expectedctc" name="expectedctc" placeholder="0.00 LPA" onfocus="focusevent('expectedctc')" onblur="blurevent('relation2')">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="currentctc">Current CTC</label>
+                            <input type="text" id="currentctc" name="currentctc" placeholder="0.00 LPA" onfocus="focusevent('currentctc')" onblur="blurevent('currentctc')">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="department">Department</label>
+                            <select name="department" id="department">
+                                <option value="-select-">-select-</option>
+                                <option value="it" onclick="removeError('selectcheckdepartment')">IT</option>
+                                <option value="design" onclick="removeError('selectcheckdepartment')" >Design</option>
+                                <option value="marketing" onclick="removeError('selectcheckdepartment')">Marketing</option>
+                                <option value="hr" onclick="removeError('selectcheckdepartment')">HR</option>
+                                <option value="other" onclick="removeError('selectcheckdepartment')">Other</option>
+                            </select>
+                            <p id="selectcheckdepartment"></p>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+    </div>
+    </form>
+    </body>
+
+    <div style="overflow:auto;">
+    <div class="nextprev">
+      <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+      <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+    </div>
+    </div>
+
+<script>
+    function submitevent(){
+                alert("submitted successfully!!!")
+            }
+            function focusevent(id){
+		       document.getElementById(id).style.background="lightgrey" 
+	        }
+            function blurevent(id){
+		       document.getElementById(id).style.background="white" 
+	        }
+            function removeError(id){
+                document.getElementById(id).innerHTML="";
+            }
+            function addNew(){
+                document.getElementById("newrow").innerHTML="Added New Row!";
+            }
+            function removeOld(){
+                document.getElementById("newrow").innerHTML="";
+            }
+
+    var currentTab = 0;
+    showTab(currentTab);
+
+    function showTab(n) {
+        var x = document.querySelectorAll(".tab");
+
+        x.forEach(function(ele, index) {
+            if(index == n) {
+                ele.style.display = "block";
+            }
+            else {
+                ele.style.display = 'none'
+            }
+        });
+
+        if (n == 0) {
+          document.getElementById("prevBtn").style.display = "none";
+        } else {
+          document.getElementById("prevBtn").style.display = "inline";
+        }
+        if (n == (x.length - 1)) {
+          document.getElementById("nextBtn").innerHTML = "Submit";
+        } else {
+          document.getElementById("nextBtn").innerHTML = "Next";
+        }
+    }
+
+    var id=window.location.search.slice(4);
+    console.log(id);
+    document.getElementById('id').value = id;
+    var formdata=document.forms['myForm'];
+    console.log(formdata);
+
+    async function ajax_getdata(){
+        var result=await fetch("/id?id="+id);
+        console.log(result);
+        var resjson=await result.json();
+        console.log(resjson);
+    
+    formdata.fname.value=resjson.r1[0].fname;
+    formdata.lname.value=resjson.r1[0].lname;
+    formdata.designation.value=resjson.r1[0].designation;
+    formdata.email.value=resjson.r1[0].email;
+    formdata.phonenumber.value=resjson.r1[0].phonenumber;
+    formdata.address1.value=resjson.r1[0].address1; 
+    formdata.city.value=resjson.r1[0].city;
+    formdata.address2.value=resjson.r1[0].address2;
+    formdata.gender.value=resjson.r1[0].gender; 
+    formdata.zipcode.value=resjson.r1[0].zipcode;
+    formdata.DOB.value=resjson.r1[0].DOB;
+    formdata.relationshipstatus.value=resjson.r1[0].relationshipstatus;
+    formdata.states.value=resjson.r1[0].states;     
+    
+    for(let i=0;i<resjson.r2.length;i++){
+        formdata.nameofboard[i].value=resjson.r2[i].nameofboard_or_coursename;
+        formdata.passingyear[i].value=resjson.r2[i].passingyear;
+        formdata.percentage[i].value=resjson.r2[i].percentage;
+    }
+
+    for(let i=0;i<resjson.r3.length;i++){
+        formdata.companyname[i].value=resjson.r3[i].companyname;
+        formdata.pastdesignation[i].value=resjson.r3[i].designation;
+        formdata.from[i].value=resjson.r3[i].from_date;
+        formdata.to[i].value=resjson.r3[i].to_date;
+    }
+
+    for(let i=0;i<resjson.r4.length;i++){
+        if(resjson.r4[i].language_name){
+            document.getElementById(resjson.r4[i].language_name).checked=true;
+
+        if(resjson.r4[i].rws.includes("read")){
+            document.getElementById(resjson.r4[i].language_name+"read").checked=true;
+        }
+        if(resjson.r4[i].rws.includes("write")){
+            document.getElementById(resjson.r4[i].language_name+"write").checked=true;
+        }
+        if(resjson.r4[i].rws.includes("speak")){
+            document.getElementById(resjson.r4[i].language_name+"speak").checked=true;
+        }
+        
+        }
+        
+    }
+
+    for(let i=0;i<resjson.r5.length;i++){
+        
+        if(resjson.r5[i].technology_name){
+            document.getElementById(resjson.r5[i].technology_name+"label").checked=true;
+
+        if(resjson.r5[i].level_of_expertise=='beginner'){
+            document.getElementById(`${resjson.r5[i].technology_name}`+"beginner").checked=true;
+        }
+        if(resjson.r5[i].level_of_expertise=='mideator'){
+            document.getElementById(resjson.r5[i].technology_name+"mideator").checked=true;
+        }
+        if(resjson.r5[i].level_of_expertise=='expert'){
+            document.getElementById(resjson.r5[i].technology_name+"expert").checked=true;
+        }
+        
+        }
+        
+    }
+
+    for(let i=0;i<resjson.r6.length;i++){
+
+        formdata.name[i].value=resjson.r6[i].nameof_emp;
+        formdata.contactnumber[i].value=resjson.r6[i].contactnumber;
+        formdata.relation[i].value=resjson.r6[i].relation;
+    }
+
+    formdata.noticeperiod.value=resjson.r7[0].noticeperiod;
+    formdata.currentctc.value=resjson.r7[0].currentctc;
+    formdata.expectedctc.value=resjson.r7[0].expectedctc;
+    formdata.department.value=resjson.r7[0].department;
+
+
+    let loc_nodes = document.getElementById('preferredlocation').childNodes;
+    let loc_val = resjson.r7[0].preferredlocation.split(',');
+
+    loc_nodes.forEach(element => {
+        loc_val.forEach(ele => {
+            if(element.value == ele) {
+                element.selected = true;
+            }
+        });
+    });
+
+        
+
+    }
+    ajax_getdata();
+
+    async function ajax_fetch(id) {
+
+        const form = document.getElementById(id);
+        const obj = new URLSearchParams(new FormData(form));
+        console.log(obj);
+        let res1 = await fetch("http://localhost:8000/nextformstoredetails",
+        {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            method: "POST",
+            body: obj
+        })
+
+    }
+
+    function nextPrev(n) {
+        console.log("Before : "+currentTab);
+        var x = document.querySelectorAll(".tab");
+        if (n == 1 && !validateForm()) {
+            return false;
+        }
+
+        else {
+
+        x[currentTab].style.display = "none";
+
+        currentTab = currentTab + n;
+
+        console.log("After : "+currentTab);
+
+        if (currentTab >= x.length) {
+
+            ajax_fetch('myForm');
+            showTab(x.length-1);
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('prevBtn').disabled = true;
+            if(document.getElementById("id").value==""){
+                alert("form inserted successfully!");
+                redirect();
+
+            }
+            else{
+                alert("form updated successfully!");
+                redirect();
+   
+            }
+            
+        }
+        else {
+           showTab(currentTab);
+        }
+
+        }
+
+        
+    }
+    
+
+    function redirect(){
+        window.location.href="http://localhost:3033/nextform"
+    }
+
+
+    function validateForm() {
+
+        if(currentTab==0){
+            
+            //empty field validation    
+            let arr=['fname','lname','email','phonenumber','city','address1','DOB','designation','zipcode'];
+
+            for(let i=0;i<arr.length;i++){
+
+                if(document.getElementById(arr[i]).value.trim() === ""){
+
+                    document.getElementById("error"+arr[i]).innerHTML = "this field must be filled out";
+                    document.getElementById(arr[i]).focus();
+                    return false;
+                    
+                }
+            }
+
+            //DOB validation
+
+            let dob=document.getElementById('DOB').value;
+            var pattern =/^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
+
+            if(!pattern.test(dob)){
+
+                 document.getElementById('errorDOB').innerHTML = "enter valid date";
+                 document.getElementById('DOB').focus();
+                 return false;
+
+            }
+
+            //radio button selected or not
+            var selected = document.querySelector('input[name="gender"]:checked');
+
+            if (!selected) {
+                document.getElementById('radiocheck').innerHTML = "Not any radio button is selected!";
+                document.getElementById('male').focus();
+                return false;
+            } 
+
+            //select tag validation
+
+            let arrtwo=['states','relationshipstatus']
+
+            for(let i=0;i<arrtwo.length;i++){
+
+            if(document.getElementById(arrtwo[i]).value=="-select-"){
+                document.getElementById('selectcheck'+arrtwo[i]).innerHTML ="please select any of following";
+                document.getElementById(arrtwo[i]).focus();
+                return false;
+            }
+
+            }
+
+            //email validation
+            let email=document.getElementById('email').value;
+            let emailpattern=/\S+@\S+\.\S+/;
+            if(!email.match(emailpattern)){
+                document.getElementById('erroremail').innerHTML="enter valid email";
+                document.getElementById('email').focus();
+                return false;
+            }
+
+
+            //phonenumber validation
+            let phonenumber=document.getElementById('phonenumber').value;
+            var phonepattern =/^([1-9]{1})([0-9]{9})$/;
+            if(!phonepattern.test(phonenumber)){
+                document.getElementById('errorphonenumber').innerHTML="enter valid phone number";
+                return false;
+            }
+        }
+
+            if(currentTab==2){
+            let arrseven=['1','2','3'];
+
+            for(let i=0;i<arrseven.length;i++){
+
+            if(document.getElementById("companyname"+arrseven[i]).value.length==0 && document.getElementById("pastdesignation"+arrseven[i]).value.length>0){
+                document.getElementById("errorcompanyname"+arrseven[i]).innerHTML="please enter company name";
+                document.getElementById("companyname"+arrseven[i]).focus();
+                return false;
+                }                
+
+            if(document.getElementById("companyname"+arrseven[i]).value.length==0 && document.getElementById("from"+arrseven[i]).value.length>0){
+                document.getElementById("errorcompanyname"+arrseven[i]).innerHTML="please enter company name";
+                document.getElementById("companyname"+arrseven[i]).focus();
+                return false;
+                }    
+
+            if(document.getElementById("companyname"+arrseven[i]).value.length==0 && document.getElementById("to"+arrseven[i]).value.length>0){
+                document.getElementById("errorcompanyname"+arrseven[i]).innerHTML="please enter company name";
+                document.getElementById("companyname"+arrseven[i]).focus();
+                return false;
+                }
+
+            }
+            }
+
+            if(currentTab==5){
+            let arreight=['1','2'];
+
+            for(let i=0;i<arreight.length;i++){
+
+            if(document.getElementById("name"+arreight[i]).value.length==0 && document.getElementById("contactnumber"+arreight[i]).value.length>0){
+                document.getElementById("errorname"+arreight[i]).innerHTML="please enter name";
+                document.getElementById("name"+arreight[i]).focus();
+                return false;
+                }                
+
+            if(document.getElementById("name"+arreight[i]).value.length==0 && document.getElementById("relation"+arreight[i]).value.length>0){
+                document.getElementById("errorname"+arreight[i]).innerHTML="please enter name";
+                document.getElementById("name"+arreight[i]).focus();
+                return false;
+                }    
+            }
+            }
+
+            if(currentTab==3){
+
+            let arrthree=['hindi','english','gujarati'];
+
+            for(let i=0;i<arrthree.length;i++){
+
+                var checkread=document.querySelector("input[id="+arrthree[i]+"read]:checked");
+                var checkwrite=document.querySelector("input[id="+arrthree[i]+"write]:checked");
+                var checkspeak=document.querySelector("input[id="+arrthree[i]+"speak]:checked");
+                var checksub=document.querySelector("input[id="+arrthree[i]+"]:checked");
+
+                if((checkread && !checksub)){
+                document.getElementById("error"+arrthree[i]).innerHTML="select valid Input";
+                return false;
+                }
+                if( (checkwrite && !checksub)){
+                document.getElementById("error"+arrthree[i]).innerHTML="select valid Input";
+                return false;
+                }
+                if((checkspeak && !checksub)){
+                document.getElementById("error"+arrthree[i]).innerHTML="select valid Input";
+                return false;
+                }
+            } 
+
+        }
+
+            if(currentTab==1){    
+            
+            let arrfour=['s','hd'];
+
+            for(let i=0;i<arrfour.length;i++){
+
+                if(document.getElementById(arrfour[i]+'nameofboard').value.length>0 && document.getElementById(arrfour[i]+'passingyear').value.length==0){
+                    document.getElementById('error'+arrfour[i]+'nameofboard').innerHTML="please enter passing year";
+                    document.getElementById(arrfour[i]+'passingyear').focus();
+                    return false;
+                }    
+                if((document.getElementById(arrfour[i]+'nameofboard').value.length>0 && document.getElementById(arrfour[i]+'percentage').value.length==0)){
+                    document.getElementById('error'+arrfour[i]+'nameofboard').innerHTML="please enter percentage";
+                    document.getElementById(arrfour[i]+'percentage').focus();
+                    return false;
+                }
+
+                if((document.getElementById(arrfour[i]+'nameofboard').value.length==0 && document.getElementById(arrfour[i]+'percentage').value.length>0)){
+                    document.getElementById('error'+arrfour[i]+'nameofboard').innerHTML="please enter name of board";
+                    document.getElementById(arrfour[i]+'nameofboard').focus();
+                    return false;
+                }
+                if((document.getElementById(arrfour[i]+'nameofboard').value.length==0 && document.getElementById(arrfour[i]+'passingyear').value.length>0)){
+                    document.getElementById('error'+arrfour[i]+'nameofboard').innerHTML="please enter name of board";
+                    document.getElementById(arrfour[i]+'nameofboard').focus();
+                    return false;
+                }
+
+                if(document.getElementById(arrfour[i]+'nameofboard').value.length==0 && document.getElementById(arrfour[i]+'passingyear').value.length==0 && document.getElementById(arrfour[i]+'percentage').value.length==0){
+                    document.getElementById('error'+arrfour[i]+'nameofboard').innerHTML="this field must be filled out";
+                    document.getElementById(arrfour[i]+'nameofboard').focus();
+                    return false;
+                }
+                
+
+                if(!document.getElementById(arrfour[i]+'passingyear').value.length==4 || isNaN(document.getElementById(arrfour[i]+'passingyear').value) ){
+                document.getElementById('error'+arrfour[i]+'nameofboard').innerHTML="enter valid passing year";
+                document.getElementById(arrfour[i]+'passingyear').focus();
+                return false;
+            }
+
+            }
+
+
+
+            let arrfive=['b','m'];
+
+            for(let i=0;i<arrfive.length;i++){
+
+                // if(document.getElementById(arrfive[i]+'coursename').value.length>0 && document.getElementById(arrfive[i]+'university').value.length==0){
+                //     document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter university";
+                //     document.getElementById(arrfive[i]+'university').focus();
+                //     return false;
+                // }
+                if(document.getElementById(arrfive[i]+'coursename').value.length>0 && document.getElementById(arrfive[i]+'passingyear').value.length==0){
+                    document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter passing year";
+                    document.getElementById(arrfive[i]+'passingyear').focus();
+                    return false;
+                }
+                if(document.getElementById(arrfive[i]+'coursename').value.length>0 && document.getElementById(arrfive[i]+'percentage').value.length==0){
+                    document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter percentage";
+                    document.getElementById(arrfive[i]+'percentage').focus();
+                    return false;
+                }
+
+                // if(document.getElementById(arrfive[i]+'coursename').value.length==0 && document.getElementById(arrfive[i]+'university').value.length>0){
+                //     document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter course name";
+                //     document.getElementById(arrfive[i]+'coursename').focus();
+                //     return false;
+                // }
+                if(document.getElementById(arrfive[i]+'coursename').value.length==0 && document.getElementById(arrfive[i]+'passingyear').value.length>0){
+                    document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter course name";
+                    document.getElementById(arrfive[i]+'coursename').focus();
+                    return false;
+                }
+                if(document.getElementById(arrfive[i]+'coursename').value.length==0 && document.getElementById(arrfive[i]+'percentage').value.length>0){
+                    document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter course name";
+                    document.getElementById(arrfive[i]+'coursename').focus();
+                    return false;
+                }
+                if(document.getElementById('bcoursename').value.length==0 && document.getElementById('bpassingyear').value.length==0 && document.getElementById('bpercentage').value.length==0){
+                    document.getElementById('errorbcoursename').innerHTML="this field must be filled out";
+                    document.getElementById('bcoursename').focus();
+                    return false;
+                }
+            }
+        }
+
+            if(currentTab==4){
+            let arrsix=['php','mysql','laravel','oracle'];
+
+            for(i=0;i<arrsix.length;i++){
+
+            var techradio=document.querySelector("input[name="+arrsix[i]+"]:checked");
+            var techcheck=document.querySelector("input[id="+arrsix[i]+"label]:checked");
+
+            if(techradio && !techcheck){
+                document.getElementById("error"+arrsix[i]).innerHTML="please select technology";
+                document.getElementById(arrsix[i]+"label").focus();
+                return false;
+            }
+            }
+
+            if(isNaN(document.getElementById('spercentage').value) || document.getElementById('spercentage').value>=100){
+                document.getElementById('errorsnameofboard').innerHTML="enetr valid percentage";
+                document.getElementById('spercentage').focus();
+                return false;
+            }
+            }
+
+            return true;
+
+        }
+</script>    
+
+</body>
+</html>

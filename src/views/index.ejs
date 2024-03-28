@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table,tr,th,td{
+            border: 1px solid black;
+        }
+        #moredetailsbtn{
+            width: 100px;
+        }
+        #moredetails{
+            text-decoration: none;
+        }
+        .pagination{
+            display: flex;
+            gap: 2px;
+            justify-content: center;
+        }
+        #pageno{
+            margin-top: 2px;
+        }
+        #input{
+          margin-bottom: 5px;  
+        }
+    </style>
+
+</head>
+<body>
+    <div class="pagination">
+        <div class="home"><button onclick="home()" id="homebtn"><<</button></div>
+        <div class="previous"><button onclick="previous()" id="previousbtn"><</button></div>
+        <div class="pagenumber"><p id="pageno"></p></div>
+        <div class="next"><button onclick="next()" id="nextbtn">></button></div>
+        <div class="end"><button onclick="end()" id="endbtn">>></button></div>
+    </div>
+
+<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+
+    <table id="myTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Body</th>
+            <th>More details</th>
+        </tr>
+        </thead>
+        <tbody id="table">
+        </tbody>
+    </table>
+    
+
+    <script>
+        var data=[];
+        var currentpage=1;
+        var ItemsPerPage=10;
+        let length=0;
+        let pageno=document.getElementById("pageno");
+        async function req1() {
+            
+            
+        await fetch('https://jsonplaceholder.typicode.com/posts')
+            .then(response => response.json())
+            .then((data) => {
+            
+            length=data.length;
+            pageno.innerHTML=currentpage;
+
+            const endIndex = currentpage* ItemsPerPage;
+            const startIndex = endIndex - ItemsPerPage;
+            const pageItems = data.slice(startIndex, endIndex);
+
+
+            let tabledata="";
+
+            pageItems.map((value)=>{
+                tabledata += `<tr>
+                    <td>${value.id}</td>
+                    <td>${value.title}</td>
+                    <td>${value.body}</td>
+                    <td><button id="moredetailsbtn"><a href="/apialldetails?id=${value.id}" id="moredetails">More details</a></button></td>
+                    </tr>`
+            })
+
+            document.getElementById("table").innerHTML = tabledata;
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+
+    }
+
+    req1();
+
+    function home(){
+        document.getElementById("homebtn").disabled= true;
+        document.getElementById("previousbtn").disabled= true;
+        document.getElementById("nextbtn").disabled= false;
+        document.getElementById("endbtn").disabled= false;
+        currentpage=1;
+        req1();
+
+
+    }
+
+    function previous(){
+        if(currentpage <= 1){
+            document.getElementById("previousbtn").disabled = true;
+            document.getElementById("homebtn").disabled = true;
+            
+        }
+        else{
+            document.getElementById("nextbtn").disabled = false;
+            document.getElementById("endbtn").disabled= false;
+            currentpage--;
+            req1();
+        }
+        
+    }
+
+    function next(){  
+        if(currentpage == (length/ItemsPerPage)){
+            document.getElementById("nextbtn").disabled = true;
+            document.getElementById("endbtn").disabled= true;
+        }
+        else{
+        document.getElementById("previousbtn").disabled = false;
+        document.getElementById("homebtn").disabled= false;    
+        currentpage++;
+        req1();
+        }
+        
+    }
+
+    function end(){
+        document.getElementById("homebtn").disabled= false;
+        document.getElementById("previousbtn").disabled= false;
+        document.getElementById("nextbtn").disabled= true;
+        document.getElementById("endbtn").disabled= true;
+        currentpage = length/ItemsPerPage;
+        req1();
+    }
+
+    function myFunction() {
+          // Declare variables
+          var input, filter,table,tr,td, i, txtValue;
+          input = document.getElementById('myInput');
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable");
+          tr = table.getElementsByTagName('tr');
+            
+          // Loop through all list items, and hide those who don't match the search query
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if(td){
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+            }
+          }
+        }
+        
+    </script>
+</body>
+</html>

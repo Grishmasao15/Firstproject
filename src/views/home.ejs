@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body{
+            background-color: aliceblue;
+        }
+        table,th,tr,td{
+            border: 1px solid black;background-color: azure;
+            
+        }
+        
+        #search{
+            width: 300px;
+            height: 25px;
+        }
+        .searchbox{
+            padding-top: 56px;
+        }
+        #go{
+            height: 30px;
+            background-color: burlywood;
+            width: 53px;
+            font-size: math;
+            margin-left: 10px;
+        }
+        .upperpart{
+            display: flex;
+        }
+        .info {
+            margin-left: 1047px;
+            margin-top: 15px;
+       
+        }  
+        .heading,.elements{
+            color: #f03737;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="upperpart">
+    <div class="searchbox">
+        <form action="/delemitersearch" method="post">
+        <input type="text" id="search" name="search" placeholder="search" autofocus>
+        <input type="submit" id="go" value="Go">
+        </form>
+    </div><br>
+
+    <div class="usetable">
+    <table class="info">
+        
+        <th class="heading" colspan="5">Use this delimiters</th>
+        <tr>
+            <th>firstname</th>
+            <th>lastname</th>
+            <th>email</th>
+            <th>Mobile no</th>
+            <th>City</th>
+        </tr>
+        <tr class="elements">
+            <td><b>_</b></td>
+            <td><b>^</b></td>
+            <td><b>$</b></td>
+            <td><b>{</b></td>
+            <td><b>:</b></td>
+        </tr>
+    </table><br>
+    </div>
+    </div>
+    
+
+    <table class="maintable" cellspacing="3px">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>DOB</th>
+                <th>Contact No</th>
+                <th>Email</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>ZipCode</th>
+                <th>Bloodgroup</th>
+                <th>Created at</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% for(let i=0;i<data.length;i++){ %>
+             <tr>
+               <td><%= data[i].stu_id %></td>
+               <td><%= data[i].firstname %></td>
+               <td><%= data[i].lastname %></td>
+               <td><%= data[i].DOB %></td>
+               <td><%= data[i].contact_no %></td>
+               <td><%= data[i].email %></td>
+               <td><%= data[i].city %></td>
+               <td><%= data[i].country %></td>
+               <td><%= data[i].zipcode %></td>
+               <td><%= data[i].bloodgroup %></td>
+               <td><%= data[i].created_at %></td>
+             </tr>
+            <% } %>
+        </tbody>
+
+    </table>
+
+</body>
+</html>

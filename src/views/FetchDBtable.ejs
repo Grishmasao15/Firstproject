@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student details</title>
+    <style>
+      table{
+        border: 1px solid black;
+        font-family: sans-serif;
+      }
+      tr,td,th{
+        border: 1px solid black;
+      }
+      .paginationcomp{
+        display: flex;
+        padding-left: 800px;
+        padding-top: 10px;
+        padding-bottom: 15px;
+      }
+      /* button{
+        width: 40px;
+      } */
+      #first,#second,#third,#fourth,#fifth{
+        height: 34px;
+        width: 45px;
+      }
+    </style>
+</head>
+<body>
+  
+   <table>
+    <thead>
+     
+    <tr>
+      <th colspan="11" style="font-size: 25px;">STUDENT DETAILS</th>
+    </tr>
+    </thead>
+        <tr>
+          <th><a href="/studentdetails?id=stu_id">Student ID</a></th>
+          <th><a href="/studentdetails?id=firstname">First Name</a></th>
+          <th><a href="/studentdetails?id=lastname">Last Name</a></th>
+          <th><a href="/studentdetails?id=DOB">DOB</a></th>
+          <th><a href="/studentdetails?id=contact_no">Contact No</a></th>
+          <th><a href="/studentdetails?id=email">Email</a></th>
+          <th><a href="/studentdetails?id=city">City</a></th>
+          <th><a href="/studentdetails?id=country">Country</a></th>
+          <th><a href="/studentdetails?id=zipcode">Zip Code</a></th>
+          <th>Bloood Group</th>
+          <th><a href="/studentdetails?id=created_at">Created at</a></th>
+        </tr>
+        
+        <tbody>
+            <% for(let i=0;i<data.length;i++){ %>
+             <tr>
+               <td><%= data[i].stu_id %></td>
+               <td><%= data[i].firstname %></td>
+               <td><%= data[i].lastname %></td>
+               <td><%= data[i].DOB %></td>
+               <td><%= data[i].contact_no %></td>
+               <td><%= data[i].email %></td>
+               <td><%= data[i].city %></td>
+               <td><%= data[i].country %></td>
+               <td><%= data[i].zipcode %></td>
+               <td><%= data[i].bloodgroup %></td>
+               <td><%= data[i].created_at %></td>
+             </tr>
+            <% } %>
+
+            <tr>
+            
+            <div class="paginationcomp">
+            <% if(number==1){ %>
+            <div class="home">
+              <form action="/home" method="post">
+              <input type="submit" id="first" value="<<" disabled>
+            </form>
+            </div>
+
+
+            <div class="previous">
+              <form action="/previous" method="post">
+              <input type="submit" id="second" value="<" disabled>
+              </form>
+            </div>
+
+             <% } else { %>
+
+              <div class="home">
+              <form action="/home" method="post">
+              <input type="submit" id="first" value="<<">
+            </form>
+            </div>
+
+
+            <div class="previous">
+              <form action="/previous" method="post">
+              <input type="submit" id="second" value="<">
+              </form>
+            </div>
+
+            <% } %>
+
+            <div>
+              <button id="third"><%= number %></button>
+            </div>
+
+            <% if(number==250){ %>
+            <div class="next">
+              <form action="/next" method="post">
+              <input type="submit" id="fourth" value=">" disabled>
+                </form>
+            </div>
+
+
+            <div class="end">
+              <form action="/end" method="post">
+              <input type="submit" id="fifth" value=">>" disabled>
+              </form>
+            </div>
+            
+            <% } else { %>
+
+              <div class="next">
+              <form action="/next" method="post">
+              <input type="submit" id="fourth" value=">">
+                </form>
+            </div>
+
+
+            <div class="end">
+              <form action="/end" method="post">
+              <input type="submit" id="fifth" value=">>">
+              </form>
+            </div>
+
+            <% } %>
+
+
+            </div>
+            </tr>
+        </tbody>
+        
+   </table> 
+</body>
+</html>

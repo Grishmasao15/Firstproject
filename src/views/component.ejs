@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table,th,tr,td{
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div class="note">
+    Note:Enter your Input in this form only:ig. Gender,checkbox <br>
+    case sensitive
+    </div><br>
+    <table>
+        <tr>
+            <th>Names available</th>
+            <th>types available</th>
+        </tr>
+        <tr>
+            <td>Gender,department,preferred_location,relationship_status</td>
+            <td>radio,checkbox,dropdown</td>
+        </tr>
+    </table><br>
+
+    <form action="/createcomponent" method="post">
+        <input type="text" name="input1" id="input1">
+        <input type="submit" value="Go">
+    </form>
+
+
+    <% if(type=='radio' || type=='checkbox') {%>
+
+        <div class="comp">
+    
+        <label for="<%= name %>"><%= name %>:</label>
+
+            <% for(let i=0;i<result.length;i++){ %>
+
+                <input type="<%= type %>" id="<%= result[i].nameof_field %>" name="<%= name %>" value="<%= result[i].nameof_field %>">
+                <label for="<%= result[i].nameof_field %>"><%= result[i].nameof_field %></label>
+                
+            <% } %>
+
+        </div>    
+            
+    <% } %>
+
+    <% if(type=='dropdown') {%>
+
+        <label for="<%= name %>"><%= name %>:</label>
+
+        <select name="<%= name %>" id="<%= name %>">
+
+        <% for(let i=0;i<result.length;i++){ %> 
+
+          <option value="<%= result[i].nameof_field %>"><%= result[i].nameof_field %></option>
+
+
+        <% } %> 
+
+        </select>
+
+       
+        
+    <% } %>    
+    
+</body>
+</html>

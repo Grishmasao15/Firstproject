@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table,tr,th,td{
+            border: 1px solid black;
+        }
+        .comments{
+            text-align: center;
+        }
+        #showcomments{
+            margin-top: 20px;
+        }
+    </style>
+
+    <script>
+        var commentid;
+        async function alldetails(id){
+          var url='https://jsonplaceholder.typicode.com/users/'+id;  
+          var data = await fetch(url)
+         .then(response =>{return response.json()})
+         .then(json =>{return json});
+
+         console.log(data);
+
+          var id = data.id;
+          commentid=id;
+          var name = data.name;
+          var username = data.username;
+          var email = data.email;
+          var phone = data.phone;
+          var website = data.website;
+          var city = data.address.city;
+
+
+
+          document.getElementById("printId").innerHTML = id
+          document.getElementById("printName").innerHTML = name
+          document.getElementById("printUsername").innerHTML = username
+          document.getElementById("printEmail").innerHTML = email
+          document.getElementById("printPhoneNumber").innerHTML = phone
+          document.getElementById("printWebsite").innerHTML = website
+          document.getElementById("printAddress").innerHTML = city
+   
+        }   
+    alldetails("<%= id %>");
+
+    async function showComments(commentid){
+
+        
+        var urltwo='https://jsonplaceholder.typicode.com/comments/'+commentid;
+        var datatwo = await fetch(urltwo)
+        .then(response =>{return response.json()})
+        .then(json =>{return json});
+
+        console.log(datatwo);
+
+        var postid = datatwo.postId;
+        var id = datatwo.id;
+        var name = datatwo.name;
+        var email = datatwo.email;
+        var body = datatwo.body;
+
+        document.getElementById("postid").innerHTML = postid
+        document.getElementById("id").innerHTML = id
+        document.getElementById("name").innerHTML = name
+        document.getElementById("email").innerHTML = email
+        document.getElementById("body").innerHTML = body
+    }
+
+    
+    </script>
+</head>
+<body>
+    <div class="maintable">
+     <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Website</th>
+            <th>City</th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td id="printId"></td>
+            <td id="printName"></td>
+            <td id="printUsername"></td>
+            <td id="printEmail"></td>
+            <td id="printPhoneNumber"></td>
+            <td id="printWebsite"></td>
+            <td id="printAddress"></td>
+        </tr>
+        </tbody>
+        
+    </table>
+    </div>
+
+    <div class="comments">
+        <button onclick="showComments(commentid)" id="showcomments">Show Comment</button>
+        <p id="postid"></p>
+        <p id="id"></p>
+        <p id="name"></p>
+        <p id="email"></p>
+        <p id="body"></p>
+    
+    </div>
+
+    
+</body>
+</html>
