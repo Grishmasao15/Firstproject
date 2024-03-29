@@ -17,8 +17,8 @@
 <body onload="rancolor()">
     <center><h3>Grishma Sao 1-2-24 24DEV008</h3></center>
     <h2>Table Game</h2>
-    <div>score: <span id="score">0</span></div>
-    <div>Time<span id="time">10</span></div>
+    <div>Score: <span id="score">0</span></div>
+    <div>Time left: <span id="time">10</span> second</div>
     <center><table border="1" id="t1" height="800px" width="800px"></center>
     <tr>
         <td style="background-color: rgba(62, 29, 75,1);"></td>
@@ -30,19 +30,10 @@
     </tr>
    </table> 
    <script>
-        var allcells
-        var randcell
-
-        function cubegame(){
-            
-            
-            firstAddRowCol();
-            add_color();
-            next();
-
-        }
+        var allcells;
+        var randcell;
         var score=0;
-        time=10;
+        var time=10;
         setInterval(function(){
             time--;
             document.getElementById('time').innerHTML=time;
@@ -56,25 +47,35 @@
             
         },1000)
 
+        function cubegame(){
+             
+            firstAddRowCol();
+            add_color();
+            next();
+
+        }
+
         function add_color(){
-                var x=Math.floor(Math.random()* 256);
-                var y=Math.floor(Math.random()* 256);
-                var z=Math.floor(Math.random()* 256);
-                var bgcolor="rgb(" + x + " ," + y + "," + z + ")";
-                
-                var allcells=document.getElementsByTagName("td");
+            var x=Math.floor(Math.random()* 256);
+            var y=Math.floor(Math.random()* 256);
+            var z=Math.floor(Math.random()* 256);
+            var bgcolor="rgb(" + x + " ," + y + "," + z + ")";
+            
+            var allcells=document.getElementsByTagName("td");
                 for(var i=0;i<allcells.length;i++){
                     allcells[i].style.backgroundColor=bgcolor;
                    // allcells[i].addEventListener("click", cubegame);
                 }
         }
-            function firstAddRowCol() {
+
+        function firstAddRowCol() {
 
             var tbl=document.getElementById("t1");
             var row_count=tbl.rows.length;
             var cols_count=tbl.rows[0].cells.length;
             var emptyRow=tbl.insertRow(row_count.length);
             var cell;
+            
             for(var i=0; i<cols_count; i++){
                 cell=emptyRow.insertCell(i);
             }
@@ -90,13 +91,16 @@
             score++;
             document.getElementById('score').innerHTML=score;
 
-            }
-            function next() {
-                allcells = document.getElementsByTagName("td");
-                randcell = allcells[Math.floor(Math.random()*allcells.length)];
-                randcell.style.opacity = "0.5"
-                randcell.setAttribute("onclick","add_rowcol()")
-            }
+        }
+            
+        function next() {
+
+            allcells = document.getElementsByTagName("td");
+            randcell = allcells[Math.floor(Math.random()*allcells.length)];
+            randcell.style.opacity = "0.5"
+            randcell.setAttribute("onclick","add_rowcol()")
+
+        }
 
         function add_rowcol(){
             //rows

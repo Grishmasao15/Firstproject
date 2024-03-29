@@ -15,15 +15,15 @@ router.get("/studentdetails",auth,function(req,res){
     counter = 0;
     if (req.query.id) {
       srt = req.query.id;
-      console.log("sort by:" + srt);
+
     } 
     connection.con.query(`select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,[counter],function(err,result){
-        if (err) throw err;
-    console.log("Request:"+req.query.id);     
+    if (err) throw err;
+   
     let number=(counter/200)+1;
     res.render('../src/views/FetchDBtable',{data:result,number:number,id:req.query.id}) ;   
     })
-    console.log("counter:"+counter);
+
     temp++;
 })
 

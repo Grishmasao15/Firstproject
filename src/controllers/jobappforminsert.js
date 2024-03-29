@@ -14,41 +14,7 @@ router.get("/jobappform",auth, function (req, res) {
 });
 
 router.post("/jobappformstoredetails",auth, async (req, res) => {
-  const {
-    fname,
-    lname,
-    designation,
-    address1,
-    address2,
-    city,
-    phonenumber,
-    email,
-    gender,
-    states,
-    zipcode,
-    relationshipstatus,
-    DOB,
-    companyname,
-    pastdesignation,
-    from,
-    to,
-    lang,
-    hindi,
-    english,
-    gujarati,
-    tech,
-    php,
-    mysql,
-    laravel,
-    oracle,
-    name,
-    contactnumber,
-    relation,
-    preferredlocation,
-    noticeperiod,
-    expectedctc,
-    currentctc,
-    department,
+  const {fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB,companyname,pastdesignation,from,to,lang,hindi,english,gujarati,tech,php,mysql,laravel,oracle,name,contactnumber,relation,preferredlocation,noticeperiod,expectedctc,currentctc,department,
   } = req.body;
 
   //Basic Details Insertion
@@ -56,26 +22,9 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
   var q1 = `INSERT INTO basic_detail SET fname = ?,lname = ?,designation = ?,address1 = ?,address2 = ?,city = ?,phonenumber = ?,email = ?,gender = ?,states = ?,zipcode = ?,relationshipstatus = ?,DOB = ?`;
 
   connection.con.query(
-    q1,
-    [
-      fname,
-      lname,
-      designation,
-      address1,
-      address2,
-      city,
-      phonenumber,
-      email,
-      gender,
-      states,
-      zipcode,
-      relationshipstatus,
-      DOB,
-    ],
+    q1,[fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB,],
     function (err, result) {
       if (err) throw err;
-      console.log("data inserted successfully in basic detail");
-      console.log(result.insertId);
 
       //Education Details Insertion
 
@@ -86,7 +35,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
         if (req.body.nameofboard[i]) {
           connection.con.query(q2, (err, result) => {
             if (err) throw err;
-            console.log("data inserted successfully in education details");
           });
         }
       }
@@ -100,7 +48,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
         if (req.body.companyname[i]) {
           connection.con.query(q3, (err, result) => {
             if (err) throw err;
-            console.log("data inserted successfully in work experience");
           });
         }
       }
@@ -121,7 +68,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
 
         connection.con.query(q4, (err, result) => {
           if (err) throw err;
-          console.log("data inserted successfully in languageknown");
         });
       } else if (req.body.lang.length) {
         var q4 = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
@@ -135,7 +81,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
         console.log("in else");
         connection.con.query(q4, (err, result) => {
           if (err) throw err;
-          console.log("data inserted successfully in languageknown");
         });
       }
 
@@ -153,7 +98,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
         console.log(q5);
         connection.con.query(q5, (err, result) => {
           if (err) throw err;
-          console.log("data inserted successfully in technologyknown");
         });
       } else if (req.body.lang.length) {
         var q5 = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
@@ -167,7 +111,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
         console.log("in else");
         connection.con.query(q5, (err, result) => {
           if (err) throw err;
-          console.log("data inserted successfully in technologyknown");
         });
       }
 
@@ -180,7 +123,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
         if (req.body.name[i]) {
           connection.con.query(q11, (err, result) => {
             if (err) throw err;
-            console.log("data inserted successfully in reference_contact");
           });
         }
       }
@@ -207,8 +149,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
 
         connection.con.query(q12, (err, result) => {
           if (err) throw err;
-          console.log("first");
-          console.log("data inserted successfully in preferences");
         });
         res.redirect("/jobappform");
       } else if (
@@ -229,8 +169,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
 
         connection.con.query(q12, (err, result) => {
           if (err) throw err;
-          console.log("second");
-          console.log("data inserted successfully in preferences");
           res.redirect("/jobappform");
         });
       } else if (
@@ -243,8 +181,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
 
         connection.con.query(q12, (err, result) => {
           if (err) throw err;
-          console.log("third");
-          console.log("data inserted successfully in preferences");
           res.redirect("/jobappform");
         });
       } else if (
@@ -257,8 +193,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
 
         connection.con.query(q12, (err, result) => {
           if (err) throw err;
-          console.log("fourth");
-          console.log("data inserted successfully in preferences");
           res.redirect("/jobappform");
         });
       } else if (
@@ -270,8 +204,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
 
         connection.con.query(q12, (err, result) => {
           if (err) throw err;
-          console.log("fifth");
-          console.log("data inserted successfully in preferences");
           res.redirect("/jobappform");
         });
       } else if (
@@ -283,8 +215,6 @@ router.post("/jobappformstoredetails",auth, async (req, res) => {
 
         connection.con.query(q12, (err, result) => {
           if (err) throw err;
-          console.log("sixth");
-          console.log("data inserted successfully in preferences");
           res.redirect("/jobappform");
         });
       }

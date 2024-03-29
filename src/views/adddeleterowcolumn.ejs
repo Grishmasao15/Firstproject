@@ -20,12 +20,14 @@
         .c2{
             position: absolute; 
             top: 20px; 
-            right: 20px; 
+            right: 20px;
         }
         .c1{
             position: absolute; 
             bottom: 20px; 
-            left: 20px; 
+            left: 20px;
+            display: flex;
+            gap: 10px;
         }
         .t1{
            background-color: white; 
@@ -33,6 +35,19 @@
         #i1,#i2{
             color: white;
         }
+        /* .first,.third{
+            width: 60px;
+            height: 80px;
+        }
+        .second,.fourth{
+            width: 80px;
+            height: 80px;
+        } */
+        #sec,#four{
+            width: 69px;
+            height: 119px;
+        }
+        
         
             
      
@@ -50,8 +65,15 @@
         </tr>
    </table><br>
     <div class="c1">
-    <input type="button" value="+" onclick="add_row()">
-    <input type="button" value="-" onclick="delete_row()"><br>
+
+    <div class="first">
+    <input type="button" value="+" onclick="add_row()" id="fir">
+    </div>
+
+    <div class="second">
+    <input type="button" value="-" onclick="delete_row()" id="sec"><br>
+    </div>
+
     </div>
 
     <!-- <div class="c2">
@@ -70,8 +92,15 @@
     </div> -->
 
     <div class="c2">
-    <input type="button" value="+" onclick="add_column()"><br> 
-    <input type="button" value="-" onclick="delete_column()">
+
+    <div class="third">    
+    <input type="button" value="+" onclick="add_column()" id="thir"><br> 
+    </div>
+
+    <div class="fourth">
+    <input type="button" value="-" onclick="delete_column()" id="four">
+    </div>
+
     </div>
    
    <script>

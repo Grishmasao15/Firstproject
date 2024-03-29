@@ -9,10 +9,7 @@ router.use(parser.json());
 router.use(parser.urlencoded({ extended: false }));
 
 var query;
-var value;
-var counter = 0;
-var lmt = 10;
-var pagenumber = 1;
+
 
 router.get("/details",auth, (req, res) => {
   query = `select * from student_master limit 1000;`;
@@ -23,8 +20,7 @@ router.get("/details",auth, (req, res) => {
 });
 
 router.post("/iddetails",auth, function (req, res) { 
-  var q1 = req.body.qr;
-  console.log(q1);
+  let q1 = req.body.qr;
   query = `select * from student_master where stu_id In (${q1}) `;
   connection.con.query(query, function (err, result, fields) {
     if (err) throw err;
@@ -33,14 +29,13 @@ router.post("/iddetails",auth, function (req, res) {
 });
 
 router.post("/searchdetails",auth, (req, res) => {
-  var fn = req.body.fn;
-  var ln = req.body.ln;
-  value = req.body.Andor;
-  var sql;
+  let fn = req.body.fn;
+  let ln = req.body.ln;
+  let value = req.body.Andor;
+  let sql;
 
   sql = `select * from student_master where firstname LIKE '%${fn}%' ${value} lastname LIKE '%${ln}%' `;
 
-  console.log("Query:" + sql);
 
   connection.con.query(sql, function (err, result, fields) {
     if (err) {

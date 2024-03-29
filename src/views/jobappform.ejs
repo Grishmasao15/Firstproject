@@ -263,10 +263,10 @@
                         </td>
                     </tr>
                 </table>
-                <div class="add">
+                <!-- <div class="add">
                     <button onclick="addNew()">ADD</button>
                     <button onclick="removeOld()">REMOVE</button>
-                </div>
+                </div> -->
             </fieldset>
             <fieldset>
                 <legend><h3>Language Known</h3></legend>
@@ -451,6 +451,7 @@
         <div id="errorMessages"></div>
 
         <script>
+
             function submitevent(){
                 alert("submitted successfully!!!")
             }
@@ -469,6 +470,7 @@
             function removeOld(){
                 document.getElementById("newrow").innerHTML="";
             }
+
             
 
             // function checkForm(){
@@ -615,46 +617,6 @@
                 }
             }    
 
-            // //for hindi    
-            //     var checkread=document.querySelector('input[id="hindiread"]:checked');
-            //     var checkwrite=document.querySelector('input[id="hindiwrite"]:checked');
-            //     var checkspeak=document.querySelector('input[id="hindispeak"]:checked');
-            //     var checksub=document.querySelector('input[id="hindi"]:checked');
-
-            //     if((checkread && !checksub)){
-            //     document.getElementById("errorhindi").innerHTML="select valid Input";
-            //     return false;
-            //     }
-            //     if( (checkwrite && !checksub)){
-            //     document.getElementById("errorhindi").innerHTML="select valid Input";
-            //     return false;
-            //     }
-            //     if((checkspeak && !checksub)){
-            //     document.getElementById("errorhindi").innerHTML="select valid Input";
-            //     return false;
-            //     }
-
-
-            // //for gujarati
-            //     var checkread=document.querySelector('input[id="gujaratiread"]:checked');
-            //     var checkwrite=document.querySelector('input[id="gujaratiwrite"]:checked');
-            //     var checkspeak=document.querySelector('input[id="gujaratispeak"]:checked');
-            //     var checksub=document.querySelector('input[id="gujarati"]:checked');
-
-            //     if((checkread && !checksub)){
-            //     document.getElementById("errorgujarati").innerHTML="select valid Input";
-            //     return false;
-
-            // }
-            //     if( (checkwrite && !checksub)){
-            //     document.getElementById("errorgujarati").innerHTML="select valid Input";
-            //     return false;
-            // }
-            //     if((checkspeak && !checksub)){
-            //     document.getElementById("errorgujarati").innerHTML="select valid Input";
-            //     return false;
-            // }
-
             
             let arrfour=['s','hd'];
 
@@ -759,8 +721,11 @@
                 document.getElementById('spercentage').focus();
                 return false;
             }
+            else{
+                alert("form submitted successfully!")
+                return true;
 
-            return true;
+            }
 
         }
 
