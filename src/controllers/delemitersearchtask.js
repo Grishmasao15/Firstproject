@@ -1,6 +1,7 @@
 var router = require("express").Router();
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
 
 var parser = require("body-parser");
 
@@ -9,9 +10,9 @@ router.use(parser.urlencoded({ extended: false }));
 
 var search;
 
-router.get("/delemitersearchtask", function (req, res) {
+router.get("/delemitersearchtask", auth,function (req, res) {
   connection.con.query(
-    "select * from student_master limit 100",
+    "select * from student_master limit 1000",
     function (err, result) {
       if (err) throw err;
       res.render("../src/views/home", { data: result });
@@ -19,7 +20,7 @@ router.get("/delemitersearchtask", function (req, res) {
   );
 });
 
-router.post("/delemitersearch", function (req, res) {
+router.post("/delemitersearch",auth, function (req, res) {
   str = req.body.search;
   let firstname = [];
   let lastname = [];

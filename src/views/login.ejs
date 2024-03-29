@@ -87,7 +87,6 @@
 
         <div class="buttons">
         <input type="button" value="login" id="loginBtn" onclick="login()"><br><br>
-        <!-- <button id="forgot"><a href="/forpass">forgot password</a></button> -->
         <input type="button" value="Forgot Password" id="forgotBtn" onclick="forgotpassword()">
         </div>
 
@@ -118,9 +117,9 @@
 
             let result=await fetch(`/loginpage/${username}/${pass}`);
             flag = await result.json();
-            console.log("passresult"+flag.passres);
+            console.log("flag : "+flag.passres);
             if(flag.passres){
-                window.location.href="/welcome";
+                window.location.href=`/welcome/${username}`;
             }
             else{
                 document.getElementById("errorpass").innerHTML="username or password invalid";

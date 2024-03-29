@@ -1,6 +1,7 @@
 var router = require("express").Router();
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
 
 var parser = require("body-parser");
 
@@ -13,13 +14,13 @@ var name, type;
 var split;
 var result;
 
-router.get("/createcomponenttask", function (req, res) {
+router.get("/createcomponenttask",auth, function (req, res) {
   res.render("../src/views/component", { result: result, q: q, type: type, name: name });
 });
 
 
 
-router.post("/createcomponent", function (req, res) {
+router.post("/createcomponent",auth, function (req, res) {
   q = req.body.input1;
   split = q.split(",");
   name = split[0];

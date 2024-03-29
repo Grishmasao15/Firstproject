@@ -2,6 +2,7 @@ var router = require("express").Router();
 const mysql = require("mysql");
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
 
 
 
@@ -10,11 +11,11 @@ const connection = require("../models/connection");
   var lmt = 10;
   var pagenumber = 1;
 
-  router.get("/queryhome", (req, res) => {
+  router.get("/queryhome",auth,(req, res) => {
     res.render("../src/views/inputbox");
   });
 
-  router.post("/querydetails", (req, res) => {
+  router.post("/querydetails", auth, (req, res) => {
     counter = 0;
     lmt = 10;
     pagenumber = 1;
@@ -36,7 +37,7 @@ const connection = require("../models/connection");
     });
   });
 
-  router.get("/pagination", function (req, res) {
+  router.get("/pagination", auth, function (req, res) {
     if (req.query.id == "home") {
       pagenumber = 1;
       counter = 0;

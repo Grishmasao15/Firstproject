@@ -9,40 +9,112 @@
             text-align:  center;
         }
         body{
+            background-color:white;
+        }
+        h1{
+            color: rgb(49, 40, 109);
+            padding: 2px 0px;
+        }
+        h2{
+            color: rgb(49, 40, 109);
+            padding: 4px 0px;
+        }
+        h3{
+           color: rgb(49, 40, 109); 
+        }
+        /* .first{
             background-color: aliceblue;
+            height: 21px;
+            width: 613px;
+            margin: 21px auto;
+        } */
+
+        button{
+            color: rgb(104, 85, 224);
+            background-color: rgba(255, 255, 255, 1);
+            border: 1px solid rgba(104, 85, 224, 1);
+            cursor: pointer;
+            border: 0;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0 47px;
+            width: 500px;
+            padding: 10px 0;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.1);
+            transition: 0.4s;
         }
-        h1,h3{
-            color: rgb(97, 45, 2);
+        button:hover{
+            color: white;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.6);
+            background-color: rgba(104, 85, 224, 1);
+            #link{
+                color: white;
+            }
         }
+
+        #logoutBtn{
+            background-color: rgba(104, 85, 224, 1);
+            border: 1px solid rgba(104, 85, 224, 1);
+            cursor: pointer;
+            border: 0;
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0 47px;
+            width: 180px;
+            padding: 10px 0;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
+            transition: 0.4s;
+            float: right;
+            margin-right: 90px;
+            margin-top: 25px;
+        }
+
+
+
     </style>
 </head>
 <body>
 
     <div class="finalpage">
 
+    <input type="button" value="Log out" id="logoutBtn" onclick="redirect()"><br><br>     
+
+    <h2>Hello <%= user %>!</h2>
     <h1>Welcome to My Page</h1><br>
     <h3>Here are my All Tasks</h3>
+    <h5>Please click on the link</h5><br>
+ 
+    <button> <a href="/htmltask/adddeleterowcolumn" id="link">Add or Delete Row & Coloum Dynamically</a></button><br><br>
+    <button> <a href="/htmltask/kukucube" id="link">Kuku Cube</a></button><br><br>
+    <button> <a href="/htmltask/tictactoe" id="link">Tic Tac Toe</a></button><br><br>
+    <button> <a href="/htmltask/eventhandling" id="link">Event Handling</a></button><br><br>
+    <button> <a href="/function/functionname" id="link">All Functions in one</a></button><br><br>
+    <button> <a href="/form" id="link">Insertion And Fetch data from file</a></button><br><br>
+    <button> <a href="/studentdetails" id="link">Fetch From Database</a></button><br><br>
+    <button> <a href="/attendancedetails" id="link">Attendance Details</a></button><br><br>
+    <button> <a href="/resultdetails" id="link">Result Details</a></button><br><br>     
+    <button> <a href="/queryhome" id="link">Dynamic Query Box</a></button><br><br>
+    <button> <a href="/details" id="link">Search Box</a></button><br><br>
+    <button> <a href="/delemitersearchtask" id="link">Delemiter Search</a></button><br><br>
+    <button> <a href="/createcomponenttask" id="link">Create Component</a></button><br><br>
+    <button> <a href="/fetchapi" id="link">Fetch Data From API</a></button><br><br>
+    <button> <a href="/jobappform" id="link">Job Application Form Insertion</a></button><br><br>
+    <button> <a href="/nextform" id="link">Job Application Form with next & Insertion & Updation with AJAX</a></button><br><br>
+    <button> <a href="/timezone" id="link">Timezone Exercise</a></button><br><br>
 
 
-    <a href="/htmltask/adddeleterowcolumn">1.Add or Delete Row & Coloum Dynamically</a><br><br>
-    <a href="/htmltask/kukucube">2.Kuku Cube</a><br><br>
-    <a href="/htmltask/tictactoe">3.ic Tac Toe</a><br><br>
-    <a href="/htmltask/eventhandling">4.Event Handling</a><br><br>
-    <a href="/function/functionname">5.All Functions</a><br><br>
-    <a href="/form">6.Insertion And Fetch data from file</a><br><br>
-    <a href="/studentdetails">7.Fetch From Database</a><br><br>
-    <a href="/attendancedetails">8.Attendance Details</a><br><br>
-    <a href="/resultdetails">9.Result Details</a><br><br>
-    <a href="/queryhome">10.Dynamic Query Box</a><br><br>
-    <a href="/details">11.Search Box</a><br><br>
-    <a href="/delemitersearchtask">12.Delemiter Search</a><br><br>
-    <a href="/createcomponenttask">13.Create Component</a><br><br>
-    <a href="/fetchapi">14.Fetch Data From API</a><br><br>
-    <a href="/jobappform">15.Job Application Form Insertion</a><br><br>
-    <a href="/nextform">16.Job Application Form with next & Insertion & Updation with AJAX</a><br><br>
-    <a href="/timezone">17.Timezone Exercise</a><br><br>
+
 
     </div>
+
+    <script>
+
+        function redirect(){
+            window.location.href="http://localhost:8000/directlogin";
+        }
+
+    </script>
 
 </body>
 </html>

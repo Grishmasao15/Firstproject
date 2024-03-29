@@ -1,6 +1,7 @@
 var router = require("express").Router();
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
 
 var parser = require("body-parser");
 
@@ -13,7 +14,7 @@ var counter = 0;
 var lmt = 10;
 var pagenumber = 1;
 
-router.get("/details", (req, res) => {
+router.get("/details",auth, (req, res) => {
   query = `select * from student_master limit 1000;`;
   connection.con.query(query, function (err, result) {
     if (err) throw err;
@@ -21,7 +22,7 @@ router.get("/details", (req, res) => {
   });
 });
 
-router.post("/iddetails", function (req, res) { 
+router.post("/iddetails",auth, function (req, res) { 
   var q1 = req.body.qr;
   console.log(q1);
   query = `select * from student_master where stu_id In (${q1}) `;
@@ -31,7 +32,7 @@ router.post("/iddetails", function (req, res) {
   });
 });
 
-router.post("/searchdetails", (req, res) => {
+router.post("/searchdetails",auth, (req, res) => {
   var fn = req.body.fn;
   var ln = req.body.ln;
   value = req.body.Andor;

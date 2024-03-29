@@ -1,6 +1,7 @@
 var router = require("express").Router();
+const { auth } = require("./middleware/auth");
 
-router.get("/timezone", (req, res) => {
+router.get("/timezone",auth, (req, res) => {
   res.render("../src/views/timezone");
 });
 

@@ -1,19 +1,27 @@
 var router = require("express").Router();
 const fs = require("fs");
 
+var parser = require("body-parser");
+const {auth}  = require("./middleware/auth");
+const cookieParser = require("cookie-parser");
+router.use(cookieParser());
+
+router.use(parser.json());
+router.use(parser.urlencoded({ extended: false }));
+
 let alluserData = [];
 let user = [];
 
-router.get("/form", (req, res) => {
+router.get("/form",auth,(req, res) => {
   res.render("../src/views/form");
 });
 
-router.post("/showall", (req, res) => {
+router.post("/showall", auth, (req, res) => {
   let obj = JSON.parse(fs.readFileSync("alldata.json"));
   res.render("../src/views/table", { obj: obj });
 });
 
-router.post("/submit", (req, res) => {
+router.post("/submit", auth, (req, res) => {
   let obj = {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -50,7 +58,7 @@ router.post("/submit", (req, res) => {
   });
 });
 
-router.post("/alldetails", (req, res) => {
+router.post("/alldetails", auth, (req, res) => {
   let obj = JSON.parse(fs.readFileSync("alldata.json"));
   res.render("../src/views/alldetails", { mail: req.body.mail, obj: obj });
 });

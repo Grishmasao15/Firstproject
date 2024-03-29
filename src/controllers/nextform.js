@@ -1,6 +1,7 @@
 var router = require("express").Router();
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
 
 var parser = require("body-parser");
 
@@ -16,11 +17,11 @@ function executeQuery(str, arr) {
   });
 }
 
-router.get("/nextform", (req, res) => {
+router.get("/nextform",auth, (req, res) => {
   res.render("../src/views/nextform");
 });
 
-router.get("/id", async (req, res) => {
+router.get("/id", auth,async (req, res) => {
   return new Promise(async (resolve, rejects) => {
     var id = req.query.id;
     console.log(id);
@@ -62,7 +63,7 @@ router.get("/id", async (req, res) => {
   });
 });
 
-router.post("/nextformstoredetails", async (req, res) => {
+router.post("/nextformstoredetails",auth, async (req, res) => {
   if (req.body.empid == "") {
     const {
       fname,

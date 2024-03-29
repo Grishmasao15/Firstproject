@@ -24,9 +24,9 @@ const jobappforminsertion = require("./src/controllers/jobappforminsert");
 const nextformtask = require("./src/controllers/nextform");
 const timezone = require("./src/controllers/timezone");
 const FetchfromAPI = require("./src/controllers/fetchfromapi");
+const { auth } = require("./src/controllers/middleware/auth");
 
 
-// console.log(connection.executeQuery(`select * from student_master limit ?`,[50]));
 
 app.use(crudwithfile);
 app.use(fetchDBtask);
@@ -41,8 +41,8 @@ app.use(nextformtask);
 app.use(timezone);
 app.use(FetchfromAPI);
 app.use(cookieParser());
-
-
+app.use(parser.json());
+app.use(parser.urlencoded({ extended: false }));
 
 
 const f = require("./src/controllers/practical1");
@@ -55,22 +55,8 @@ const s= require("./src/controllers/practical7");
 const t= require("./src/controllers/practical8");
 
 
-app.use(parser.json());
-app.use(parser.urlencoded({ extended: false }));
-
-
 
 var localdate= new Date();
-var temp = 0;
-var srt = "stu_id";
-var counter = 0;
-var number = 1;
-var pagenumber = 1;
-var rescounter = 0;
-var qr = "";
-var lmt = 10;
-
-
 
 app.get('/',(req,res)=>{
     res.render('../src/views/registration');
@@ -124,17 +110,20 @@ app.get('/code/:code',async (req,res)=>{
   if(q1[0].count>0){
     console.log(actcode);
     if (actcode) {
+      console.log("o"+localdate.getTime());
       var p1 = localdate.getTime();
       console.log(p1);
       var result = await connection.executeQuery(
         `select created_at from users where activation_code='${actcode}'`
       );
-      let temp = result[0].created_at.toString().slice(4, 24);
+      console.log("result"+result[0].created_at);
+      let temp = result[0].created_at.toString().slice(0, 24);
+      console.log(temp+"temp");
       let old = new Date(temp);
       var p2 = old.getTime();
       console.log(p2);
       var timediff = Math.floor((p1 - p2) / 60000);
-      console.log("time diffrence"+timediff);
+      console.log("time diffrence"+" "+timediff);
 
       if (timediff > 60) {
         var restwo = await connection.executeQuery(
@@ -165,11 +154,17 @@ app.post('/storepass',async (req,res)=>{
   res.render("../src/views/login");
 });
 
-app.get('/welcome',(req,res)=>{
-  res.render("../src/views/welcome");
+app.get('/welcome/:username',auth,async (req,res)=>{
+
+  var que20=await connection.executeQuery(`select firstname from users where email='${req.params.username}'`);
+  var user=que20[0].firstname;
+
+  res.render("../src/views/welcome",{user});
 })
 
+
 app.get('/directlogin',(req,res)=>{
+  res.clearCookie("token");
   res.render("../src/views/login");
 })
 
@@ -203,9 +198,11 @@ app.get("/loginpage/:username/:pass",async (req,res)=>{
     
 
     if (latestpass == oldpass) {
+      console.log("In main if");
       passres=true;
-      let token=jwt.sign({data:latestpass},"secretkey");
+      var token=jwt.sign({data:latestpass},"secretkey",{expiresIn:'1d'});
       res.cookie("token",token);
+ 
     }
   }
   console.log(passres)
@@ -241,14 +238,14 @@ app.get("/check-email/:email",async (request, response) => {
 //   res.render("functions");
 // });
 
-app.get("/htmltask/:result", (req, res) => {
+app.get("/htmltask/:result",auth, (req, res) => {
   var result = req.params.result;
   console.log(result);
 
   res.render("../src/views/" + result);
 });
 
-app.get("/function/:functionname",(req,res)=>{
+app.get("/function/:functionname",auth,(req,res)=>{
 
   var functionname = req.params.functionname;
   console.log(functionname);
@@ -258,8 +255,8 @@ app.get("/function/:functionname",(req,res)=>{
     // let str="grishma sao";
     console.log(req.query.str);
     ans = f.vowelsConsonants(req.query.str);
-    res.write("Vowels are:" +  " " +  ans.vowelStr.toString() +  "\n" +  "Consonants are:" +  " " +  ans.consonantStr.toString()+"\n"+"\n"+"Note: You can pass your input in url");
-    res.end();
+    res.send(`<p>Vowels are:`+ ans.vowelStr.toString() +`</p><p>Consonants are:`+ans.consonantStr.toString()+`</p>`+"Note: You can pass your input in url");
+    
   } 
   
   else if (functionname === "oddeven") {
@@ -269,11 +266,11 @@ app.get("/function/:functionname",(req,res)=>{
     ans = p.oddEven(intarr);
 
     if(ans.str.length>0){
-      res.send("Wrong Data Entered")
+      res.send("Wrong Data Entered");
     }
     else{
-      res.write("even numbers are:" + " " + ans.even.toString() + "\n" +"odd numbers are:" + " " + ans.odd.toString()+"\n"+"\n"+"Note: You can pass your input in url"); 
-      res.end();     
+      res.send(`<p>even numbers are:`+ ans.even.toString() + `</p><p>odd numbers are:` + ans.odd.toString()+`</p>`+`<p>Note: You can pass your input in url</p>`);
+           
     }
 
   }
@@ -288,38 +285,49 @@ app.get("/function/:functionname",(req,res)=>{
     ];
 
     ans = q.group(cars);
-    res.write("The result is:" + "\n" + JSON.stringify(ans));
-    res.end();
+    res.send(
+      `<p>The input is:</p> 
+        <p>var cars = [
+        { make: 'audi', model: 'r8', year: '2012' },
+        { make: 'audi', model: 'rs5', year: '2013' },
+        { make: 'ford', model: 'mustang' year: '2012' },
+        { make: 'ford', model: 'fusion', year: '2015'},
+        { make: 'kia', model: 'optima' year: '2012' }
+        ];</p>
+        <p>The result is:</p>`+
+        JSON.stringify(ans)
+    );
+    
   }
 
   else if (functionname === "factorial") {
 
     ans = g.fact(req.query.num);
-    res.write("The factorial of" +" "+req.query.num +" "+ "is:" + " " + ans);
-    res.end();
+    res.send(`<p>The factorial of`+` `+req.query.num +` `+ `is:</p>`+ ans+`<p>Note: You can pass your input in url</p>`);
+    
   }
   
   else if (functionname === "vowelcount") {
     // let arr = ["grishma", "sao"];
     let arrtwo = req.query.arr.split(" ");
     ans = h.vowelCount(arrtwo);
-    res.write(ans);
-    res.end();
+    res.send(ans + `<p>Note: You can pass your input in url</p>`);
+    
   } 
 
   else if (functionname === "vowelcount2") {
     // let arr = ["grishma", "sao"];
     let arrtwo = req.query.arr.split(" ");
     ans = r.vowelCountMax(arrtwo);
-    res.write(ans);
-    res.end();
+    res.send(ans + `<p>Note: You can pass your input in url</p>`);
+    
   }
   
   else if (functionname === "palindrome") {
     // let str = "grishma";
     ans = s.palindrome(req.query.str);
-    res.write(ans);
-    res.end();
+    res.send(ans + `<p>Note: You can pass your input in url</p>`);
+    
   }
   
   else if (functionname === "calc") {
@@ -327,8 +335,9 @@ app.get("/function/:functionname",(req,res)=>{
       let num2 = '';
       let op = '';
       ans = t.calc(req.query.num1, req.query.num2, req.query.op);
-      res.write(ans);
-      res.end();
+      res.send(ans + `<p>Note: You can pass your input in url</p>`);
+  
+      
 
       
     }
@@ -340,23 +349,13 @@ app.get("/function/:functionname",(req,res)=>{
 });
 
 
-//attendancedetailstask
-
-
-
-//resultsheettask  
-
-
-
-
-//Querybox  
 
 
 
 
 
 
-app.listen(8090,()=>{
-    console.log("server is up on 8090");
+app.listen(8000,()=>{
+    console.log("server is up on 8000");
     
 })

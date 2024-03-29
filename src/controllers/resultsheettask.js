@@ -1,12 +1,13 @@
 var router = require("express").Router();
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
 
 var rescounter = 0;
 var pagenumber = 1;
 
 
-router.get("/resultdetails", function (req, res) {
+router.get("/resultdetails",auth, function (req, res) {
 
     var sort = req.query.sort;
 
@@ -92,7 +93,7 @@ router.get("/resultdetails", function (req, res) {
     }
   });
 
-  router.get("/viewdetails", function (req, res) {
+  router.get("/viewdetails", auth, function (req, res) {
     sid = req.query.id;
     var q = `select student_master.stu_id,student_master.firstname,student_master.lastname,subject_master.subject_id,subject_master.subject_name,
              max(case when result_master.exam_id='1' then result_master.practical_obtained end)as terminal_practical,

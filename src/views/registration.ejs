@@ -68,6 +68,7 @@
             padding: 10px 0;
             box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
             transition: 0.4s;
+            color: white;
         }
         p{
             font-size: 11px;
@@ -82,14 +83,12 @@
             text-decoration: none;
             color: black;
         }
-        #login{
-            text-decoration: none;
-            color: white;
-        }
+
         #firstname,#lastname,#email,#mono{
             width: 540px;
             height: 20px;
         }
+        
     </style>
 </head>
 <body>
@@ -119,7 +118,8 @@
         <div class="submitBtn">
             <input type="hidden" name="activationcode" id="activationcode" value="">
         <input type="button" value="Register" id="subbtn" onclick="register('myForm')"><br><br>
-        <button id="loginbtn"><a href="/directlogin" id="login">Login</a></button>
+        <input type="button" value="Login" id="loginbtn" onclick="redirect()">
+
         </div>
 
         </div>
@@ -174,7 +174,7 @@
                     var url=window.location.origin+`/thanks/${randcode}`;
                     console.log(url);
                     window.location.href=url;
-                        let res1 =await fetch("http://localhost:8082/storedetails",
+                        let res1 =await fetch("http://localhost:8000/storedetails",
                         {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -190,7 +190,7 @@
         }
 
         function redirect(){
-            window.location.href="http://localhost:8082/directlogin";
+            window.location.href="http://localhost:8000/directlogin";
         }
 
         

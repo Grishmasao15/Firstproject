@@ -1,6 +1,7 @@
 var router = require("express").Router();
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
 
 var parser = require("body-parser");
 
@@ -8,11 +9,11 @@ router.use(parser.json());
 router.use(parser.urlencoded({ extended: false }));
 
 
-router.get("/jobappform", function (req, res) {
+router.get("/jobappform",auth, function (req, res) {
   res.render("../src/views/jobappform");
 });
 
-router.post("/jobappformstoredetails", async (req, res) => {
+router.post("/jobappformstoredetails",auth, async (req, res) => {
   const {
     fname,
     lname,

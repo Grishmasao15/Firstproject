@@ -2,17 +2,20 @@ var router = require("express").Router();
 const mysql = require("mysql");
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
+const cookieParser = require("cookie-parser");
+router.use(cookieParser());
 
 var temp=0;
 var srt='stu_id';
 counter=0;
    
 
-router.get("/studentdetails",function(req,res){
+router.get("/studentdetails",auth,function(req,res){
     counter = 0;
-    if(temp!=0){
-        srt=req.query.id;
-        console.log("sort by:"+srt);
+    if (req.query.id) {
+      srt = req.query.id;
+      console.log("sort by:" + srt);
     } 
     connection.con.query(`select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,[counter],function(err,result){
         if (err) throw err;
@@ -24,7 +27,7 @@ router.get("/studentdetails",function(req,res){
     temp++;
 })
 
-router.post("/home", function (req, res) {
+router.post("/home",auth,function (req, res) {
   counter = 0;
   connection.con.query(
     `select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,
@@ -37,7 +40,7 @@ router.post("/home", function (req, res) {
   );
 });
 
-router.post("/next",function(req,res){
+router.post("/next",auth,function(req,res){
     counter +=200;
     connection.con.query(
       `select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,
@@ -50,7 +53,7 @@ router.post("/next",function(req,res){
     );
 })
 
-router.post("/previous",function(req,res){
+router.post("/previous",auth,function(req,res){
     counter -= 200;
     connection.con.query(
       `select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,
@@ -64,7 +67,7 @@ router.post("/previous",function(req,res){
 
 })
 
-router.post("/end",function(req,res){
+router.post("/end",auth,function(req,res){
     counter=49800;
     connection.con.query(
       `select * from student_master ORDER BY ${srt} LIMIT 200 OFFSET ?`,

@@ -2,12 +2,13 @@ var router = require("express").Router();
 const mysql = require("mysql");
 
 const connection = require("../models/connection");
+const { auth } = require("./middleware/auth");
 
 
 var counter = 0;
 var number = 1;
 
-  router.get("/attendancedetails", function (req, res) {
+  router.get("/attendancedetails",auth,function (req, res) {
     number = 1;
     counter = 0;
 
@@ -31,7 +32,7 @@ var number = 1;
     });
   });
 
-  router.post("/attendancesheethome", function (req, res) {
+  router.post("/attendancesheethome",auth,function (req, res) {
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
@@ -51,7 +52,7 @@ var number = 1;
     });
   });
 
-  router.post("/attendancesheetprevious", function (req, res) {
+  router.post("/attendancesheetprevious", auth,function (req, res) {
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
@@ -71,7 +72,7 @@ var number = 1;
     });
   });
 
-  router.post("/attendancesheetnext", function (req, res) {
+  router.post("/attendancesheetnext", auth,function (req, res) {
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
@@ -91,7 +92,7 @@ var number = 1;
     });
   });
 
-  router.post("/attendancesheetend", function (req, res) {
+  router.post("/attendancesheetend", auth,function (req, res) {
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
