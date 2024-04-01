@@ -53,7 +53,7 @@
         <input type="button" value="Reference Contact" id="refcontact">
         <input type="button" value="Preferences" id="preferences">
     </div> -->
-    <h6>For Update write http://localhost:3035/nextform/?id=<i>your id</i></h6>
+    <h6>For Update write http://localhost:8000/nextform/?id=<i>your id</i></h6>
     <form autocomplete="on" onsubmit="return validateForm()" method="post" id="myForm">
     <div class="tab">
         <fieldset>
@@ -544,105 +544,118 @@
     document.getElementById('id').value = id;
     var formdata=document.forms['myForm'];
     console.log(formdata);
+ 
 
     async function ajax_getdata(){
         var result=await fetch("/id?id="+id);
         console.log(result);
         var resjson=await result.json();
-        console.log(resjson);
+        var count=resjson.counter;
     
-    formdata.fname.value=resjson.r1[0].fname;
-    formdata.lname.value=resjson.r1[0].lname;
-    formdata.designation.value=resjson.r1[0].designation;
-    formdata.email.value=resjson.r1[0].email;
-    formdata.phonenumber.value=resjson.r1[0].phonenumber;
-    formdata.address1.value=resjson.r1[0].address1; 
-    formdata.city.value=resjson.r1[0].city;
-    formdata.address2.value=resjson.r1[0].address2;
-    formdata.gender.value=resjson.r1[0].gender; 
-    formdata.zipcode.value=resjson.r1[0].zipcode;
-    formdata.DOB.value=resjson.r1[0].DOB;
-    formdata.relationshipstatus.value=resjson.r1[0].relationshipstatus;
-    formdata.states.value=resjson.r1[0].states;     
-    
-    for(let i=0;i<resjson.r2.length;i++){
-        formdata.nameofboard[i].value=resjson.r2[i].nameofboard_or_coursename;
-        formdata.passingyear[i].value=resjson.r2[i].passingyear;
-        formdata.percentage[i].value=resjson.r2[i].percentage;
-    }
+        if(count >= 1){    
 
-    for(let i=0;i<resjson.r3.length;i++){
-        formdata.companyname[i].value=resjson.r3[i].companyname;
-        formdata.pastdesignation[i].value=resjson.r3[i].designation;
-        formdata.from[i].value=resjson.r3[i].from_date;
-        formdata.to[i].value=resjson.r3[i].to_date;
-    }
-
-    for(let i=0;i<resjson.r4.length;i++){
-        if(resjson.r4[i].language_name){
-            document.getElementById(resjson.r4[i].language_name).checked=true;
-
-        if(resjson.r4[i].rws.includes("read")){
-            document.getElementById(resjson.r4[i].language_name+"read").checked=true;
-        }
-        if(resjson.r4[i].rws.includes("write")){
-            document.getElementById(resjson.r4[i].language_name+"write").checked=true;
-        }
-        if(resjson.r4[i].rws.includes("speak")){
-            document.getElementById(resjson.r4[i].language_name+"speak").checked=true;
-        }
         
-        }
-        
-    }
+            formdata.fname.value=resjson.r1[0].fname;
+            formdata.lname.value=resjson.r1[0].lname;
+            formdata.designation.value=resjson.r1[0].designation;
+            formdata.email.value=resjson.r1[0].email;
+            formdata.phonenumber.value=resjson.r1[0].phonenumber;
+            formdata.address1.value=resjson.r1[0].address1; 
+            formdata.city.value=resjson.r1[0].city;
+            formdata.address2.value=resjson.r1[0].address2;
+            formdata.gender.value=resjson.r1[0].gender; 
+            formdata.zipcode.value=resjson.r1[0].zipcode;
+            formdata.DOB.value=resjson.r1[0].DOB;
+            formdata.relationshipstatus.value=resjson.r1[0].relationshipstatus;
+            formdata.states.value=resjson.r1[0].states;     
 
-    for(let i=0;i<resjson.r5.length;i++){
-        
-        if(resjson.r5[i].technology_name){
-            document.getElementById(resjson.r5[i].technology_name+"label").checked=true;
-
-        if(resjson.r5[i].level_of_expertise=='beginner'){
-            document.getElementById(`${resjson.r5[i].technology_name}`+"beginner").checked=true;
-        }
-        if(resjson.r5[i].level_of_expertise=='mideator'){
-            document.getElementById(resjson.r5[i].technology_name+"mideator").checked=true;
-        }
-        if(resjson.r5[i].level_of_expertise=='expert'){
-            document.getElementById(resjson.r5[i].technology_name+"expert").checked=true;
-        }
-        
-        }
-        
-    }
-
-    for(let i=0;i<resjson.r6.length;i++){
-
-        formdata.name[i].value=resjson.r6[i].nameof_emp;
-        formdata.contactnumber[i].value=resjson.r6[i].contactnumber;
-        formdata.relation[i].value=resjson.r6[i].relation;
-    }
-
-    formdata.noticeperiod.value=resjson.r7[0].noticeperiod;
-    formdata.currentctc.value=resjson.r7[0].currentctc;
-    formdata.expectedctc.value=resjson.r7[0].expectedctc;
-    formdata.department.value=resjson.r7[0].department;
-
-
-    let loc_nodes = document.getElementById('preferredlocation').childNodes;
-    let loc_val = resjson.r7[0].preferredlocation.split(',');
-
-    loc_nodes.forEach(element => {
-        loc_val.forEach(ele => {
-            if(element.value == ele) {
-                element.selected = true;
+            for(let i=0;i<resjson.r2.length;i++){
+                formdata.nameofboard[i].value=resjson.r2[i].nameofboard_or_coursename;
+                formdata.passingyear[i].value=resjson.r2[i].passingyear;
+                formdata.percentage[i].value=resjson.r2[i].percentage;
             }
-        });
-    });
+
+            for(let i=0;i<resjson.r3.length;i++){
+                formdata.companyname[i].value=resjson.r3[i].companyname;
+                formdata.pastdesignation[i].value=resjson.r3[i].designation;
+                formdata.from[i].value=resjson.r3[i].from_date;
+                formdata.to[i].value=resjson.r3[i].to_date;
+            }
+
+            for(let i=0;i<resjson.r4.length;i++){
+                if(resjson.r4[i].language_name){
+                    document.getElementById(resjson.r4[i].language_name).checked=true;
+
+                if(resjson.r4[i].rws.includes("read")){
+                    document.getElementById(resjson.r4[i].language_name+"read").checked=true;
+                }
+                if(resjson.r4[i].rws.includes("write")){
+                    document.getElementById(resjson.r4[i].language_name+"write").checked=true;
+                }
+                if(resjson.r4[i].rws.includes("speak")){
+                    document.getElementById(resjson.r4[i].language_name+"speak").checked=true;
+                }
+
+                }
+
+            }
+
+            for(let i=0;i<resjson.r5.length;i++){
+
+                if(resjson.r5[i].technology_name){
+                    document.getElementById(resjson.r5[i].technology_name+"label").checked=true;
+
+                if(resjson.r5[i].level_of_expertise=='beginner'){
+                    document.getElementById(`${resjson.r5[i].technology_name}`+"beginner").checked=true;
+                }
+                if(resjson.r5[i].level_of_expertise=='mideator'){
+                    document.getElementById(resjson.r5[i].technology_name+"mideator").checked=true;
+                }
+                if(resjson.r5[i].level_of_expertise=='expert'){
+                    document.getElementById(resjson.r5[i].technology_name+"expert").checked=true;
+                }
+
+                }
+
+            }
+
+            for(let i=0;i<resjson.r6.length;i++){
+
+                formdata.name[i].value=resjson.r6[i].nameof_emp;
+                formdata.contactnumber[i].value=resjson.r6[i].contactnumber;
+                formdata.relation[i].value=resjson.r6[i].relation;
+            }
+
+            formdata.noticeperiod.value=resjson.r7[0].noticeperiod;
+            formdata.currentctc.value=resjson.r7[0].currentctc;
+            formdata.expectedctc.value=resjson.r7[0].expectedctc;
+            formdata.department.value=resjson.r7[0].department;
+
+
+            let loc_nodes = document.getElementById('preferredlocation').childNodes;
+            let loc_val = resjson.r7[0].preferredlocation.split(',');
+
+            loc_nodes.forEach(element => {
+                loc_val.forEach(ele => {
+                    if(element.value == ele) {
+                        element.selected = true;
+                    }
+                });
+            });
+
+        }
+        else{
+            alert("Id not exist!");
+            window.location.href="http://localhost:8000/nextform"
+        }
 
         
 
     }
+
+
     ajax_getdata();
+    
 
     async function ajax_fetch(id) {
 
@@ -704,7 +717,7 @@
     
 
     function redirect(){
-        window.location.href="http://localhost:3033/nextform"
+        window.location.href="http://localhost:8000/nextform"
     }
 
 

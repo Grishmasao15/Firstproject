@@ -22,19 +22,27 @@ router.get("/nextform",auth, (req, res) => {
 });
 
 router.get("/id", auth,async (req, res) => {
-  return new Promise(async (resolve, rejects) => {
+  return new Promise(async (resolve, reject) => {
+    
     var id = req.query.id;
-
+    
     if (req.query.id) {
+      console.log("in ifff");
+      console.log("iddd"+id)
+      try{
       var que = `select count(*) as counter from basic_detail where emp_id=${req.query.id}`;
 
       let count = await executeQuery(que);
+      console.log(count);
+      var counter=count[0].counter;
 
 
-      if (count[0].counter >= 1) {
+      if (counter >= 1) {
+        console.log("in if");
         var r1 = await executeQuery(
           `select * from basic_detail where emp_id=${req.query.id}`
         );
+        // console.log(res.json);
         var r2 = await executeQuery(
           `select * from educationdetails where emp_id=${req.query.id}`
         );
@@ -55,10 +63,18 @@ router.get("/id", auth,async (req, res) => {
         var r7 = await executeQuery(
           `select * from preferences where emp_id=${req.query.id}`
         );
-
+      } else {
+        console.log("not exist");
       }
-      var object = { r1: r1, r2: r2, r3: r3, r4: r4, r5: r5, r6: r6, r7: r7 };
-      return resolve(res.json(object));
+      var object = { r1: r1, r2: r2, r3: r3, r4: r4, r5: r5, r6: r6, r7: r7 ,counter:counter};
+        return resolve(res.json(object));
+      }
+
+      catch(err){
+        reject(err);
+        console.log(err);
+      }
+
     }
   });
 });
@@ -71,22 +87,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     //insertion in basic details
     let basicdetail = await executeQuery(
       `INSERT INTO basic_detail SET fname = ?,lname = ?,designation = ?,address1 = ?,address2 = ?,city = ?,phonenumber = ?,email = ?,gender = ?,states = ?,zipcode = ?,relationshipstatus = ?,DOB = ?`,
-      [
-        fname,
-        lname,
-        designation,
-        address1,
-        address2,
-        city,
-        phonenumber,
-        email,
-        gender,
-        states,
-        zipcode,
-        relationshipstatus,
-        DOB,
-      ]
-    );
+      [fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB]);
     console.log(basicdetail.insertId);
 
     //insertion in education details

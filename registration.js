@@ -27,7 +27,6 @@ const FetchfromAPI = require("./src/controllers/fetchfromapi");
 const { auth } = require("./src/controllers/middleware/auth");
 
 
-
 app.use(crudwithfile);
 app.use(fetchDBtask);
 app.use(attendancedetailstask);
@@ -70,13 +69,13 @@ app.post("/storedetails",async (req, res) => {
     `INSERT INTO users SET firstname=?,lastname=?,email=?,mobilenumber=?,activation_code=?`,
     [firstname, lastname, email, mono, activationcode]
   );
-  console.log("data inserted successfully in the database");
+
 
 });
 
 app.get("/thanks/:code",async (req,res)=>{
   var acticode=req.params.code;
-  console.log(acticode);
+
 
   res.render("../src/views/thanks", { acticode: acticode });
 })
@@ -84,15 +83,15 @@ app.get("/thanks/:code",async (req,res)=>{
 app.get("/thanks/:code/:username", async (req, res) => {
   var uname=req.params.username;
   var acticode = req.params.code;
-  console.log(acticode);
-  console.log(uname);
+
+
 
   let date=new Date();
   let ins_date = date.toISOString().slice(0, 10) +" "+ date.toTimeString().slice(0, 8);
 
 
   var que15 = `UPDATE users SET activation_code ='${acticode}',created_at='${ins_date}' WHERE email ='${uname}';`;
-  console.log(que15);
+
   var q15 = await connection.executeQuery(que15);
 
   res.render("../src/views/thanks", { acticode: acticode });
@@ -101,39 +100,37 @@ app.get("/thanks/:code/:username", async (req, res) => {
 app.get('/code/:code',async (req,res)=>{
 
   var actcode=req.params.code;
-  console.log("actc"+actcode);
+
   var que12 = `SELECT COUNT(*) AS count FROM users WHERE activation_code ='${actcode}' `;
-  console.log(que12);
+
   var q1 = await connection.executeQuery(que12);
-  console.log("Count"+q1[0].count);
+
 
   if(q1[0].count>0){
-    console.log(actcode);
+
     if (actcode) {
-      console.log("o"+localdate.getTime());
+
       var p1 = localdate.getTime();
-      console.log(p1);
+
       var result = await connection.executeQuery(
         `select created_at from users where activation_code='${actcode}'`
       );
-      console.log("result"+result[0].created_at);
+
       let temp = result[0].created_at.toString().slice(0, 24);
-      console.log(temp+"temp");
+
       let old = new Date(temp);
       var p2 = old.getTime();
-      console.log(p2);
+
       var timediff = Math.floor((p1 - p2) / 60000);
-      console.log("time diffrence"+" "+timediff);
+
 
       if (timediff > 60) {
         var restwo = await connection.executeQuery(
           `delete from users where activation_code='${actcode}`
         );
-        console.log("in delete");
         res.redirect("/");
       } else {
         res.render("../src/views/createpass", { actcode: actcode });
-        console.log("in else");
       }
     }
   }
@@ -145,12 +142,11 @@ app.post('/storepass',async (req,res)=>{
   var pass=req.body.passsalt;
   var salt=req.body.salt;
   var code=req.body.code;
-  console.log(code);
+
   var encpass = md5(pass);
 
   var qe = `UPDATE users SET passwordof_user="${encpass}",salt="${salt}" where activation_code="${code}"`;
   var q2 = await connection.executeQuery(qe);
-  console.log("password and salt inserted successfully");
   res.render("../src/views/login");
 });
 
@@ -176,14 +172,12 @@ app.get('/forgotpass',(req,res)=>{
 app.get("/loginpage/:username/:pass",async (req,res)=>{
 
   const mail = req.params.username;
-  console.log("in login page"+" "+mail);
-  console.log("in login page" + " " + req.params.pass);
+
 
 
   const p3 = "SELECT COUNT(*) AS count FROM users WHERE email = ?";
   var res1 = await connection.executeQuery(p3, [mail]);
   const mailExist=res1[0].count >=1;
-  console.log("mailexist"+mailExist);
   var passres = false;
 
   if(mailExist==true){
@@ -192,20 +186,16 @@ app.get("/loginpage/:username/:pass",async (req,res)=>{
     var query1 = await connection.executeQuery(p5, [mail]);
     var p7 = query1[0].salt;
     const latestpass= md5(p4+p7);
-    console.log(latestpass);
-    const oldpass=query1[0].passwordof_user
-    console.log(oldpass);
+    const oldpass=query1[0].passwordof_user;
     
 
     if (latestpass == oldpass) {
-      console.log("In main if");
       passres=true;
       var token=jwt.sign({data:latestpass},"secretkey",{expiresIn:'1d'});
       res.cookie("token",token);
  
     }
   }
-  console.log(passres)
   res.send({passres});
 
 
@@ -222,13 +212,10 @@ app.get("/check-email/:email",async (request, response) => {
   const sql = "SELECT COUNT(*) AS count FROM users WHERE email = ?";
 
   var results = await connection.executeQuery(sql, [email]);
-  console.log(results);
 
     const count = results[0].count;
-    console.log(count);
 
     const emailExists = count >= 1;
-    console.log(emailExists);
 
     response.send({ emailExists });
 
@@ -240,7 +227,6 @@ app.get("/check-email/:email",async (request, response) => {
 
 app.get("/htmltask/:result",auth, (req, res) => {
   var result = req.params.result;
-  console.log(result);
 
   res.render("../src/views/" + result);
 });
@@ -248,12 +234,11 @@ app.get("/htmltask/:result",auth, (req, res) => {
 app.get("/function/:functionname",auth,(req,res)=>{
 
   var functionname = req.params.functionname;
-  console.log(functionname);
   
 
   if (functionname === "vowel") {
     // let str="grishma sao";
-    console.log(req.query.str);
+
     ans = f.vowelsConsonants(req.query.str);
     res.send(`<p>Vowels are:`+ ans.vowelStr.toString() +`</p><p>Consonants are:`+ans.consonantStr.toString()+`</p>`+"Note: You can pass your input in url");
     
@@ -261,7 +246,7 @@ app.get("/function/:functionname",auth,(req,res)=>{
   
   else if (functionname === "oddeven") {
     // let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15];
-    console.log(req.query.arr);
+
     let intarr = req.query.arr.split(",");
     ans = p.oddEven(intarr);
 
@@ -350,12 +335,7 @@ app.get("/function/:functionname",auth,(req,res)=>{
 
 
 
-
-
-
-
-
 app.listen(8000,()=>{
     console.log("server is up on 8000");
     
-})
+});
