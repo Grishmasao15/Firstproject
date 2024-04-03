@@ -13,7 +13,7 @@ con.connect((err) => {
   console.log("Connected Database");
 });
 
-var executeQuery = (str, arr)=> {
+let executeQuery = (str, arr)=> {
   return new Promise((resolve, reject) => {
     con.query(str, arr, (err, result) => {
       try{

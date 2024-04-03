@@ -1,27 +1,16 @@
-var router = require("express").Router();
+
 const fs = require("fs");
 
-var parser = require("body-parser");
-const {auth}  = require("./middleware/auth");
-const cookieParser = require("cookie-parser");
-router.use(cookieParser());
-
-router.use(parser.json());
-router.use(parser.urlencoded({ extended: false }));
-
-let alluserData = [];
-let user = [];
-
-router.get("/form",auth,(req, res) => {
+function form(req, res){
   res.render("../src/views/form");
-});
+};
 
-router.post("/showall", auth, (req, res) => {
+function showAll(req, res){
   let obj = JSON.parse(fs.readFileSync("alldata.json"));
   res.render("../src/views/table", { obj: obj });
-});
+};
 
-router.post("/submit", auth, (req, res) => {
+function submit(req, res){
   let obj = {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -56,11 +45,11 @@ router.post("/submit", auth, (req, res) => {
     email: req.body.email,
     hobbies: req.body.hobbies,
   });
-});
+};
 
-router.post("/alldetails", auth, (req, res) => {
+function allDetails(req, res){
   let obj = JSON.parse(fs.readFileSync("alldata.json"));
   res.render("../src/views/alldetails", { mail: req.body.mail, obj: obj });
-});
+};
 
-module.exports=router;
+module.exports = { form, showAll, submit, allDetails };

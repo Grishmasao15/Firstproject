@@ -1,141 +1,82 @@
 var router = require("express").Router();
-
 const connection = require("../models/connection");
-const { auth } = require("./middleware/auth");
 
-var parser = require("body-parser");
 
-router.use(parser.json());
-router.use(parser.urlencoded({ extended: false }));
+async function delemiterSearchTask(req, res) {
+  let result= await connection.executeQuery("select * from student_master limit 1000")
+    res.render("../src/views/home", { data: result });
+};
 
-var search;
-
-router.get("/delemitersearchtask", auth,function (req, res) {
-  connection.con.query(
-    "select * from student_master limit 1000",
-    function (err, result) {
-      if (err) throw err;
-      res.render("../src/views/home", { data: result });
-    }
-  );
-});
-
-router.post("/delemitersearch",auth, function (req, res) {
-  str = req.body.search;
+async function delemiterSearch(req, res) {
+  let str = req.body.search;
   let firstname = [];
   let lastname = [];
   let email = [];
   let contact_no = [];
   let city = [];
+  let temp=0;
+  let tempstr;
 
   for (let i = 0; i < str.length; i++) {
     switch (str[i]) {
       case "_":
-        var temp = 0;
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (
-            str[j] == "_" ||
-            str[j] == "^" ||
-            str[j] == "$" ||
-            str[j] == "{" ||
-            str[j] == ":" ||
-            j == str.length
-          ) {
+          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
             temp = j;
             break;
           }
         }
-        var tempstr = str.slice(i + 1, temp);
-        console.log(tempstr);
+        tempstr = str.slice(i + 1, temp);
         firstname.push(tempstr);
         break;
 
       case "^":
-        var temp = 0;
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (
-            str[j] == "_" ||
-            str[j] == "^" ||
-            str[j] == "$" ||
-            str[j] == "{" ||
-            str[j] == ":" ||
-            j == str.length
-          ) {
+          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
             temp = j;
             break;
           }
         }
-        var tempstr = str.slice(i + 1, temp);
+        tempstr = str.slice(i + 1, temp);
         lastname.push(tempstr);
-        console.log("in switch:" + tempstr);
         break;
 
       case "$":
-        var temp = 0;
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (
-            str[j] == "_" ||
-            str[j] == "^" ||
-            str[j] == "$" ||
-            str[j] == "{" ||
-            str[j] == ":" ||
-            j == str.length
-          ) {
+          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
             temp = j;
             break;
           }
         }
-        var tempstr = str.slice(i + 1, temp);
+        tempstr = str.slice(i + 1, temp);
         email.push(tempstr);
         break;
 
       case "{":
-        var temp = 0;
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (
-            str[j] == "_" ||
-            str[j] == "^" ||
-            str[j] == "$" ||
-            str[j] == "{" ||
-            str[j] == ":" ||
-            j == str.length
-          ) {
+          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
             temp = j;
             break;
           }
         }
-        var tempstr = str.slice(i + 1, temp);
+        tempstr = str.slice(i + 1, temp);
         contact_no.push(tempstr);
         break;
 
       case ":":
-        var temp = 0;
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (
-            str[j] == "_" ||
-            str[j] == "^" ||
-            str[j] == "$" ||
-            str[j] == "{" ||
-            str[j] == ":" ||
-            j == str.length
-          ) {
+          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
             temp = j;
             break;
           }
         }
-        var tempstr = str.slice(i + 1, temp);
+        tempstr = str.slice(i + 1, temp);
         city.push(tempstr);
         break;
     }
   }
 
-  console.log(firstname);
-  console.log(lastname);
-  console.log(email);
-  console.log(contact_no);
-  console.log(city);
-
-  var sql = `select * from student_master where`;
+  let sql = `select * from student_master where`;
 
   if (firstname.length > 1) {
     sql += "(";
@@ -159,7 +100,6 @@ router.post("/delemitersearch",auth, function (req, res) {
     sql += ` and `;
   } else if (lastname.length == 1) {
     sql += `lastname like '%${lastname[0]}%' and `;
-    console.log("in lastname:" + lastname[0]);
   }
 
   if (email.length > 1) {
@@ -199,16 +139,10 @@ router.post("/delemitersearch",auth, function (req, res) {
   }
 
   sql = sql.slice(0, sql.length - 5);
-  console.log(sql);
-
   connection.con.query(sql, function (err, result, fields) {
     if (err) throw err;
-    res.render("../src/views/delemitersearch", {
-      result: result,
-      fields: fields,
-      str: str,
-    });
+    res.render("../src/views/delemitersearch", {result: result,fields: fields,str: str});
   });
-});
+};
 
-module.exports=router;
+module.exports = { delemiterSearchTask, delemiterSearch };

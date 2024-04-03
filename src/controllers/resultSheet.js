@@ -7,7 +7,7 @@ var rescounter = 0;
 var pagenumber = 1;
 
 
-router.get("/resultdetails",auth, function (req, res) {
+async function resultDetails(req, res) {
 
     var sort = req.query.sort;
 
@@ -34,68 +34,46 @@ router.get("/resultdetails",auth, function (req, res) {
 
     if (req.query.id == undefined) {
       rescounter = 0;
+      pagenumber = 1;
 
-      connection.con.query(sql, [rescounter], function (err, result) {
-        if (err) throw err;
-        pagenumber = 1;
-        res.render("../src/views/result2", {
-          data: result,
-          pagenumber: pagenumber,
-          rescounter: rescounter,
-        });
-      });
+      let result=await connection.executeQuery(sql, [rescounter]);
+      res.render("../src/views/result2", {data: result,pagenumber: pagenumber,rescounter: rescounter});
+
     } else if (req.query.id == "next") {
       rescounter = parseInt(req.query.rescounter) + 50;
       pagenumber = parseInt(req.query.pagenumber) + 1;
-      connection.con.query(sql, [rescounter], function (err, result) {
-        if (err) throw err;
-        pagenumber = rescounter / 50 + 1;
-        res.render("../src/views/result2", {
-          data: result,
-          pagenumber: pagenumber,
-          rescounter: rescounter,
-        });
-      });
+      let result= await connection.executeQuery(sql, [rescounter]);
+      pagenumber = rescounter / 50 + 1;
+      res.render("../src/views/result2", {  data: result,  pagenumber: pagenumber,  rescounter: rescounter});
+
+
     } else if (req.query.id == "prev") {
       rescounter = parseInt(req.query.rescounter) - 50;
       pagenumber = parseInt(req.query.pagenumber) - 1;
-      connection.con.query(sql, [rescounter], function (err, result) {
-        if (err) throw err;
-        pagenumber = rescounter / 50 + 1;
-        res.render("../src/views/result2", {
-          data: result,
-          pagenumber: pagenumber,
-          rescounter: rescounter,
-        });
-      });
+      pagenumber = rescounter / 50 + 1;
+      let result=await connection.executeQuery(sql, [rescounter])
+      res.render("../src/views/result2", {  data: result,  pagenumber: pagenumber,  rescounter: rescounter});
+
+
     } else if (req.query.id == "end") {
       rescounter = 150;
-      pagenumber = 4;
-      connection.con.query(sql, [rescounter], function (err, result) {
-        if (err) throw err;
-        res.render("../src/views/result2", {
-          data: result,
-          pagenumber: pagenumber,
-          rescounter: rescounter,
-        });
-      });
+      pagenumber = rescounter / 50 + 1;
+      let result =await connection.executeQuery(sql, [rescounter]);
+      res.render("../src/views/result2", {  data: result,  pagenumber: pagenumber,  rescounter: rescounter});
+
+
     } else if (req.query.id == "home") {
       rescounter = 0;
-      pagenumber = 1;
-      connection.con.query(sql, [rescounter], function (err, result) {
-        if (err) throw err;
-        res.render("../src/views/result2", {
-          data: result,
-          pagenumber: pagenumber,
-          rescounter: rescounter,
-        });
-      });
+      pagenumber = rescounter / 50 + 1;
+      let result = await connection.executeQuery(sql, [rescounter]);
+      res.render("../src/views/result2", {  data: result,  pagenumber: pagenumber,  rescounter: rescounter});
     }
-  });
+  
+};
 
-  router.get("/viewdetails", auth, function (req, res) {
-    sid = req.query.id;
-    var q = `select student_master.stu_id,student_master.firstname,student_master.lastname,subject_master.subject_id,subject_master.subject_name,
+async function viewDeatils (req, res) {
+    let id = req.query.id;
+    let sql = `select student_master.stu_id,student_master.firstname,student_master.lastname,subject_master.subject_id,subject_master.subject_name,
              max(case when result_master.exam_id='1' then result_master.practical_obtained end)as terminal_practical,
              max(case when result_master.exam_id='2' then result_master.practical_obtained end)as prelims_practical,
              max(case when result_master.exam_id='3' then result_master.practical_obtained end)as final_practical,
@@ -105,14 +83,12 @@ router.get("/resultdetails",auth, function (req, res) {
              from student_master
              join result_master on student_master.stu_id=result_master.stu_id
              join subject_master on result_master.subject_id=subject_master.subject_id
-             where student_master.stu_id=${sid}
+             where student_master.stu_id=${id}
              group by student_master.stu_id,student_master.firstname,student_master.lastname,subject_master.subject_id,subject_master.subject_name;`;
 
-    connection.con.query(q, function (err, result) {
-      if (err) throw err;
-      res.render("../src/views/viewdetail2", { data: result });
-    });
-  });
+    let result = await connection.executeQuery(sql)
+    res.render("../src/views/viewdetail2", { data: result });
+};
 
-  module.exports=router;
+module.exports = { resultDetails, viewDeatils };
 

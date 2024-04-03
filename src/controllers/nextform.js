@@ -8,66 +8,40 @@ var parser = require("body-parser");
 router.use(parser.json());
 router.use(parser.urlencoded({ extended: false }));
 
-function executeQuery(str, arr) {
-  return new Promise((resolve, reject) => {
-    connection.con.query(str, arr, (err, result) => {
-      if (err) reject(err);
-      else resolve(result);
-    });
-  });
-}
 
-router.get("/nextform",auth, (req, res) => {
+async function nextform(req, res)  {
   res.render("../src/views/nextform");
-});
+};
 
-router.get("/id", auth,async (req, res) => {
+async function update(req, res) {
   return new Promise(async (resolve, reject) => {
     
-    var id = req.query.id;
+    let id = req.query.id;
     
-    if (req.query.id) {
-      console.log("in ifff");
-      console.log("iddd"+id)
+    if (id) {
       try{
-      var que = `select count(*) as counter from basic_detail where emp_id=${req.query.id}`;
+      let query = `select count(*) as counter from basic_detail where emp_id=${req.query.id}`;
 
-      let count = await executeQuery(que);
-      console.log(count);
-      var counter=count[0].counter;
+      let count = await connection.executeQuery(query);
+      let counter=count[0].counter;
 
 
       if (counter >= 1) {
         console.log("in if");
-        var r1 = await executeQuery(
-          `select * from basic_detail where emp_id=${req.query.id}`
-        );
-        // console.log(res.json);
-        var r2 = await executeQuery(
-          `select * from educationdetails where emp_id=${req.query.id}`
-        );
-        var r3 = await executeQuery(
-          `select * from work_experience where emp_id=${req.query.id}`
-        );
-        var r4 = await executeQuery(
-          `select * from languageknown where emp_id=${req.query.id}`
-        );
-
-        var r5 = await executeQuery(
-          `select * from technologyknown where emp_id=${req.query.id}`
-        );
-
-        var r6 = await executeQuery(
-          `select * from reference_contact where emp_id=${req.query.id}`
-        );
-        var r7 = await executeQuery(
-          `select * from preferences where emp_id=${req.query.id}`
-        );
+        let r1 = await connection.executeQuery(`select * from basic_detail where emp_id=${req.query.id}`);
+        let r2 = await connection.executeQuery(`select * from educationdetails where emp_id=${req.query.id}`);
+        let r3 = await connection.executeQuery(`select * from work_experience where emp_id=${req.query.id}`);
+        let r4 = await connection.executeQuery(`select * from languageknown where emp_id=${req.query.id}`);
+        let r5 = await connection.executeQuery(`select * from technologyknown where emp_id=${req.query.id}`);
+        let r6 = await connection.executeQuery(`select * from reference_contact where emp_id=${req.query.id}`);
+        let r7 = await connection.executeQuery(`select * from preferences where emp_id=${req.query.id}`);
+        
+        let object = { r1: r1, r2: r2, r3: r3, r4: r4, r5: r5, r6: r6, r7: r7 ,counter:counter};
+          return resolve(res.json(object));
+        
       } else {
         console.log("not exist");
       }
-      var object = { r1: r1, r2: r2, r3: r3, r4: r4, r5: r5, r6: r6, r7: r7 ,counter:counter};
-        return resolve(res.json(object));
       }
 
       catch(err){
@@ -77,15 +51,15 @@ router.get("/id", auth,async (req, res) => {
 
     }
   });
-});
+};
 
-router.post("/nextformstoredetails",auth, async (req, res) => {
+async function storeDetails(req, res) {
   if (req.body.empid == "") {
     const {fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB,companyname,pastdesignation,from,to,lang,hindi,english,gujarati,tech,php,mysql,laravel,oracle,name,contactnumber,relation,preferredlocation,noticeperiod,expectedctc,currentctc,department,
     } = req.body;
 
     //insertion in basic details
-    let basicdetail = await executeQuery(
+    let basicdetail = await connection.executeQuery(
       `INSERT INTO basic_detail SET fname = ?,lname = ?,designation = ?,address1 = ?,address2 = ?,city = ?,phonenumber = ?,email = ?,gender = ?,states = ?,zipcode = ?,relationshipstatus = ?,DOB = ?`,
       [fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB]);
     console.log(basicdetail.insertId);
@@ -93,7 +67,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     //insertion in education details
     for (let i = 0; i < 4; i++) {
       if (req.body.nameofboard[i]) {
-        let edudetail = await executeQuery(
+        let edudetail = await connection.executeQuery(
           `INSERT INTO educationdetails(emp_id,nameofboard_or_coursename,passingyear,percentage) VALUES('${basicdetail.insertId}','${req.body.nameofboard[i]}','${req.body.passingyear[i]}','${req.body.percentage[i]}')`
         );
       }
@@ -102,7 +76,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     //insertion in work experience
     for (let i = 0; i < 3; i++) {
       if (req.body.companyname[i]) {
-        let workexp = await executeQuery(
+        let workexp = await connection.executeQuery(
           `INSERT INTO work_experience(emp_id,companyname,designation,from_date,to_date) VALUES('${basicdetail.insertId}','${req.body.companyname[i]}','${req.body.pastdesignation[i]}','${req.body.from[i]}','${req.body.to[i]}')`
         );
       }
@@ -119,7 +93,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
 
       q4 = q4.slice(0, q4.length - 1);
 
-      let langknown = await executeQuery(q4);
+      let langknown = await connection.executeQuery(q4);
     } else if (req.body.lang != undefined) {
       var q4 = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
 
@@ -128,7 +102,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
         q4 += `(${basicdetail.insertId},'${req.body.lang}','${req.body[a]}')`;
       }
 
-      let langknown = await executeQuery(q4);
+      let langknown = await connection.executeQuery(q4);
     }
 
     //insertion in technology known
@@ -141,7 +115,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
       }
 
       q5 = q5.slice(0, q5.length - 1);
-      let techknown = await executeQuery(q5);
+      let techknown = await connection.executeQuery(q5);
     } else if (req.body.tech != undefined) {
       var q5 = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
 
@@ -150,14 +124,14 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
         q5 += `(${basicdetail.insertId},'${req.body.tech}','${req.body[b]}')`;
       }
 
-      let techknown = await executeQuery(q5);
+      let techknown = await connection.executeQuery(q5);
     }
 
     //insertion in reference contact
     for (let i = 0; i < 2; i++) {
       if (req.body.name[i]) {
         let refcontact =
-          await executeQuery(`INSERT INTO reference_contact(emp_id,nameof_emp,contactnumber,relation) 
+          await connection.executeQuery(`INSERT INTO reference_contact(emp_id,nameof_emp,contactnumber,relation) 
     VALUES('${basicdetail.insertId}','${req.body.name[i]}','${req.body.contactnumber[i]}','${req.body.relation[i]}')`);
       }
     }
@@ -179,7 +153,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
       var q12 = `INSERT INTO preferences(emp_id,preferredlocation,noticeperiod,expectedctc,currentctc,department) 
             VALUES('${basicdetail.insertId}','${pl}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}','${req.body.department}')`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     } else if (
       typeof req.body.preferredlocation != "string" &&
@@ -196,7 +170,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
       var q12 = `INSERT INTO preferences(emp_id,preferredlocation,noticeperiod,expectedctc,currentctc) 
             VALUES('${basicdetail.insertId}','${pl}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}')`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     } else if (
       typeof req.body.preferredlocation == "string" &&
@@ -206,7 +180,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
       var q12 = `INSERT INTO preferences(emp_id,preferredlocation,noticeperiod,expectedctc,currentctc,department) 
             VALUES('${basicdetail.insertId}','${req.body.preferredlocation}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}','${req.body.department}')`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     } else if (
       typeof req.body.preferredlocation == "string" &&
@@ -216,7 +190,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
       var q12 = `INSERT INTO preferences(emp_id,preferredlocation,noticeperiod,expectedctc,currentctc) 
             VALUES('${basicdetail.insertId}','${req.body.preferredlocation}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}')`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
    
     } ////
     else if (
@@ -226,7 +200,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
       var q12 = `INSERT INTO preferences(emp_id,noticeperiod,expectedctc,currentctc,department) 
             VALUES('${basicdetail.insertId}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}','${req.body.department}')`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     } else if (
       req.body.preferredlocation == undefined &&
@@ -235,7 +209,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
       var q12 = `INSERT INTO preferences(emp_id,noticeperiod,expectedctc,currentctc) 
             VALUES('${basicdetail.insertId}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}')`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     }
   } else {
@@ -246,7 +220,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     } = req.body;
 
     //update in basic_detail
-    let basicdetail = await executeQuery(
+    let basicdetail = await connection.executeQuery(
       `UPDATE basic_detail SET fname = ?,lname = ?,designation = ?,address1 = ?,address2 = ?,city = ?,phonenumber = ?,email = ?,gender = ?,states = ?,zipcode = ?,relationshipstatus = ?,DOB = ? WHERE emp_id=${id}`,
       [
         fname,
@@ -266,26 +240,26 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     );
 
     //update in education detail
-    var q = await executeQuery(
+    var q = await connection.executeQuery(
       `select education_id from educationdetails where emp_id=${id}`
     );
 
     for (let i = 0; i < 4; i++) {
       if (req.body.nameofboard[i]) {
-        let edudetail = await executeQuery(
+        let edudetail = await connection.executeQuery(
           `UPDATE educationdetails SET nameofboard_or_coursename = '${req.body.nameofboard[i]}',passingyear = "${req.body.passingyear[i]}",percentage = "${req.body.percentage[i]}" WHERE education_id=${q[i].education_id}`
         );
       }
     }
 
     //update in work experience
-    var que6 = await executeQuery(
+    var que6 = await connection.executeQuery(
       `delete from work_experience where emp_id=${id}`
     );
 
     for (let i = 0; i < 3; i++) {
       if (req.body.companyname[i]) {
-        let workexp = await executeQuery(
+        let workexp = await connection.executeQuery(
           `INSERT INTO work_experience(emp_id,companyname,designation,from_date,to_date) VALUES('${id}','${req.body.companyname[i]}','${req.body.pastdesignation[i]}','${req.body.from[i]}','${req.body.to[i]}')`
         );
       }
@@ -293,7 +267,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
 
     //update in language known
 
-    var que3 = await executeQuery(
+    var que3 = await connection.executeQuery(
       `delete from languageknown where emp_id=${id}`
     );
 
@@ -307,7 +281,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
 
       q4 = q4.slice(0, q4.length - 1);
 
-      let langknown = await executeQuery(q4);
+      let langknown = await connection.executeQuery(q4);
     } else {
       var q4 = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
 
@@ -316,12 +290,12 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
         q4 += `(${id},'${req.body.lang}','${req.body[a]}')`;
       }
 
-      let langknown = await executeQuery(q4);
+      let langknown = await connection.executeQuery(q4);
     }
 
     //update in technology known
 
-    var que4 = await executeQuery(
+    var que4 = await connection.executeQuery(
       `delete from technologyknown where emp_id=${id}`
     );
 
@@ -334,7 +308,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
       }
 
       q5 = q5.slice(0, q5.length - 1);
-      let techknown = await executeQuery(q5);
+      let techknown = await connection.executeQuery(q5);
     } else if (req.body.lang.length) {
       var q5 = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
 
@@ -343,19 +317,19 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
         q5 += `(${id},'${req.body.tech}','${req.body[b]}')`;
       }
 
-      let techknown = await executeQuery(q5);
+      let techknown = await connection.executeQuery(q5);
     }
 
     //update in reference_contact
 
-    var que5 = await executeQuery(
+    var que5 = await connection.executeQuery(
       `delete from reference_contact where emp_id=${id}`
     );
 
     for (let i = 0; i < 2; i++) {
       if (req.body.name[i]) {
         let refcontact =
-          await executeQuery(`INSERT INTO reference_contact(emp_id,nameof_emp,contactnumber,relation) 
+          await connection.executeQuery(`INSERT INTO reference_contact(emp_id,nameof_emp,contactnumber,relation) 
             VALUES('${id}','${req.body.name[i]}','${req.body.contactnumber[i]}','${req.body.relation[i]}')`);
       }
     }
@@ -377,7 +351,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
 
       var q12 = `UPDATE preferences SET preferredlocation='${pl}',noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}',department='${req.body.department}' WHERE emp_id=${id}`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     } else if (
       typeof req.body.preferredlocation != "string" &&
@@ -394,7 +368,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
 
       var q12 = `UPDATE preferences SET preferredlocation='${pl}',noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}' WHERE emp_id=${id}`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
  
     } else if (
       typeof req.body.preferredlocation == "string" &&
@@ -403,7 +377,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     ) {
       var q12 = `UPDATE preferences SET preferredlocation='${req.body.preferredlocation}',noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}',department='${req.body.department}' WHERE emp_id=${id}`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     } else if (
       typeof req.body.preferredlocation == "string" &&
@@ -412,7 +386,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     ) {
       var q12 = `UPDATE preferences SET preferredlocation='${req.body.preferredlocation}',noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}' WHERE emp_id=${id}`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     } else if (
       req.body.preferredlocation == undefined &&
@@ -420,7 +394,7 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     ) {
       var q12 = `UPDATE preferences SET noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}',department='${req.body.department}' WHERE emp_id=${id}`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
  
     } else if (
       req.body.preferredlocation == undefined &&
@@ -428,10 +402,10 @@ router.post("/nextformstoredetails",auth, async (req, res) => {
     ) {
       var q12 = `UPDATE preferences SET noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}' WHERE emp_id=${id}`;
 
-      let pref = await executeQuery(q12);
+      let pref = await connection.executeQuery(q12);
 
     }
   }
-});
+};
 
-module.exports=router;
+module.exports={nextform,update,storeDetails};

@@ -10,22 +10,28 @@ function vowelsConsonants(str){
     let vowels = ["A", "E", "I", "O", "U", "a", "e", "i", "o", "u"];
     let vowelStr=[];
     let consonantStr=[]; 
+    let res = "";
+    let res2="";
 
 
-    for(let i=0;i<arr.length;i++){
-        if(arr[i].charCodeAt(0)==32){
-            continue;
-        }
-
-        else if (vowels.includes(str[i])){
-            vowelStr.push(str[i])
-        }
-
-        else{
-           consonantStr.push(str[i])
+    if(arr.length==0){
+        res2="Please enter input"
+    }
+    else{
+        
+        for(let i=0;i<arr.length;i++){
+            
+            if (!isNaN(arr[i])) {
+              res = "please pass the valid input string"
+            } else if (vowels.includes(str[i])) {
+              vowelStr.push(str[i]);
+            } else {
+              consonantStr.push(str[i]);
+            }
         }
     }
-    return {vowelStr,consonantStr};
+
+    return { vowelStr, consonantStr, res, res2 };
     // console.log(vowelStr);
     // console.log(consonantStr);
 }
