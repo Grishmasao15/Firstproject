@@ -512,11 +512,11 @@
                 document.getElementById("newrow").innerHTML="";
             }
 
-    var currentTab = 0;
+    let currentTab = 0;
     showTab(currentTab);
 
     function showTab(n) {
-        var x = document.querySelectorAll(".tab");
+        let x = document.querySelectorAll(".tab");
 
         x.forEach(function(ele, index) {
             if(index == n) {
@@ -539,177 +539,194 @@
         }
     }
 
-    var id=window.location.search.slice(4);
+    let id=window.location.search.slice(4);
     console.log(id);
     document.getElementById('id').value = id;
     var formdata=document.forms['myForm'];
     console.log(formdata);
+    if(id){
+        ajax_getdata();
+    }
  
 
     async function ajax_getdata(){
-        var result=await fetch("/id?id="+id);
-        console.log(result);
-        var resjson=await result.json();
-        var count=resjson.counter;
-    
-        if(count >= 1){    
+        try{
+            var result=await fetch("/id?id="+id);
+            var resjson=await result.json();
+            var count=resjson.counter;
+            
+            if(count >= 1){    
 
-        
-            formdata.fname.value=resjson.r1[0].fname;
-            formdata.lname.value=resjson.r1[0].lname;
-            formdata.designation.value=resjson.r1[0].designation;
-            formdata.email.value=resjson.r1[0].email;
-            formdata.phonenumber.value=resjson.r1[0].phonenumber;
-            formdata.address1.value=resjson.r1[0].address1; 
-            formdata.city.value=resjson.r1[0].city;
-            formdata.address2.value=resjson.r1[0].address2;
-            formdata.gender.value=resjson.r1[0].gender; 
-            formdata.zipcode.value=resjson.r1[0].zipcode;
-            formdata.DOB.value=resjson.r1[0].DOB;
-            formdata.relationshipstatus.value=resjson.r1[0].relationshipstatus;
-            formdata.states.value=resjson.r1[0].states;     
+            
+                formdata.fname.value=resjson.r1[0].fname;
+                formdata.lname.value=resjson.r1[0].lname;
+                formdata.designation.value=resjson.r1[0].designation;
+                formdata.email.value=resjson.r1[0].email;
+                formdata.phonenumber.value=resjson.r1[0].phonenumber;
+                formdata.address1.value=resjson.r1[0].address1; 
+                formdata.city.value=resjson.r1[0].city;
+                formdata.address2.value=resjson.r1[0].address2;
+                formdata.gender.value=resjson.r1[0].gender; 
+                formdata.zipcode.value=resjson.r1[0].zipcode;
+                formdata.DOB.value=resjson.r1[0].DOB;
+                formdata.relationshipstatus.value=resjson.r1[0].relationshipstatus;
+                formdata.states.value=resjson.r1[0].states;     
 
-            for(let i=0;i<resjson.r2.length;i++){
-                formdata.nameofboard[i].value=resjson.r2[i].nameofboard_or_coursename;
-                formdata.passingyear[i].value=resjson.r2[i].passingyear;
-                formdata.percentage[i].value=resjson.r2[i].percentage;
-            }
-
-            for(let i=0;i<resjson.r3.length;i++){
-                formdata.companyname[i].value=resjson.r3[i].companyname;
-                formdata.pastdesignation[i].value=resjson.r3[i].designation;
-                formdata.from[i].value=resjson.r3[i].from_date;
-                formdata.to[i].value=resjson.r3[i].to_date;
-            }
-
-            for(let i=0;i<resjson.r4.length;i++){
-                if(resjson.r4[i].language_name){
-                    document.getElementById(resjson.r4[i].language_name).checked=true;
-
-                if(resjson.r4[i].rws.includes("read")){
-                    document.getElementById(resjson.r4[i].language_name+"read").checked=true;
-                }
-                if(resjson.r4[i].rws.includes("write")){
-                    document.getElementById(resjson.r4[i].language_name+"write").checked=true;
-                }
-                if(resjson.r4[i].rws.includes("speak")){
-                    document.getElementById(resjson.r4[i].language_name+"speak").checked=true;
+                for(let i=0;i<resjson.r2.length;i++){
+                    formdata.nameofboard[i].value=resjson.r2[i].nameofboard_or_coursename;
+                    formdata.passingyear[i].value=resjson.r2[i].passingyear;
+                    formdata.percentage[i].value=resjson.r2[i].percentage;
                 }
 
+                for(let i=0;i<resjson.r3.length;i++){
+                    formdata.companyname[i].value=resjson.r3[i].companyname;
+                    formdata.pastdesignation[i].value=resjson.r3[i].designation;
+                    formdata.from[i].value=resjson.r3[i].from_date;
+                    formdata.to[i].value=resjson.r3[i].to_date;
                 }
 
-            }
+                for(let i=0;i<resjson.r4.length;i++){
+                    if(resjson.r4[i].language_name){
+                        document.getElementById(resjson.r4[i].language_name).checked=true;
 
-            for(let i=0;i<resjson.r5.length;i++){
-
-                if(resjson.r5[i].technology_name){
-                    document.getElementById(resjson.r5[i].technology_name+"label").checked=true;
-
-                if(resjson.r5[i].level_of_expertise=='beginner'){
-                    document.getElementById(`${resjson.r5[i].technology_name}`+"beginner").checked=true;
-                }
-                if(resjson.r5[i].level_of_expertise=='mideator'){
-                    document.getElementById(resjson.r5[i].technology_name+"mideator").checked=true;
-                }
-                if(resjson.r5[i].level_of_expertise=='expert'){
-                    document.getElementById(resjson.r5[i].technology_name+"expert").checked=true;
-                }
-
-                }
-
-            }
-
-            for(let i=0;i<resjson.r6.length;i++){
-
-                formdata.name[i].value=resjson.r6[i].nameof_emp;
-                formdata.contactnumber[i].value=resjson.r6[i].contactnumber;
-                formdata.relation[i].value=resjson.r6[i].relation;
-            }
-
-            formdata.noticeperiod.value=resjson.r7[0].noticeperiod;
-            formdata.currentctc.value=resjson.r7[0].currentctc;
-            formdata.expectedctc.value=resjson.r7[0].expectedctc;
-            formdata.department.value=resjson.r7[0].department;
-
-
-            let loc_nodes = document.getElementById('preferredlocation').childNodes;
-            let loc_val = resjson.r7[0].preferredlocation.split(',');
-
-            loc_nodes.forEach(element => {
-                loc_val.forEach(ele => {
-                    if(element.value == ele) {
-                        element.selected = true;
+                    if(resjson.r4[i].rws.includes("read")){
+                        document.getElementById(resjson.r4[i].language_name+"read").checked=true;
                     }
-                });
-            });
+                    if(resjson.r4[i].rws.includes("write")){
+                        document.getElementById(resjson.r4[i].language_name+"write").checked=true;
+                    }
+                    if(resjson.r4[i].rws.includes("speak")){
+                        document.getElementById(resjson.r4[i].language_name+"speak").checked=true;
+                    }
 
+                    }
+
+                }
+
+                for(let i=0;i<resjson.r5.length;i++){
+
+                    if(resjson.r5[i].technology_name){
+                        document.getElementById(resjson.r5[i].technology_name+"label").checked=true;
+
+                    if(resjson.r5[i].level_of_expertise=='beginner'){
+                        document.getElementById(`${resjson.r5[i].technology_name}`+"beginner").checked=true;
+                    }
+                    if(resjson.r5[i].level_of_expertise=='mideator'){
+                        document.getElementById(resjson.r5[i].technology_name+"mideator").checked=true;
+                    }
+                    if(resjson.r5[i].level_of_expertise=='expert'){
+                        document.getElementById(resjson.r5[i].technology_name+"expert").checked=true;
+                    }
+
+                    }
+
+                }
+
+                for(let i=0;i<resjson.r6.length;i++){
+
+                    formdata.name[i].value=resjson.r6[i].nameof_emp;
+                    formdata.contactnumber[i].value=resjson.r6[i].contactnumber;
+                    formdata.relation[i].value=resjson.r6[i].relation;
+                }
+
+                formdata.noticeperiod.value=resjson.r7[0].noticeperiod;
+                formdata.currentctc.value=resjson.r7[0].currentctc;
+                formdata.expectedctc.value=resjson.r7[0].expectedctc;
+                formdata.department.value=resjson.r7[0].department;
+
+
+                let loc_nodes = document.getElementById('preferredlocation').childNodes;
+                let loc_val = resjson.r7[0].preferredlocation.split(',');
+
+                loc_nodes.forEach(element => {
+                    loc_val.forEach(ele => {
+                        if(element.value == ele) {
+                            element.selected = true;
+                        }
+                    });
+                });
+
+            }
+            else{
+                alert(resjson.str);
+                window.location.href="http://localhost:8000/nextform"
+            }
         }
-        else{
-            alert("Id not exist!");
-            window.location.href="http://localhost:8000/nextform"
-        }
+        catch(err){
+            console.log(err);
+        }    
 
         
 
     }
 
 
-    ajax_getdata();
+    
     
 
     async function ajax_fetch(id) {
 
-        const form = document.getElementById(id);
-        const obj = new URLSearchParams(new FormData(form));
-        console.log(obj);
-        let res1 = await fetch("http://localhost:8000/nextformstoredetails",
-        {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            method: "POST",
-            body: obj
-        })
+        try{
+            const form = document.getElementById(id);
+            const obj = new URLSearchParams(new FormData(form));
+            console.log(obj);
+            let res1 = await fetch("http://localhost:8000/nextformstoredetails",
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                method: "POST",
+                body: obj
+            })
+        }
+        catch(err){
+            console.log(err);
+        }
 
     }
 
     function nextPrev(n) {
-        console.log("Before : "+currentTab);
-        var x = document.querySelectorAll(".tab");
-        if (n == 1 && !validateForm()) {
-            return false;
-        }
+        try{
+            console.log("Before : "+currentTab);
+            var x = document.querySelectorAll(".tab");
+            if (n == 1 && !validateForm()) {
+                return false;
+            }
 
-        else {
+            else {
 
-        x[currentTab].style.display = "none";
+            x[currentTab].style.display = "none";
 
-        currentTab = currentTab + n;
+            currentTab = currentTab + n;
 
-        console.log("After : "+currentTab);
+            console.log("After : "+currentTab);
 
-        if (currentTab >= x.length) {
+            if (currentTab >= x.length) {
 
-            ajax_fetch('myForm');
-            showTab(x.length-1);
-            document.getElementById('nextBtn').disabled = true;
-            document.getElementById('prevBtn').disabled = true;
-            if(document.getElementById("id").value==""){
-                alert("form inserted successfully!");
-                redirect();
+                ajax_fetch('myForm');
+                showTab(x.length-1);
+                document.getElementById('nextBtn').disabled = true;
+                document.getElementById('prevBtn').disabled = true;
+                if(document.getElementById("id").value==""){
+                    alert("form inserted successfully!");
+                    redirect();
+
+                }
+                else{
+                    alert("form updated successfully!");
+                    redirect();
+                
+                }
 
             }
-            else{
-                alert("form updated successfully!");
-                redirect();
-   
+            else {
+               showTab(currentTab);
             }
-            
-        }
-        else {
-           showTab(currentTab);
-        }
 
+            }
+        }
+        catch(err){
+            console.log(err);
         }
 
         
@@ -722,79 +739,104 @@
 
 
     function validateForm() {
+        
 
         if(currentTab==0){
             
-            //empty field validation    
+            //empty field validation
             let arr=['fname','lname','email','phonenumber','city','address1','DOB','designation','zipcode'];
-
             for(let i=0;i<arr.length;i++){
-
-                if(document.getElementById(arr[i]).value.trim() === ""){
-
-                    document.getElementById("error"+arr[i]).innerHTML = "this field must be filled out";
+            try{    
+                if(document.getElementById(arr[i]).value.trim() === "") throw "this field must be filled out"
+            }
+            catch(err){
+                if(err!="this field must be filled out"){
+                    console.log(err);
+                    return false;
+                }
+                else{
+                    document.getElementById("error"+arr[i]).innerHTML=err;
                     document.getElementById(arr[i]).focus();
                     return false;
-                    
                 }
             }
-
+                
+            }
             //DOB validation
 
+            
             let dob=document.getElementById('DOB').value;
-            var pattern =/^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
+            let pattern =/^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
 
-            if(!pattern.test(dob)){
-
-                 document.getElementById('errorDOB').innerHTML = "enter valid date";
-                 document.getElementById('DOB').focus();
-                 return false;
-
+            try{
+               if(dob && !pattern.test(dob)) throw "enter valid date" 
             }
+            catch(err){
+                document.getElementById('errorDOB').innerHTML = err;
+                document.getElementById('DOB').focus();
+                return false;
+            
+            }
+            
 
             //radio button selected or not
-            var selected = document.querySelector('input[name="gender"]:checked');
+            let selected = document.querySelector('input[name="gender"]:checked');
 
-            if (!selected) {
-                document.getElementById('radiocheck').innerHTML = "Not any radio button is selected!";
+            try{
+               if (!selected) throw "Not any radio button is selected!" 
+            }
+            catch(err){
+                document.getElementById('radiocheck').innerHTML = err;
                 document.getElementById('male').focus();
                 return false;
-            } 
+            }
 
             //select tag validation
 
             let arrtwo=['states','relationshipstatus']
 
             for(let i=0;i<arrtwo.length;i++){
-
-            if(document.getElementById(arrtwo[i]).value=="-select-"){
-                document.getElementById('selectcheck'+arrtwo[i]).innerHTML ="please select any of following";
+            try{
+               if(document.getElementById(arrtwo[i]).value=="-select-") throw "please select any of following" 
+            }
+            catch(err){
+                document.getElementById('selectcheck'+arrtwo[i]).innerHTML =err;
                 document.getElementById(arrtwo[i]).focus();
                 return false;
-            }
+            }    
+            
 
             }
 
             //email validation
             let email=document.getElementById('email').value;
             let emailpattern=/\S+@\S+\.\S+/;
-            if(!email.match(emailpattern)){
-                document.getElementById('erroremail').innerHTML="enter valid email";
+            try{
+              if(!email.match(emailpattern)) throw "enter valid email"  
+            }
+            catch(err){
+                document.getElementById('erroremail').innerHTML=err;
                 document.getElementById('email').focus();
                 return false;
             }
-
+            
 
             //phonenumber validation
             let phonenumber=document.getElementById('phonenumber').value;
-            var phonepattern =/^([1-9]{1})([0-9]{9})$/;
-            if(!phonepattern.test(phonenumber)){
+            let phonepattern =/^([1-9]{1})([0-9]{9})$/;
+
+            try{
+                if(!phonepattern.test(phonenumber)) throw "enter valid phone number"
+            }
+            catch(err){
                 document.getElementById('errorphonenumber').innerHTML="enter valid phone number";
+                document.getElementById('phonenumber').focus();
                 return false;
             }
+            
         }
 
-            if(currentTab==2){
+        if(currentTab==2){
             let arrseven=['1','2','3'];
 
             for(let i=0;i<arrseven.length;i++){
@@ -818,9 +860,9 @@
                 }
 
             }
-            }
+        }
 
-            if(currentTab==5){
+        if(currentTab==5){
             let arreight=['1','2'];
 
             for(let i=0;i<arreight.length;i++){
@@ -837,18 +879,18 @@
                 return false;
                 }    
             }
-            }
+        }
 
-            if(currentTab==3){
+        if(currentTab==3){
 
             let arrthree=['hindi','english','gujarati'];
 
             for(let i=0;i<arrthree.length;i++){
 
-                var checkread=document.querySelector("input[id="+arrthree[i]+"read]:checked");
-                var checkwrite=document.querySelector("input[id="+arrthree[i]+"write]:checked");
-                var checkspeak=document.querySelector("input[id="+arrthree[i]+"speak]:checked");
-                var checksub=document.querySelector("input[id="+arrthree[i]+"]:checked");
+                let checkread=document.querySelector("input[id="+arrthree[i]+"read]:checked");
+                let checkwrite=document.querySelector("input[id="+arrthree[i]+"write]:checked");
+                let checkspeak=document.querySelector("input[id="+arrthree[i]+"speak]:checked");
+                let checksub=document.querySelector("input[id="+arrthree[i]+"]:checked");
 
                 if((checkread && !checksub)){
                 document.getElementById("error"+arrthree[i]).innerHTML="select valid Input";
@@ -866,7 +908,7 @@
 
         }
 
-            if(currentTab==1){    
+        if(currentTab==1){    
             
             let arrfour=['s','hd'];
 
@@ -915,11 +957,6 @@
 
             for(let i=0;i<arrfive.length;i++){
 
-                // if(document.getElementById(arrfive[i]+'coursename').value.length>0 && document.getElementById(arrfive[i]+'university').value.length==0){
-                //     document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter university";
-                //     document.getElementById(arrfive[i]+'university').focus();
-                //     return false;
-                // }
                 if(document.getElementById(arrfive[i]+'coursename').value.length>0 && document.getElementById(arrfive[i]+'passingyear').value.length==0){
                     document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter passing year";
                     document.getElementById(arrfive[i]+'passingyear').focus();
@@ -931,11 +968,6 @@
                     return false;
                 }
 
-                // if(document.getElementById(arrfive[i]+'coursename').value.length==0 && document.getElementById(arrfive[i]+'university').value.length>0){
-                //     document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter course name";
-                //     document.getElementById(arrfive[i]+'coursename').focus();
-                //     return false;
-                // }
                 if(document.getElementById(arrfive[i]+'coursename').value.length==0 && document.getElementById(arrfive[i]+'passingyear').value.length>0){
                     document.getElementById('error'+arrfive[i]+'coursename').innerHTML="please enter course name";
                     document.getElementById(arrfive[i]+'coursename').focus();
@@ -954,7 +986,7 @@
             }
         }
 
-            if(currentTab==4){
+        if(currentTab==4){
             let arrsix=['php','mysql','laravel','oracle'];
 
             for(i=0;i<arrsix.length;i++){
@@ -974,7 +1006,7 @@
                 document.getElementById('spercentage').focus();
                 return false;
             }
-            }
+        }
 
             return true;
 

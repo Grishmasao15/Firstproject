@@ -159,13 +159,6 @@ async function storeDetails(req, res){
         await connection.executeQuery(query);
         res.redirect("/jobappform");
 
-      } else if (  preferredlocation == undefined &&  department == "-select-") {
-
-        let query = `INSERT INTO preferences(emp_id,noticeperiod,expectedctc,currentctc) 
-           VALUES('${result.insertId}','${noticeperiod}','${expectedctc}','${currentctc}')`;
-
-        await connection.executeQuery(query);
-        res.redirect("/jobappform");
       };
 };
 

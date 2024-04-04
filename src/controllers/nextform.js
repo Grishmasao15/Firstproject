@@ -14,7 +14,6 @@ async function nextform(req, res)  {
 };
 
 async function update(req, res) {
-  return new Promise(async (resolve, reject) => {
     
     let id = req.query.id;
     
@@ -24,6 +23,7 @@ async function update(req, res) {
 
       let count = await connection.executeQuery(query);
       let counter=count[0].counter;
+      console.log(counter);
 
 
       if (counter >= 1) {
@@ -37,373 +37,306 @@ async function update(req, res) {
         let r7 = await connection.executeQuery(`select * from preferences where emp_id=${req.query.id}`);
         
         let object = { r1: r1, r2: r2, r3: r3, r4: r4, r5: r5, r6: r6, r7: r7 ,counter:counter};
-          return resolve(res.json(object));
+          res.send(object)
         
       } else {
-        console.log("not exist");
+        let str="id not exist";
+        let object={str:str}
+        res.send(object);
       }
       }
 
       catch(err){
-        reject(err);
         console.log(err);
       }
 
     }
-  });
 };
 
 async function storeDetails(req, res) {
   if (req.body.empid == "") {
-    const {fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB,companyname,pastdesignation,from,to,lang,hindi,english,gujarati,tech,php,mysql,laravel,oracle,name,contactnumber,relation,preferredlocation,noticeperiod,expectedctc,currentctc,department,
+
+    const {fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB,nameofboard,passingyear,percentage,companyname,pastdesignation,from,to,lang,hindi,english,gujarati,tech,php,mysql,laravel,oracle,name,contactnumber,relation,preferredlocation,noticeperiod,expectedctc,currentctc,department,
     } = req.body;
 
-    //insertion in basic details
-    let basicdetail = await connection.executeQuery(
-      `INSERT INTO basic_detail SET fname = ?,lname = ?,designation = ?,address1 = ?,address2 = ?,city = ?,phonenumber = ?,email = ?,gender = ?,states = ?,zipcode = ?,relationshipstatus = ?,DOB = ?`,
-      [fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB]);
-    console.log(basicdetail.insertId);
+    try{
+      
+      //Basic Details Insertion
 
-    //insertion in education details
-    for (let i = 0; i < 4; i++) {
-      if (req.body.nameofboard[i]) {
-        let edudetail = await connection.executeQuery(
-          `INSERT INTO educationdetails(emp_id,nameofboard_or_coursename,passingyear,percentage) VALUES('${basicdetail.insertId}','${req.body.nameofboard[i]}','${req.body.passingyear[i]}','${req.body.percentage[i]}')`
-        );
+      let query = `INSERT INTO basic_detail SET fname = ?,lname = ?,designation = ?,address1 = ?,address2 = ?,city = ?,phonenumber = ?,email = ?,gender = ?,states = ?,zipcode = ?,relationshipstatus = ?,DOB = ?`;
+
+      let result = await connection.executeQuery(query, [fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB]);
+
+      //Education Details Insertion
+
+      for (let i = 0; i < 4; i++) {
+        let query = `INSERT INTO educationdetails SET emp_id = ?,nameofboard_or_coursename = ?,passingyear = ?,percentage = ?`;
+        if (nameofboard[i]) {
+          await connection.executeQuery(query, [result.insertId,nameofboard[i], passingyear[i],percentage[i]]);
+        }
+      }
+
+      // Work Experience Insertion
+
+      for (let i = 0; i < 3; i++) {
+        let query = `INSERT INTO work_experience SET emp_id = ?,companyname = ?,designation = ?,from_date = ?,to_date = ?`;
+        if (companyname[i]) {
+          await connection.executeQuery(query, [result.insertId, companyname[i],pastdesignation[i],from[i],to[i]]);
+        }
+      }
+
+      //Language Insertion
+
+      if (lang != undefined && typeof lang != "string") {
+        let query = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
+
+        for (let i = 0; i < lang.length; i++) {
+          let a = lang[i];
+          query += `(${result.insertId},'${lang[i]}','${req.body[a]}'),`;
+        }
+
+        query = query.slice(0, query.length - 1);
+
+        await connection.executeQuery(query);
+
+      } else if (lang != undefined) {
+        let query = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
+
+          let a = lang;
+          query += `(${result.insertId},'${lang}','${req.body[a]}')`;
+
+
+        connection.executeQuery(query);
+      }
+
+      //Technology Insertion
+
+      if (tech != undefined && typeof tech != "string") {
+        let query = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
+
+        for (let i = 0; i < tech.length; i++) {
+          let b = tech[i];
+          query += `(${result.insertId},'${tech[i]}','${req.body[b]}'),`;
+        }
+
+        query = query.slice(0, query.length - 1);
+        await connection.executeQuery(query);
+      } else if (tech != undefined) {
+        let query = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
+
+          let b = tech;
+          query += `(${result.insertId},'${tech}','${req.body[b]}')`;
+
+
+        await connection.executeQuery(query);
+      }
+
+      // Reference Contact Insertion
+
+      for (let i = 0; i < 2; i++) {
+        let query = `INSERT INTO reference_contact SET emp_id = ?,nameof_emp = ?,contactnumber = ?,relation = ?`;
+
+        if (name[i]) {
+          await connection.executeQuery(query, [result.insertId, name[i],contactnumber[i],relation[i]]);
+        }
+      }
+
+      // Preferences Insertion
+
+      if (  typeof preferredlocation != "string" &&  preferredlocation != undefined &&  department != "-select-") {
+        let pl = "";
+        for (let i = 0; i < preferredlocation.length; i++) {
+          pl += preferredlocation[i] + ",";
+        }
+
+        pl = pl.slice(0, pl.length - 1);
+
+        let query = `INSERT INTO preferences SET emp_id = ?,preferredlocation = ?,noticeperiod = ?,expectedctc = ?,currentctc = ?,department = ?`;
+
+        await connection.executeQuery(query, [result.insertId, pl, noticeperiod,expectedctc,currentctc,department]);/////start with hereeee
+        res.redirect("/nextform");
+
+      } else if (  typeof preferredlocation != "string" &&  preferredlocation != undefined &&  department == "-select-") {
+        let pl = "";
+        for (let i = 0; i < preferredlocation.length; i++) {
+          pl += preferredlocation[i] + ",";
+        }
+
+        pl = pl.slice(0, pl.length - 1);
+
+        let query = `INSERT INTO preferences SET emp_id = ?,preferredlocation = ?,noticeperiod = ?,expectedctc = ?,currentctc = ?`;
+
+        await connection.executeQuery(query, [result.insertId, pl, noticeperiod, expectedctc,currentctc]);
+        res.redirect("/nextform");
+
+      } else if (  typeof preferredlocation == "string" &&  preferredlocation != undefined &&  department != "-select-") {
+
+        let query = `INSERT INTO preferences SET emp_id = ?,preferredlocation = ?,noticeperiod = ?,expectedctc = ?,currentctc = ?,department = ?`;
+
+        await connection.executeQuery(query,[result.insertId, preferredlocation, noticeperiod, expectedctc,currentctc,department]);
+        res.redirect("/nextform");
+
+      } else if (  typeof preferredlocation == "string" &&  preferredlocation != undefined &&  department == "-select-") {
+
+        let query = `INSERT INTO preferences SET emp_id = ?,preferredlocation = ?,noticeperiod = ?,expectedctc = ?,currentctc = ?`;
+
+        await connection.executeQuery(query,[result.insertId, preferredlocation, noticeperiod, expectedctc,currentctc]);
+        res.redirect("/nextform");
+
+      } else if (preferredlocation == undefined && department != "-select-") {
+        let query = `INSERT INTO preferences SET emp_id = ?,noticeperiod = ?,expectedctc = ?,currentctc = ?,department = ?`;
+
+        await connection.executeQuery(query,[result.insertId, noticeperiod, expectedctc,currentctc,department]);
+        res.redirect("/nextform");
+
       }
     }
-
-    //insertion in work experience
-    for (let i = 0; i < 3; i++) {
-      if (req.body.companyname[i]) {
-        let workexp = await connection.executeQuery(
-          `INSERT INTO work_experience(emp_id,companyname,designation,from_date,to_date) VALUES('${basicdetail.insertId}','${req.body.companyname[i]}','${req.body.pastdesignation[i]}','${req.body.from[i]}','${req.body.to[i]}')`
-        );
-      }
-    }
-
-    //insertion in language known
-    if (req.body.lang != undefined && typeof req.body.lang != "string") {
-      var q4 = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
-
-      for (let i = 0; i < req.body.lang.length; i++) {
-        var a = req.body.lang[i];
-        q4 += `(${basicdetail.insertId},'${req.body.lang[i]}','${req.body[a]}'),`;
-      }
-
-      q4 = q4.slice(0, q4.length - 1);
-
-      let langknown = await connection.executeQuery(q4);
-    } else if (req.body.lang != undefined) {
-      var q4 = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
-
-      for (let i = 0; i < 1; i++) {
-        var a = req.body.lang;
-        q4 += `(${basicdetail.insertId},'${req.body.lang}','${req.body[a]}')`;
-      }
-
-      let langknown = await connection.executeQuery(q4);
-    }
-
-    //insertion in technology known
-    if (req.body.tech != undefined && typeof req.body.tech != "string") {
-      var q5 = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
-
-      for (let i = 0; i < req.body.tech.length; i++) {
-        var b = req.body.tech[i];
-        q5 += `(${basicdetail.insertId},'${req.body.tech[i]}','${req.body[b]}'),`;
-      }
-
-      q5 = q5.slice(0, q5.length - 1);
-      let techknown = await connection.executeQuery(q5);
-    } else if (req.body.tech != undefined) {
-      var q5 = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
-
-      for (let i = 0; i < 1; i++) {
-        var b = req.body.tech;
-        q5 += `(${basicdetail.insertId},'${req.body.tech}','${req.body[b]}')`;
-      }
-
-      let techknown = await connection.executeQuery(q5);
-    }
-
-    //insertion in reference contact
-    for (let i = 0; i < 2; i++) {
-      if (req.body.name[i]) {
-        let refcontact =
-          await connection.executeQuery(`INSERT INTO reference_contact(emp_id,nameof_emp,contactnumber,relation) 
-    VALUES('${basicdetail.insertId}','${req.body.name[i]}','${req.body.contactnumber[i]}','${req.body.relation[i]}')`);
-      }
-    }
-
-    //insertion in preferences
-
-    if (
-      typeof req.body.preferredlocation != "string" &&
-      req.body.preferredlocation != undefined &&
-      req.body.department != "-select-"
-    ) {
-      var pl = "";
-      for (let i = 0; i < preferredlocation.length; i++) {
-        pl += req.body.preferredlocation[i] + ",";
-      }
-
-      pl = pl.slice(0, pl.length - 1);
-
-      var q12 = `INSERT INTO preferences(emp_id,preferredlocation,noticeperiod,expectedctc,currentctc,department) 
-            VALUES('${basicdetail.insertId}','${pl}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}','${req.body.department}')`;
-
-      let pref = await connection.executeQuery(q12);
-
-    } else if (
-      typeof req.body.preferredlocation != "string" &&
-      req.body.preferredlocation != undefined &&
-      req.body.department == "-select-"
-    ) {
-      var pl = "";
-      for (let i = 0; i < preferredlocation.length; i++) {
-        pl += req.body.preferredlocation[i] + ",";
-      }
-
-      pl = pl.slice(0, pl.length - 1);
-
-      var q12 = `INSERT INTO preferences(emp_id,preferredlocation,noticeperiod,expectedctc,currentctc) 
-            VALUES('${basicdetail.insertId}','${pl}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}')`;
-
-      let pref = await connection.executeQuery(q12);
-
-    } else if (
-      typeof req.body.preferredlocation == "string" &&
-      req.body.preferredlocation != undefined &&
-      req.body.department != "-select-"
-    ) {
-      var q12 = `INSERT INTO preferences(emp_id,preferredlocation,noticeperiod,expectedctc,currentctc,department) 
-            VALUES('${basicdetail.insertId}','${req.body.preferredlocation}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}','${req.body.department}')`;
-
-      let pref = await connection.executeQuery(q12);
-
-    } else if (
-      typeof req.body.preferredlocation == "string" &&
-      req.body.preferredlocation != undefined &&
-      req.body.department == "-select-"
-    ) {
-      var q12 = `INSERT INTO preferences(emp_id,preferredlocation,noticeperiod,expectedctc,currentctc) 
-            VALUES('${basicdetail.insertId}','${req.body.preferredlocation}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}')`;
-
-      let pref = await connection.executeQuery(q12);
-   
-    } ////
-    else if (
-      req.body.preferredlocation == undefined &&
-      req.body.department != "-select-"
-    ) {
-      var q12 = `INSERT INTO preferences(emp_id,noticeperiod,expectedctc,currentctc,department) 
-            VALUES('${basicdetail.insertId}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}','${req.body.department}')`;
-
-      let pref = await connection.executeQuery(q12);
-
-    } else if (
-      req.body.preferredlocation == undefined &&
-      req.body.department == "-select-"
-    ) {
-      var q12 = `INSERT INTO preferences(emp_id,noticeperiod,expectedctc,currentctc) 
-            VALUES('${basicdetail.insertId}','${req.body.noticeperiod}','${req.body.expectedctc}','${req.body.currentctc}')`;
-
-      let pref = await connection.executeQuery(q12);
-
-    }
+    catch(err){
+      console.log(err);
+    } 
+ 
   } else {
  
-    var id = req.body.empid;
+    let id = req.body.empid;
 
-    const {fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB,companyname,pastdesignation,from,to,lang,hindi,english,gujarati,tech,php,mysql,laravel,oracle,name,contactnumber,relation,preferredlocation,noticeperiod,expectedctc,currentctc,department,
+    const {fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB,nameofboard,passingyear,percentage,companyname,pastdesignation,from,to,lang,hindi,english,gujarati,tech,php,mysql,laravel,oracle,name,contactnumber,relation,preferredlocation,noticeperiod,expectedctc,currentctc,department,
     } = req.body;
+    
+    try{
 
-    //update in basic_detail
-    let basicdetail = await connection.executeQuery(
-      `UPDATE basic_detail SET fname = ?,lname = ?,designation = ?,address1 = ?,address2 = ?,city = ?,phonenumber = ?,email = ?,gender = ?,states = ?,zipcode = ?,relationshipstatus = ?,DOB = ? WHERE emp_id=${id}`,
-      [
-        fname,
-        lname,
-        designation,
-        address1,
-        address2,
-        city,
-        phonenumber,
-        email,
-        gender,
-        states,
-        zipcode,
-        relationshipstatus,
-        DOB,
-      ]
-    );
+      //update in basic_detail
+      let basicdetail = await connection.executeQuery(
+        `UPDATE basic_detail SET fname = ?,lname = ?,designation = ?,address1 = ?,address2 = ?,city = ?,phonenumber = ?,email = ?,gender = ?,states = ?,zipcode = ?,relationshipstatus = ?,DOB = ? WHERE emp_id=?`,
+        [fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB,id]
+      );
 
-    //update in education detail
-    var q = await connection.executeQuery(
-      `select education_id from educationdetails where emp_id=${id}`
-    );
+      //update in education detail
+      let query1 = await connection.executeQuery(`select education_id from educationdetails where emp_id=?`,id);
 
-    for (let i = 0; i < 4; i++) {
-      if (req.body.nameofboard[i]) {
-        let edudetail = await connection.executeQuery(
-          `UPDATE educationdetails SET nameofboard_or_coursename = '${req.body.nameofboard[i]}',passingyear = "${req.body.passingyear[i]}",percentage = "${req.body.percentage[i]}" WHERE education_id=${q[i].education_id}`
-        );
-      }
-    }
-
-    //update in work experience
-    var que6 = await connection.executeQuery(
-      `delete from work_experience where emp_id=${id}`
-    );
-
-    for (let i = 0; i < 3; i++) {
-      if (req.body.companyname[i]) {
-        let workexp = await connection.executeQuery(
-          `INSERT INTO work_experience(emp_id,companyname,designation,from_date,to_date) VALUES('${id}','${req.body.companyname[i]}','${req.body.pastdesignation[i]}','${req.body.from[i]}','${req.body.to[i]}')`
-        );
-      }
-    }
-
-    //update in language known
-
-    var que3 = await connection.executeQuery(
-      `delete from languageknown where emp_id=${id}`
-    );
-
-    if (typeof req.body.lang != "string") {
-      var q4 = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
-
-      for (let i = 0; i < req.body.lang.length; i++) {
-        var a = req.body.lang[i];
-        q4 += `(${id},'${req.body.lang[i]}','${req.body[a]}'),`;
+      for (let i = 0; i < 4; i++) {
+        if (nameofboard[i]) {
+          let edudetail = await connection.executeQuery(
+            `UPDATE educationdetails SET nameofboard_or_coursename = ?,passingyear = ?,percentage = ? WHERE education_id=?`,[nameofboard[i],passingyear[i],percentage[i],query1[i].education_id]);
+        }
       }
 
-      q4 = q4.slice(0, q4.length - 1);
+      //update in work experience
+      let query2 = await connection.executeQuery(`delete from work_experience where emp_id= ? `,id);
 
-      let langknown = await connection.executeQuery(q4);
-    } else {
-      var q4 = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
-
-      for (let i = 0; i < 1; i++) {
-        var a = req.body.lang;
-        q4 += `(${id},'${req.body.lang}','${req.body[a]}')`;
+      for (let i = 0; i < 3; i++) {
+        if (companyname[i]) {
+          let workexp = await connection.executeQuery(`INSERT INTO work_experience SET emp_id = ?,companyname = ?,designation = ?,from_date = ?,to_date = ?`,[id, companyname[i], pastdesignation[i], from[i], to[i]]);
+        }
       }
 
-      let langknown = await connection.executeQuery(q4);
-    }
+      //update in language known
 
-    //update in technology known
+      let query3 = await connection.executeQuery(`delete from languageknown where emp_id=?`,id);
 
-    var que4 = await connection.executeQuery(
-      `delete from technologyknown where emp_id=${id}`
-    );
+      if (typeof lang!= "string" && lang != undefined) {
+        let query = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
 
-    if (req.body.tech.length && typeof req.body.tech != "string") {
-      var q5 = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
+        for (let i = 0; i < lang.length; i++) {
+          let a = lang[i];
+          query += `(${id},'${lang[i]}','${req.body[a]}'),`;
+        }
 
-      for (let i = 0; i < req.body.tech.length; i++) {
-        var b = req.body.tech[i];
-        q5 += `(${id},'${req.body.tech[i]}','${req.body[b]}'),`;
+        query = query.slice(0, query.length - 1);
+
+        let langknown = await connection.executeQuery(query);
+      } else if (lang != undefined) {
+        let query = `INSERT INTO languageknown(emp_id,language_name,rws) VALUES`;
+
+          let a = lang;
+          query += `(${id},'${lang}','${req.body[a]}')`;
+
+
+        let langknown = await connection.executeQuery(query);
       }
 
-      q5 = q5.slice(0, q5.length - 1);
-      let techknown = await connection.executeQuery(q5);
-    } else if (req.body.lang.length) {
-      var q5 = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
+      //update in technology known
 
-      for (let i = 0; i < 1; i++) {
-        var b = req.body.tech;
-        q5 += `(${id},'${req.body.tech}','${req.body[b]}')`;
+      let query4 = await connection.executeQuery(`delete from technologyknown where emp_id=?`,id);
+
+      if (tech != undefined && typeof tech != "string") {
+
+        let query = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
+
+        for (let i = 0; i < tech.length; i++) {
+          let b = tech[i];
+          query += `(${id},'${tech[i]}','${req.body[b]}'),`;
+        }
+
+        query = query.slice(0, query.length - 1);
+        let techknown = await connection.executeQuery(query);
+
+      } else if (tech != undefined) {
+        let query = `INSERT INTO technologyknown(emp_id,technology_name,level_of_expertise) VALUES`;
+
+        for (let i = 0; i < 1; i++) {
+          let b = tech;
+          query += `(${id},'${tech}','${req.body[b]}')`;
+        }
+
+        let techknown = await connection.executeQuery(query);
       }
 
-      let techknown = await connection.executeQuery(q5);
-    }
+      //update in reference_contact
 
-    //update in reference_contact
+      let query5 = await connection.executeQuery(`delete from reference_contact where emp_id=?`,id);
 
-    var que5 = await connection.executeQuery(
-      `delete from reference_contact where emp_id=${id}`
-    );
-
-    for (let i = 0; i < 2; i++) {
-      if (req.body.name[i]) {
-        let refcontact =
-          await connection.executeQuery(`INSERT INTO reference_contact(emp_id,nameof_emp,contactnumber,relation) 
-            VALUES('${id}','${req.body.name[i]}','${req.body.contactnumber[i]}','${req.body.relation[i]}')`);
-      }
-    }
-
-    //update in preferences
-
-    if (
-      typeof req.body.preferredlocation != "string" &&
-      req.body.preferredlocation != undefined &&
-      req.body.department != "-select-"
-    ) {
-      var pl = "";
-      for (let i = 0; i < preferredlocation.length; i++) {
-        pl += req.body.preferredlocation[i] + ",";
+      for (let i = 0; i < 2; i++) {
+        if (name[i]) {
+          let refcontact =
+            await connection.executeQuery(`INSERT INTO reference_contact SET emp_id = ?,nameof_emp = ?,contactnumber = ?,relation = ?`,[id,name[i],contactnumber[i],relation[i]]);
+        }
       }
 
-      pl = pl.slice(0, pl.length - 1);
+      //update in preferences
+
+      if (  typeof preferredlocation != "string" &&  preferredlocation != undefined &&  department != "-select-") {
+        let pl = "";
+        for (let i = 0; i < preferredlocation.length; i++) {
+          pl += preferredlocation[i] + ",";
+        }
+
+        pl = pl.slice(0, pl.length - 1);
+    
+
+        let query = `UPDATE preferences SET preferredlocation = ?,noticeperiod = ?,expectedctc = ?,currentctc = ?,department= ? WHERE emp_id= ? `;
+        let pref = await connection.executeQuery(query, [pl, noticeperiod, expectedctc,currentctc,department,id]);
+
+      } else if ( typeof preferredlocation != "string" &&  preferredlocation != undefined &&  department == "-select-") {
+        let pl = "";
+        for (let i = 0; i < preferredlocation.length; i++) {
+          pl += preferredlocation[i] + ",";
+        }
+
+        pl = pl.slice(0, pl.length - 1);
+
+
+        let query = `UPDATE preferences SET preferredlocation=?,noticeperiod= ?,expectedctc= ?,currentctc=? WHERE emp_id= ?`;
+        let pref = await connection.executeQuery(query,[pl, noticeperiod, expectedctc,currentctc,id]);
   
+      } else if ( typeof preferredlocation == "string" &&  preferredlocation != undefined &&  department != "-select-") {
 
-      var q12 = `UPDATE preferences SET preferredlocation='${pl}',noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}',department='${req.body.department}' WHERE emp_id=${id}`;
+        let query = `UPDATE preferences SET preferredlocation=?,noticeperiod=?,expectedctc=?,currentctc=?,department=? WHERE emp_id=?`;
+        let pref = await connection.executeQuery(query,[preferredlocation, noticeperiod, expectedctc,currentctc,department,id]);
 
-      let pref = await connection.executeQuery(q12);
+      } else if (  typeof preferredlocation == "string" &&  preferredlocation != undefined &&  department == "-select-") {
 
-    } else if (
-      typeof req.body.preferredlocation != "string" &&
-      req.body.preferredlocation != undefined &&
-      req.body.department == "-select-"
-    ) {
-      var pl = "";
-      for (let i = 0; i < preferredlocation.length; i++) {
-        pl += req.body.preferredlocation[i] + ",";
-      }
+        let query = `UPDATE preferences SET preferredlocation=?,noticeperiod=?,expectedctc=?,currentctc=? WHERE emp_id=?`;
+        let pref = await connection.executeQuery(query,[preferredlocation, noticeperiod, expectedctc,currentctc,id]);
 
-      pl = pl.slice(0, pl.length - 1);
+      } else if (  preferredlocation == undefined &&  department != "-select-") {
 
-
-      var q12 = `UPDATE preferences SET preferredlocation='${pl}',noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}' WHERE emp_id=${id}`;
-
-      let pref = await connection.executeQuery(q12);
- 
-    } else if (
-      typeof req.body.preferredlocation == "string" &&
-      req.body.preferredlocation != undefined &&
-      req.body.department != "-select-"
-    ) {
-      var q12 = `UPDATE preferences SET preferredlocation='${req.body.preferredlocation}',noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}',department='${req.body.department}' WHERE emp_id=${id}`;
-
-      let pref = await connection.executeQuery(q12);
-
-    } else if (
-      typeof req.body.preferredlocation == "string" &&
-      req.body.preferredlocation != undefined &&
-      req.body.department == "-select-"
-    ) {
-      var q12 = `UPDATE preferences SET preferredlocation='${req.body.preferredlocation}',noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}' WHERE emp_id=${id}`;
-
-      let pref = await connection.executeQuery(q12);
-
-    } else if (
-      req.body.preferredlocation == undefined &&
-      req.body.department != "-select-"
-    ) {
-      var q12 = `UPDATE preferences SET noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}',department='${req.body.department}' WHERE emp_id=${id}`;
-
-      let pref = await connection.executeQuery(q12);
- 
-    } else if (
-      req.body.preferredlocation == undefined &&
-      req.body.department == "-select-"
-    ) {
-      var q12 = `UPDATE preferences SET noticeperiod='${req.body.noticeperiod}',expectedctc='${req.body.expectedctc}',currentctc='${req.body.currentctc}' WHERE emp_id=${id}`;
-
-      let pref = await connection.executeQuery(q12);
-
+        let query = `UPDATE preferences SET noticeperiod=?,expectedctc=?,currentctc=?,department=? WHERE emp_id=?`;
+        let pref = await connection.executeQuery(query,[noticeperiod, expectedctc,currentctc,department,id]);
+  
+      } 
+    }
+    catch(err){
+      console.log(err);
     }
   }
 };
