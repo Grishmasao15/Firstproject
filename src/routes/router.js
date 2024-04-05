@@ -62,7 +62,7 @@ router.get("/attendancedetails", auth, attendanceDetails.attendanceDetails);
 
 router.post("/attendancesheethome", auth, attendanceDetails.home);
 
-router.post("/attendancesheetprevious", auth, attendanceDetails.next);
+router.post("/attendancesheetprevious", auth, attendanceDetails.previous);
 
 router.post("/attendancesheetnext", auth, attendanceDetails.next);
 

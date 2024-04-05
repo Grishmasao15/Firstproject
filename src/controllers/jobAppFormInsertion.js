@@ -20,6 +20,7 @@ async function storeDetails(req, res){
 
   let result=await connection.executeQuery(query,[fname,lname,designation,address1,address2,city,phonenumber,email,gender,states,zipcode,relationshipstatus,DOB])
 
+
     
 
   //Education Details Insertion
@@ -118,7 +119,7 @@ async function storeDetails(req, res){
            VALUES('${result.insertId}','${pl}','${noticeperiod}','${expectedctc}','${currentctc}','${department}')`;
 
         await connection.executeQuery(query);
-        res.redirect("/jobappform");
+
 
       } else if (typeof preferredlocation != "string" && preferredlocation != undefined &&department == "-select-") {
 
@@ -133,7 +134,7 @@ async function storeDetails(req, res){
            VALUES('${result.insertId}','${pl}','${noticeperiod}','${expectedctc}','${currentctc}')`;
 
         await connection.executeQuery(query);
-        res.redirect("/jobappform");
+
 
       } else if ( typeof preferredlocation == "string" &&  preferredlocation != undefined &&  department != "-select-") {
 
@@ -141,7 +142,7 @@ async function storeDetails(req, res){
            VALUES('${result.insertId}','${preferredlocation}','${noticeperiod}','${expectedctc}','${currentctc}','${department}')`;
 
         await connection.executeQuery(query)
-        res.redirect("/jobappform");
+
 
 
       } else if ( typeof preferredlocation == "string" &&  preferredlocation != undefined &&  department == "-select-") {
@@ -150,14 +151,14 @@ async function storeDetails(req, res){
            VALUES('${result.insertId}','${preferredlocation}','${noticeperiod}','${expectedctc}','${currentctc}')`;
 
         await connection.executeQuery(query);
-        res.redirect("/jobappform");
+
 
       } else if ( preferredlocation == undefined &&  department != "-select-") {
         let query = `INSERT INTO preferences(emp_id,noticeperiod,expectedctc,currentctc,department) 
            VALUES('${result.insertId}','${noticeperiod}','${expectedctc}','${currentctc}','${department}')`;
 
         await connection.executeQuery(query);
-        res.redirect("/jobappform");
+
 
       };
 };

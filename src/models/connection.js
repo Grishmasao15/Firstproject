@@ -20,7 +20,7 @@ let executeQuery = (str, arr)=> {
         resolve(result);
       }
       catch(err){
-        reject(err);
+        reject("error found");
         console.log(err);
       }
     });

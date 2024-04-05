@@ -119,7 +119,7 @@
             flag = await result.json();
             console.log("flag : "+flag.passres);
             if(flag.passres){
-                window.location.href=`/welcome/${username}`;
+                window.location.href=`/welcome`;
             }
             else{
                 document.getElementById("errorpass").innerHTML="username or password invalid";

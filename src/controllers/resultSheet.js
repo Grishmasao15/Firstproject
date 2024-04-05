@@ -9,6 +9,8 @@ var pagenumber = 1;
 
 async function resultDetails(req, res) {
 
+  try{
+
     var sort = req.query.sort;
 
     if (req.query.sort == undefined) {
@@ -68,10 +70,15 @@ async function resultDetails(req, res) {
       let result = await connection.executeQuery(sql, [rescounter]);
       res.render("../src/views/result2", {  data: result,  pagenumber: pagenumber,  rescounter: rescounter});
     }
+  }
+  catch(err){
+    console.log(err);
+  }  
   
 };
 
 async function viewDeatils (req, res) {
+  try{
     let id = req.query.id;
     let sql = `select student_master.stu_id,student_master.firstname,student_master.lastname,subject_master.subject_id,subject_master.subject_name,
              max(case when result_master.exam_id='1' then result_master.practical_obtained end)as terminal_practical,
@@ -88,6 +95,10 @@ async function viewDeatils (req, res) {
 
     let result = await connection.executeQuery(sql)
     res.render("../src/views/viewdetail2", { data: result });
+  }
+  catch(err){
+    console.log(err);
+  }  
 };
 
 module.exports = { resultDetails, viewDeatils };

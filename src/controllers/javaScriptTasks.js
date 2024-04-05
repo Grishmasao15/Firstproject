@@ -1,8 +1,5 @@
 
-
-
-module.exports=
-function javaScriptTask(req, res){
+module.exports=function javaScriptTask(req, res){
     
   let result = req.params.result;
 

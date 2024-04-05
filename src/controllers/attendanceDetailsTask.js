@@ -9,6 +9,7 @@ var counter = 0;
 var number = 1;
 var month;
 var year;
+const recordsperpage=50;
 let query = `SELECT student_master.stu_id,student_master.firstname,student_master.lastname,
              YEAR(attendance_master.date_) AS year,
              MONTH(attendance_master.date_) AS month,
@@ -18,9 +19,9 @@ let query = `SELECT student_master.stu_id,student_master.firstname,student_maste
              MONTH(attendance_master.date_)=? group by year,month,student_master.stu_id limit 50 offset ?;`;
 
 async function attendanceDetails(req, res) {
-    number = 1;
-    counter = 0;
-
+  number = 1;
+  counter = 0;
+  try{
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
@@ -30,52 +31,105 @@ async function attendanceDetails(req, res) {
     }
     let result=await connection.executeQuery(query, [year,month,counter]);
     res.render("../src/views/attendance", { data: result, number: number,month:month,year:year });
-  };
+  }
+  catch(err){
+    console.log(err);
+  }
+};
 
 async function home (req, res) {
+  try{
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
     }
     counter = 0;
-    number = counter / 50 + 1;
+    number = counter / recordsperpage + 1;
     let result = await connection.executeQuery(query, [year, month, counter]);
     res.render("../src/views/attendance", { data: result, number: number ,month:month,year:year});
-  };
+  }
+  catch(err){
+    console.log(err);
+  }
+};
 
 async function previous (req, res) {
+  try{
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
     }
-    counter -= 50;
-    number = counter / 50 + 1;
-    let result = await connection.executeQuery(query, [year, month, counter]);
-    res.render("../src/views/attendance", { data: result, number: number,month:month,year:year });
-  };
+    if(number>1){
+
+      counter -= recordsperpage;
+      number = counter / recordsperpage + 1;
+      let result = await connection.executeQuery(query, [year, month, counter]);
+      res.render("../src/views/attendance", { data: result, number: number,month:month,year:year });
+    }
+    else{
+      counter = 0;
+      number = counter / recordsperpage + 1;
+      let result = await connection.executeQuery(query, [year, month, counter]);
+      res.render("../src/views/attendance", { data: result, number: number ,month:month,year:year});
+    }
+  }
+  catch(err){
+    console.log(err);
+  }
+};
 
 async function next (req, res) {
+  try{
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
     }
-    counter += 50;
-    number = counter / 50 + 1;
-    let result = await connection.executeQuery(query, [year, month, counter]);
-    res.render("../src/views/attendance", { data: result, number: number,month:month,year:year });
-  };
+
+    let query2 = `select max(stu_id) as max from attendance_master`;
+    let result2 = await connection.executeQuery(query2);
+    let count = result2[0].max - recordsperpage;
+    let pagenumber = count / recordsperpage + 1;
+    
+    if (number<pagenumber) {
+
+      counter += recordsperpage;
+      number = counter / recordsperpage + 1;
+      let result = await connection.executeQuery(query, [year, month, counter]);
+      res.render("../src/views/attendance", { data: result, number: number,month:month,year:year });
+
+    }
+    else{
+      counter = count;
+      number = counter / recordsperpage + 1;
+      let result = await connection.executeQuery(query, [year, month, counter]);
+      res.render("../src/views/attendance", { data: result, number: number ,month:month,year:year});
+    }
+  }
+  catch(err){
+    console.log(err);
+  }
+    
+};
 
 async function end(req, res) {
+  try{
     if (req.query.month || req.query.year) {
       month = req.query.month;
       year = req.query.year;
     }
 
-    counter = 150;
-    number = counter / 50 + 1;
+    let query2 = `select max(stu_id) as max from attendance_master`;
+    let result2 = await connection.executeQuery(query2);
+
+    counter = result2[0].max - recordsperpage;
+    number = counter / recordsperpage + 1;
     let result = await connection.executeQuery(query, [year, month, counter]);
     res.render("../src/views/attendance", { data: result, number: number ,month:month,year:year});
-  };
+  }
+  catch(err){
+    console.log(err);
+  }
+};
 
   module.exports = { attendanceDetails, home, previous, next, end };
 

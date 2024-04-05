@@ -12,7 +12,7 @@ function main(req, res) {
 async function storeDetails(req, res) {
   const { firstname, lastname, email, mono, activationcode } = req.body;
 
-  let q1 = await connection.executeQuery(
+  let counter = await connection.executeQuery(
     `INSERT INTO users SET firstname=?,lastname=?,email=?,mobilenumber=?,activation_code=?`,
     [firstname, lastname, email, mono, activationcode]
   );
@@ -32,9 +32,9 @@ async function thanksCodeUsername (req, res) {
   let ins_date =
     date.toISOString().slice(0, 10) + " " + date.toTimeString().slice(0, 8);
 
-  let que15 = `UPDATE users SET activation_code ='${activationcode}',created_at='${ins_date}' WHERE email ='${uname}';`;
+  let query = `UPDATE users SET activation_code =?,created_at=? WHERE email =?;`;
 
-  let q15 = await connection.executeQuery(que15);
+  let result = await connection.executeQuery(query, [activationcode, ins_date,uname]);
 
   res.render("../src/views/thanks", { acticode: activationcode });
 };
@@ -42,29 +42,25 @@ async function thanksCodeUsername (req, res) {
 async function code (req, res) {
   let actcode = req.params.code;
 
-  let que12 = `SELECT COUNT(*) AS count FROM users WHERE activation_code ='${actcode}' `;
+  let query = `SELECT COUNT(*) AS count FROM users WHERE activation_code =? `;
 
-  let q1 = await connection.executeQuery(que12);
+  let counter = await connection.executeQuery(query, [actcode]);
 
-  if (q1[0].count > 0) {
+  if (counter[0].count > 0) {
     if (actcode) {
-      let p1 = localdate.getTime();
+      let current_time = localdate.getTime();
 
-      let result = await connection.executeQuery(
-        `select created_at from users where activation_code='${actcode}'`
-      );
+      let result = await connection.executeQuery(`select created_at from users where activation_code=?`,actcode);
 
       let temp = result[0].created_at.toString().slice(0, 24);
 
       let old = new Date(temp);
-      let p2 = old.getTime();
+      let db_time = old.getTime();
 
-      let timediff = Math.floor((p1 - p2) / 60000);
+      let timediff = Math.floor((current_time - db_time) / 60000);
 
       if (timediff > 60) {
-        let restwo = await connection.executeQuery(
-          `delete from users where activation_code='${actcode}`
-        );
+        let result = await connection.executeQuery(`delete from users where activation_code=?`,actcode);
         res.redirect("/");
       } else {
         res.render("../src/views/createpass", { actcode: actcode });
@@ -80,24 +76,31 @@ async function storePass (req, res) {
 
   let encpass = md5(pass);
 
-  let qe = `UPDATE users SET passwordof_user="${encpass}",salt="${salt}" where activation_code="${code}"`;
-  let q2 = await connection.executeQuery(qe);
+  let query = `UPDATE users SET passwordof_user=?,salt=? where activation_code=?`;
+  let result = await connection.executeQuery(query, [encpass, salt, code]);
   res.render("../src/views/login");
 };
 
 async function welcomeUsername(req, res){
-  let que20 = await connection.executeQuery(
-    `select firstname from users where email='${req.params.username}'`
-  );
-  let user = que20[0].firstname;
+  // let query = await connection.executeQuery(`select firstname from users where email=?`,req.params.username);
+  // let user = query[0].firstname;
 
-  res.render("../src/views/welcome", { user });
+  res.render("../src/views/welcome");
 };
 
 async function directLogin(req, res){
+  if(!req.cookies.token){
+    res.render("../src/views/login");
+  }
+  else{
+    res.redirect("/welcome")
+  }
+};
+
+async function logOut(req,res){
   res.clearCookie("token");
   res.render("../src/views/login");
-};
+}
 
 async function forgotPass(req, res){
   res.render("../src/views/createpass");
@@ -106,18 +109,20 @@ async function forgotPass(req, res){
 async function loginUsernamePass (req, res){
   const mail = req.params.username;
 
-  const p3 = "SELECT COUNT(*) AS count FROM users WHERE email = ?";
-  let res1 = await connection.executeQuery(p3, [mail]);
+  const query = "SELECT COUNT(*) AS count FROM users WHERE email = ?";
+  let res1 = await connection.executeQuery(query, [mail]);
   const mailExist = res1[0].count >= 1;
   let passres = false;
 
   if (mailExist == true) {
-    const p4 = req.params.pass;
+
+    const password = req.params.pass;
     const p5 = `select passwordof_user,salt from users where email=?;`;
-    let query1 = await connection.executeQuery(p5, [mail]);
-    let p7 = query1[0].salt;
-    const latestpass = md5(p4 + p7);
-    const oldpass = query1[0].passwordof_user;
+
+    let query = await connection.executeQuery(p5, [mail]);
+    let salt = query[0].salt;
+    const latestpass = md5(password + salt);
+    const oldpass = query[0].passwordof_user;
 
     if (latestpass == oldpass) {
       passres = true;
@@ -139,13 +144,13 @@ async function checkEmail (req, res){
 
   const sql = "SELECT COUNT(*) AS count FROM users WHERE email = ?";
 
-  let results = await connection.executeQuery(sql, [email]);
+  let result = await connection.executeQuery(sql, [email]);
 
-  const count = results[0].count;
+  const count = result[0].count;
 
   const emailExists = count >= 1;
 
   res.send({ emailExists });
 };
 
-module.exports = { main, storeDetails, thanksCode, thanksCodeUsername, code , storePass , welcomeUsername , directLogin, forgotPass,loginUsernamePass,thanks,checkEmail};
+module.exports = { main, storeDetails, thanksCode, thanksCodeUsername, code , storePass , welcomeUsername , directLogin, logOut, forgotPass,loginUsernamePass,thanks,checkEmail};

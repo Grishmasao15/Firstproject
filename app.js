@@ -5,13 +5,11 @@ var parser = require("body-parser");
 const { parse } = require("path");
 const { count } = require("console");
 const { connect } = require("http2");
-const fs = require("fs");
-const jwt=require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 
 const connection=require("./src/models/connection");
 const router = require("./src/routes/router");
-const main=require("./src/controllers/app")
+const main=require("./src/controllers/main")
 const { auth } = require("./src/controllers/middleware/auth");
 
 
@@ -34,9 +32,11 @@ app.get('/code/:code',main.code);
 
 app.post('/storepass',main.storePass);
 
-app.get('/welcome/:username',auth,main.welcomeUsername)
+app.get('/welcome',auth,main.welcomeUsername)
 
 app.get('/directlogin',main.directLogin)
+
+app.get('/login',auth,main.logOut)
 
 app.get('/forgotpass',main.forgotPass)
 
