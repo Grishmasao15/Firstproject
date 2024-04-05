@@ -35,14 +35,6 @@
         #i1,#i2{
             color: white;
         }
-        /* .first,.third{
-            width: 60px;
-            height: 80px;
-        }
-        .second,.fourth{
-            width: 80px;
-            height: 80px;
-        } */
         #sec,#four{
             width: 69px;
             height: 119px;
@@ -76,21 +68,6 @@
 
     </div>
 
-    <!-- <div class="c2">
-    <table cellspacing=0>
-        <tr>
-            <td>
-                <input type="button" value="+" id="i1" onclick="add_column()">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <input type="button" value="-" id="i2" onclick="delete_column()"> 
-            </td>
-        </tr>
-    </table>
-    </div> -->
-
     <div class="c2">
 
     <div class="third">    
@@ -105,42 +82,45 @@
    
    <script>
     function add_row(){
-            var tbl=document.getElementById("t1");
-            var rowLen=tbl.rows.length;
-            var colsLen=tbl.rows[0].cells.length;
-            var emptyRow=tbl.insertRow(rowLen);
-            for(var i=0; i<colsLen; i++){
-                emptyRow.insertCell(i);
-            }
+
+        let tbl=document.getElementById("t1");
+        let rowLen=tbl.rows.length;
+        let colsLen=tbl.rows[0].cells.length;
+        let emptyRow=tbl.insertRow(rowLen);
+        for(let i=0; i<colsLen; i++){
+            emptyRow.insertCell(i);
+        }
         
+    }
+    function delete_row(){
+        let tbl=document.getElementById("t1");
+        let rowlen=tbl.rows.length;
+        if(rowlen>2){
+            tbl.deleteRow(rowlen-1);
         }
-        function delete_row(){
-            var tbl=document.getElementById("t1");
-            var rowlen=tbl.rows.length;
-            if(rowlen>2){
-                tbl.deleteRow(rowlen-1);
+    }
+
+    function add_column(){
+        let tbl=document.getElementById("t1");
+        let rowLen=tbl.rows.length;
+        let colsLen=tbl.rows[0].cells.length;
+        let row=tbl.rows;
+        for(let i=0;i< rowLen;i++){
+            row[i].insertCell(colsLen);
+        }
+    }
+
+    function delete_column(){
+        let tbl=document.getElementById("t1");
+        let colsLen=tbl.rows[0].cells.length;
+        let rowLen=tbl.rows.length;
+        let row=tbl.rows;
+        if (colsLen>2){
+            for(let i=0;i<rowLen;i++){
+                row[i].deleteCell(1);
             }
         }
-        function add_column(){
-            var tbl=document.getElementById("t1");
-            var rowLen=tbl.rows.length;
-            var colsLen=tbl.rows[0].cells.length;
-            var row=tbl.rows;
-            for(var i=0;i< rowLen;i++){
-                row[i].insertCell(colsLen);
-            }
-        }
-        function delete_column(){
-            var tbl=document.getElementById("t1");
-            var colsLen=tbl.rows[0].cells.length;
-            var rowLen=tbl.rows.length;
-            var row=tbl.rows;
-            if (colsLen>2){
-                for(var i=0;i<rowLen;i++){
-                    row[i].deleteCell(1);
-                }
-            }
-        }
+    }
    </script>  
 </body>
 </html>

@@ -6,28 +6,52 @@
     <title>Document</title>
     <style>
         body{
-            background-color: beige;
+            background-color: white;
         }
         .all{
             text-align: center;
         }
-        h3{
+        h3,h4{
             text-align: center;
+            color: rgb(49, 40, 109);
+        }
+        button{
+            color: rgb(104, 85, 224);
+            background-color: rgba(255, 255, 255, 1);
+            border: 1px solid rgba(104, 85, 224, 1);
+            cursor: pointer;
+            border: 0;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 0 47px;
+            width: 500px;
+            padding: 10px 0;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.1);
+            transition: 0.4s;
+        }
+        button:hover{
+            color: white;
+            box-shadow: 0 0 20px rgba(104, 85, 224, 0.6);
+            background-color: rgba(104, 85, 224, 1);
+            #link{
+                color: white;
+            }
         }
     </style>
 </head>
 <body>
-    <h3>Here are all function click to see them</h3>
+    <h3>Here are all functions</h3>
+    <h4>click to see them</h4>
     <div class="all">
     
-    <a href="/function/vowel/?str=grishma">vowel</a><br><br>
-    <a href="/function/oddeven/?arr=1,2,3">Odd Even</a><br><br>
-    <a href="/function/groupby">Group By</a><br><br>
-    <a href="/function/factorial/?num=5">Factorial</a><br><br>
-    <a href="/function/vowelcount/?arr=grishma sao">Vowel and Consonants Count</a><br><br>
-    <a href="/function/vowelcount2/?arr=Grishma Suresh Sao">Vowel Count of Longest String</a><br><br>
-    <a href="/function/palindrome/?str=malayalam">Palindrome</a><br><br>
-    <a href="/function/calc/?num1=12&num2=5.2&op=add">Calculator</a><br><br>
+    <button><a href="/function/vowel/?str=grishma" id="link">vowel</a></button><br><br>
+    <button><a href="/function/oddeven/?arr=1,2,3" id="link">Odd Even</a></button><br><br>
+    <button><a href="/function/groupby" id="link">Group By</a></button><br><br>
+    <button><a href="/function/factorial/?num=5" id="link">Factorial</a></button><br><br>
+    <button><a href="/function/vowelcount/?arr=grishma sao" id="link">Vowel and Consonants Count</a></button><br><br>
+    <button><a href="/function/vowelcount2/?arr=Grishma Suresh Sao" id="link">Vowel Count of Longest String</a></button><br><br>
+    <button><a href="/function/palindrome/?str=malayalam" id="link">Palindrome</a></button><br><br>
+    <button><a href="/function/calc/?num1=12&num2=5.2&op=add" id="link">Calculator</a></button><br><br>
     </div>
 </body>
 </html>
