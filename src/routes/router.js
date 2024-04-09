@@ -7,14 +7,6 @@ var parser = require("body-parser");
 router.use(parser.json());
 router.use(parser.urlencoded({ extended: false }));
 
-const f = require("../controllers/practical1");
-const p = require("../controllers/practical2");
-const q = require("../controllers/practical3");
-const g = require("../controllers/practical4");
-const h = require("../controllers/practical5");
-const r = require("../controllers/practical6");
-const s = require("../controllers/practical7");
-const t = require("../controllers/practical8");
 const crudwithfile = require("../controllers/crudWithFile");
 const fetchDBtask = require("../controllers/fetchFromDb");
 const attendanceDetails = require("../controllers/attendanceDetailsTask"); 
@@ -39,6 +31,7 @@ router.get("/function/:functionname",auth,require("../controllers/allFunctions")
 
 //crudwithfile
 router.get("/form", auth, crudwithfile.form);
+// router.route("/form").get(auth, crudwithfile.form);
 
 router.post("/showall", auth, crudwithfile.showAll);
 

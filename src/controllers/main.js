@@ -21,7 +21,7 @@ async function storeDetails(req, res) {
 async function thanksCode(req, res){
   let acticode = req.params.code;
 
-  res.render("../src/views/thanks", { acticode: acticode });
+  res.render("../src/views/thanks", { acticode });
 };
 
 async function thanksCodeUsername (req, res) {

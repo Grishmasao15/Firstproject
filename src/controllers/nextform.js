@@ -143,7 +143,7 @@ async function storeDetails(req, res) {
 
       // Preferences Insertion
 
-      if (  typeof preferredlocation != "string" &&  preferredlocation != undefined &&  department != "-select-") {
+      if (  typeof preferredlocation != "string" &&  preferredlocation != undefined &&  department !== "-select-") {
         let pl = "";
         for (let i = 0; i < preferredlocation.length; i++) {
           pl += preferredlocation[i] + ",";
