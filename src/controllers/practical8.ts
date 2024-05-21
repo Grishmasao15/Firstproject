@@ -1,10 +1,6 @@
-// const op=process.argv[3];
-// const num1=process.argv[2];
-// const num2 = process.argv[4];
-  
-function calc(num1,num2,op){
+function calc(num1: number, num2: number, op: string): string {
 
-  let result="";
+  let result: string = "";
   switch (op) {
     case "add":
       result += parseFloat(`${num1}`) + parseFloat(`${num2}`);
@@ -28,4 +24,4 @@ function calc(num1,num2,op){
   return result;
 }
 
-module.exports = { calc };
+export default calc;

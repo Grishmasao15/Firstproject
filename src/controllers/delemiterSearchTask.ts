@@ -1,27 +1,29 @@
-var router = require("express").Router();
-const connection = require("../models/connection");
+
+import { Request, Response, NextFunction, Router } from "express";
+import conn from "../models/connection";
+import { RowDataPacket, FieldPacket } from "mysql2";
 
 
-async function delemiterSearchTask(req, res) {
-  let result= await connection.executeQuery("select * from student_master limit 1000")
-    res.render("../src/views/home", { data: result });
+async function delemiterSearchTask(req: Request, res: Response): Promise<void> {
+  let result: Array<RowDataPacket> = await conn.query("select * from student_master limit 1000") as Array<RowDataPacket>;
+  res.render("../src/views/home", { data: result });
 };
 
-async function delemiterSearch(req, res) {
-  let str = req.body.search;
-  let firstname = [];
-  let lastname = [];
-  let email = [];
-  let contact_no = [];
-  let city = [];
-  let temp=0;
-  let tempstr;
+async function delemiterSearch(req: Request, res: Response): Promise<void> {
+  let str: string = req.body.search;
+  let firstname: string[] = [];
+  let lastname: string[] = [];
+  let email: string[] = [];
+  let contact_no: string[] = [];
+  let city: string[] = [];
+  let temp: number = 0;
+  let tempstr: string;
 
   for (let i = 0; i < str.length; i++) {
     switch (str[i]) {
       case "_":
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
+          if (str[j] == "_" || str[j] == "^" || str[j] == "$" || str[j] == "{" || str[j] == ":" || j == str.length) {
             temp = j;
             break;
           }
@@ -32,7 +34,7 @@ async function delemiterSearch(req, res) {
 
       case "^":
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
+          if (str[j] == "_" || str[j] == "^" || str[j] == "$" || str[j] == "{" || str[j] == ":" || j == str.length) {
             temp = j;
             break;
           }
@@ -43,7 +45,7 @@ async function delemiterSearch(req, res) {
 
       case "$":
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
+          if (str[j] == "_" || str[j] == "^" || str[j] == "$" || str[j] == "{" || str[j] == ":" || j == str.length) {
             temp = j;
             break;
           }
@@ -54,7 +56,7 @@ async function delemiterSearch(req, res) {
 
       case "{":
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
+          if (str[j] == "_" || str[j] == "^" || str[j] == "$" || str[j] == "{" || str[j] == ":" || j == str.length) {
             temp = j;
             break;
           }
@@ -65,7 +67,7 @@ async function delemiterSearch(req, res) {
 
       case ":":
         for (let j = i + 1; j < str.length + 1; j++) {
-          if (str[j] == "_" ||str[j] == "^" ||str[j] == "$" ||str[j] == "{" ||str[j] == ":" ||j == str.length) {
+          if (str[j] == "_" || str[j] == "^" || str[j] == "$" || str[j] == "{" || str[j] == ":" || j == str.length) {
             temp = j;
             break;
           }
@@ -76,7 +78,7 @@ async function delemiterSearch(req, res) {
     }
   }
 
-  let sql = `select * from student_master where`;
+  let sql: string = `select * from student_master where`;
 
   if (firstname.length > 1) {
     sql += "(";
@@ -139,10 +141,11 @@ async function delemiterSearch(req, res) {
   }
 
   sql = sql.slice(0, sql.length - 5);
-  connection.con.query(sql, function (err, result, fields) {
+  conn.query(sql, function (err: Error, result: Array<RowDataPacket>, fields: Array<FieldPacket>): void {
     if (err) throw err;
-    res.render("../src/views/delemitersearch", {result: result,fields: fields,str: str});
+    res.render("../src/views/delemitersearch", { result, fields, str });
   });
 };
 
-module.exports = { delemiterSearchTask, delemiterSearch };
+export default { delemiterSearchTask, delemiterSearch };
+

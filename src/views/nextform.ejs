@@ -53,7 +53,7 @@
         <input type="button" value="Reference Contact" id="refcontact">
         <input type="button" value="Preferences" id="preferences">
     </div> -->
-    <h6>For Update write http://localhost:8000/nextform/?id=<i>your id</i></h6>
+    <h6>For Update write http://localhost:8085/nextform/?id=<i>your id</i></h6>
     <form autocomplete="on" onsubmit="return validateForm()" method="post" id="myForm">
     <div class="tab">
         <fieldset>
@@ -649,7 +649,7 @@
             }
             else{
                 alert(resjson.str);
-                window.location.href="http://localhost:8000/nextform"
+                window.location.href="http://localhost:8085/nextform"
             }
         }
         catch(err){
@@ -670,7 +670,7 @@
             const form = document.getElementById(id);
             const obj = new URLSearchParams(new FormData(form));
             console.log(obj);
-            let res1 = await fetch("http://localhost:8000/nextformstoredetails",
+            let res1 = await fetch("http://localhost:8085/nextformstoredetails",
             {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -734,7 +734,7 @@
     
 
     function redirect(){
-        window.location.href="http://localhost:8000/nextform"
+        window.location.href="http://localhost:8085/nextform"
     }
 
 

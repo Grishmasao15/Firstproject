@@ -174,7 +174,7 @@
                     var url=window.location.origin+`/thanks/${randcode}`;
                     console.log(url);
                     window.location.href=url;
-                        let res1 =await fetch("http://localhost:8000/storedetails",
+                        let res1 =await fetch("http://localhost:8085/storedetails",
                         {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -190,7 +190,7 @@
         }
 
         function redirect(){
-            window.location.href="http://localhost:8000/directlogin";
+            window.location.href="http://localhost:8085/directlogin";
         }
 
         

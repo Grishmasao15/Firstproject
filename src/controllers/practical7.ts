@@ -10,22 +10,20 @@
 //     palindrome(str);
 // }
 
-
-function palindrome(str){
-    let j=str.length-1;
-    let str1='';
-    let str2='';
-    for(let i=0;i<str.length/2;i++){
-        if(str[i]!=str[j]){
-            str1+= str+" is not Palindrome";
+function palindrome(str: string): string {
+    let j: number = str.length - 1;
+    let str1: string = '';
+    for (let i: number = 0; i < str.length / 2; i++) {
+        if (str[i] != str[j]) {
+            str1 += str + " is not Palindrome";
             return str1;
         }
         j--;
     }
-    str1+= str +" is Palindrome";
-    
+    str1 += str + " is Palindrome";
+
     return str1;
 }
 
-module.exports = { palindrome };
+export default palindrome;
 

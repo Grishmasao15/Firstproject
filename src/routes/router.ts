@@ -1,24 +1,24 @@
-var router = require("express").Router();
-const fs = require("fs");
-const { auth } = require("../controllers/middleware/auth");
-const cookieParser = require("cookie-parser");
+import { Router } from "express";
+const router: Router = require("express").Router();
+import auth from "../controllers/middleware/auth";
+import cookieParser from "cookie-parser";
 router.use(cookieParser());
-var parser = require("body-parser");
+import parser from "body-parser";
 router.use(parser.json());
 router.use(parser.urlencoded({ extended: false }));
 
-const crudwithfile = require("../controllers/crudWithFile");
-const fetchDBtask = require("../controllers/fetchFromDb");
-const attendanceDetails = require("../controllers/attendanceDetailsTask"); 
-const resultSheet = require("../controllers/resultSheet");
-const dynamicQueryBox = require("../controllers/dynamicQueryBox");
-const searchBox = require("../controllers/searchBox");
-const delemitersearch = require("../controllers/delemiterSearchTask");
-const createcomponent = require("../controllers/createComponentTask");
-const fetchFromApi = require("../controllers/fetchDataFromApi");
-const jobappform = require("../controllers/jobAppFormInsertion");
-const timezone = require("../controllers/timezone");
-const nextformwithAJAX = require("../controllers/nextform");
+import crudwithfile from "../controllers/crudWithFile";
+import fetchDBtask from "../controllers/fetchFromDb";
+import attendanceDetails from "../controllers/attendanceDetailsTask";
+import resultSheet from "../controllers/resultSheet";
+import dynamicQueryBox from "../controllers/dynamicQueryBox";
+import searchBox from "../controllers/searchBox";
+import delemitersearch from "../controllers/delemiterSearchTask";
+import createcomponent from "../controllers/createComponentTask";
+import fetchFromApi from "../controllers/fetchDataFromApi";
+import jobappform from "../controllers/jobAppFormInsertion";
+import timezone from "../controllers/timezone";
+import nextformwithAJAX from "../controllers/nextform";
 
 
 
@@ -27,7 +27,7 @@ const nextformwithAJAX = require("../controllers/nextform");
 router.get("/htmltask/:result", auth, require("../controllers/javaScriptTasks"));
 
 //allfunctioninone
-router.get("/function/:functionname",auth,require("../controllers/allFunctions"));
+router.get("/function/:functionname", auth, require("../controllers/allFunctions"));
 
 //crudwithfile
 router.get("/form", auth, crudwithfile.form);
@@ -82,36 +82,36 @@ router.post("/searchdetails", auth, searchBox.searchDetails);
 
 
 //delemitersearchtask
-router.get("/delemitersearchtask", auth,delemitersearch.delemiterSearchTask);
+router.get("/delemitersearchtask", auth, delemitersearch.delemiterSearchTask);
 
-router.post("/delemitersearch",auth, delemitersearch.delemiterSearch);
+router.post("/delemitersearch", auth, delemitersearch.delemiterSearch);
 
 //createcomponent
-router.get("/createcomponenttask",auth, createcomponent.createComponentTask) 
+router.get("/createcomponenttask", auth, createcomponent.createComponentTask)
 
-router.post("/createcomponent",auth, createcomponent.createComponent) 
+router.post("/createcomponent", auth, createcomponent.createComponent)
 
 //fetchdatafromAPI
-router.get("/fetchapi",auth, fetchFromApi.fetchApi)
+router.get("/fetchapi", auth, fetchFromApi.fetchApi)
 
-router.get("/apialldetails",auth, fetchFromApi.fetchApiDetails)
+router.get("/apialldetails", auth, fetchFromApi.fetchApiDetails)
 
 //JobApplicationFormInsertion
 
-router.get("/jobappform",auth, jobappform.jobAppForm)
+router.get("/jobappform", auth, jobappform.jobAppForm)
 
-router.post("/jobappformstoredetails",auth, jobappform.storeDetails)
+router.post("/jobappformstoredetails", auth, jobappform.storeDetails)
 
 //timeZone
 
-router.get("/timezone",auth, timezone.timezone)
+router.get("/timezone", auth, timezone)
 
 //nextformwithAJAX
 
-router.get("/nextform",auth, nextformwithAJAX.nextform)
+router.get("/nextform", auth, nextformwithAJAX.nextform)
 
 router.get("/id", auth, nextformwithAJAX.update)
 
-router.post("/nextformstoredetails",auth, nextformwithAJAX.storeDetails)
+router.post("/nextformstoredetails", auth, nextformwithAJAX.storeDetails)
 
-module.exports = router;
+export default router;

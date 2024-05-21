@@ -1,16 +1,4 @@
 
-
-
-
-// const cras = [
-//     {a:'1',b:'2',c:'3'},
-//     {a:'4',b:'2',c:'5'},
-//     {a:'6',b:'7',c:'8'}
-// ];
-
-// console.log(Object.groupBy(cras,({b})=>b));
-
-
 // var num = [
 //     {a:'1',b:'2',c:'3'},
 //     {a:'4',b:'2',c:'5'},
@@ -24,9 +12,10 @@
 //    { make: "ford", model: "fusion", year: "2015" },
 //    { make: "kia", model: "optima", year: "2012" },
 //  ];
+import { GroupByInterface, groupByResultInterface } from "../intefaces/interfaces";
 
-function group(cars){
-    result = cars.reduce(function (acc, curr) {
+function group(cars: Array<GroupByInterface>) {
+  let result: groupByResultInterface = cars.reduce(function (acc, curr) {
     acc[curr.make] = acc[curr.make] || [];
     acc[curr.make].push(curr);
     return acc;
@@ -35,14 +24,6 @@ function group(cars){
   return result;
 }
 
-module.exports={group};
+export default group;
 
-
-//     result = num.reduce(function (r, a) {
-//         r[a.b] = r[a.b] || [];
-//         r[a.b].push(a);
-//         return r;
-//     },
-//      Object.create(null));
-
-// console.log(result);
+//Dynamic Input

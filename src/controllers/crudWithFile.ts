@@ -1,16 +1,17 @@
+import { Request, Response } from "express";
 
-const fs = require("fs");
+import fs from "fs";
 
-function form(req, res){
+function form(req: Request, res: Response): void {
   res.render("../src/views/form");
 };
 
-function showAll(req, res){
-  let obj = JSON.parse(fs.readFileSync("alldata.json"));
+function showAll(req: Request, res: Response): void {
+  let obj = JSON.parse(fs.readFileSync("alldata.json").toString());
   res.render("../src/views/table", { obj: obj });
 };
 
-function submit(req, res){
+function submit(req: Request, res: Response): void {
   let obj = {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -47,9 +48,9 @@ function submit(req, res){
   });
 };
 
-function allDetails(req, res){
-  let obj = JSON.parse(fs.readFileSync("alldata.json"));
-  res.render("../src/views/alldetails", { mail: req.body.mail, obj: obj });
+function allDetails(req: Request, res: Response): void {
+  let obj = JSON.parse(fs.readFileSync("alldata.json").toString());
+  res.render("../src/views/alldetails", { mail: req.body.mail, obj });
 };
 
-module.exports = { form, showAll, submit, allDetails };
+export default { form, showAll, submit, allDetails };
